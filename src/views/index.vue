@@ -6,9 +6,8 @@
                 <a-layout-header :class="{'collapsed':collapsed}">
                     <div class="logo" @click="()=>{this.$router.push(config.HOME_PAGE)}">
                         <img class="logo-img" src="../assets/image/common/logo.png" alt="">
-                        <span class="title" v-if="system">
-                            {{system.app_name}}
-                             <span class="version">{{system.app_version}}</span>
+                        <span class="title">
+                            企业网盘
                         </span>
                     </div>
                     <a-menu

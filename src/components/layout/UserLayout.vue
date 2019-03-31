@@ -3,10 +3,10 @@
         <div class="container">
             <div class="top">
                 <div class="header">
-                    <a-badge :count="'Beta 2.0'">
+                    <a-badge>
                         <a href="/">
                             <img src="../../assets/image/common/logo.png" class="logo" alt="logo">
-                            <span class="title">Pear Project</span>
+                            <span class="title">企业网盘</span>
                         </a>
                     </a-badge>
                 </div>
@@ -23,7 +23,7 @@
                       <a href="_self">条款</a>
                   </div>-->
                 <div class="copyright">
-                    Copyright &copy; 2019 Pear Project
+                    Copyright &copy; 2019 华东交通大学 蓝星花
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
             desc: {
                 type: [String],
                 default() {
-                    return '欢迎登录Pear Project项目管理系统';
+                    return '欢迎使用星云网盘系统';
                 }
             }
         }

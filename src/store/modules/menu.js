@@ -1,5 +1,6 @@
 import {getMenuForUser} from "@/api/menu";
 import {getStore, setStore} from '@/assets/js/storage';
+import {getMenu} from "../../api/menu";
 
 const common = {
     state: {
@@ -16,7 +17,8 @@ const common = {
     },
     actions: {
         GET_MENU({commit}) {
-            getMenuForUser().then(res => {
+            getMenu().then(res => {
+                console.log("获取菜单："+res.data);
                 setStore('menu', res.data);
                 commit('SET_MENU', res.data);
             });

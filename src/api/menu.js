@@ -5,7 +5,7 @@ export function getMenuForUser() {
 }
 
 export function getMenu() {
-    return $http.post('project/menu/menu');
+    return $http.get('http://localhost:8888/api/menu/menu/');
 }
 
 export function doMenu(data) {

@@ -73,10 +73,8 @@
 
             <a-form-item>
                 <a-checkbox v-model="formLogin.rememberMe">自动登录</a-checkbox>
-                <a
-                        class="forge-password"
-                        style="float: right;"
-                >忘记密码
+                <a class="forge-password" style="float: right;">
+                    <router-link class="register" :to="{ name: 'forget' }">忘记密码</router-link>
                 </a>
             </a-form-item>
 

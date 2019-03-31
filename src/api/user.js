@@ -8,6 +8,10 @@ export function register(data) {
     return $http.post('project/login/register', data);
 }
 
+export function forget(data) {
+    return $http.post('project/login/forget', data);
+}
+
 export function getCaptcha(mobile) {
     return $http.post('project/login/getCaptcha', {mobile: mobile});
 }
