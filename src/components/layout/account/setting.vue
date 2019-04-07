@@ -1,3 +1,4 @@
+<!--个人设置-->
 <template>
     <div class="account-setting">
         <div class="layout-item left">
@@ -10,12 +11,6 @@
                         <a-menu-item key="security">
                             <span>安全设置</span>
                         </a-menu-item>
-                       <!-- <a-menu-item key="binding">
-                            <span>账号绑定</span>
-                        </a-menu-item>
-                        <a-menu-item key="notification">
-                            <span>新消息通知</span>
-                        </a-menu-item>-->
                     </a-menu>
                 </div>
             </div>

@@ -84,7 +84,7 @@
         },
         mounted() {
             //用户权限资源检测
-            function TraversalObject(obj, value) {
+          /*  function TraversalObject(obj, value) {
                 for (let a in obj) {
                     if (typeof (obj[a]) === "object") {
                         TraversalObject(obj[a], value); //递归遍历
@@ -117,7 +117,7 @@
                         ClassElements[i].style.display = "none"
                     }
                 }
-            })
+            })*/
         },
         computed: {
             ...mapState({

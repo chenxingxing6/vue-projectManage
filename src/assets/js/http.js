@@ -86,66 +86,6 @@ $http.interceptors.response.use(
             }, 'notice', 'error', 5);
             return Promise.resolve(response);
         }
-        /*if (response.code == 200) {
-            response.msg !== '' && notice(response.msg, 'message', 'success');
-            return Promise.resolve(response);
-        } else if (response.code === 401) {
-            // notice('登录超时，请重新登录');
-            $router.replace('/member/login?redirect=' + $router.currentRoute.fullPath);
-            $store.dispatch('SET_LOGOUT');
-            return new Promise(() => {});
-        } else if (response.code === 4010) {
-            refreshAccessToken(refreshToken).then(res=>{
-                console.log(res);
-                return new Promise(() => {
-                });
-            });
-        }else if (response.code === 403) {
-            // $router.replace('/403');
-            //无权限操作资源
-            notice({
-                title: response.msg !== '' ? response.msg : '无权限操作资源，访问被拒绝',
-            }, 'notice', 'error', 5);
-            return Promise.reject(response.msg);
-            // return new Promise(() => {});
-        } else if (response.code === 4031) {
-            // $router.replace('/403');
-            //无权限操作资源
-            notice({
-                title: response.msg !== '' ? response.msg : '无权限操作资源，访问被拒绝',
-            }, 'notice', 'error', 5);
-            $router.replace(HOME_PAGE);
-            return Promise.reject(response.msg);
-        } else if (response.code <= 400) {
-            response.msg !== '' && notice({
-                title: response.msg,
-            }, 'notice', 'error', 5);
-            return Promise.resolve(response);
-        } else if (response.code == 404) {
-            //资源不存在
-            notice({
-                title: response.msg !== '' ? response.msg : '资源不存在',
-            }, 'notice', 'warning', 5);
-            $router.replace(HOME_PAGE);
-            return new Promise(() => {
-            });
-        } else if (response.code < 500) {
-            notice({
-                title: '请求错误 ' + response.code,
-                desc: response.msg
-            }, 'notice', 'warning', 5);
-            // $router.back();
-            return Promise.reject(response);
-        } else {
-            notice({
-                title: '请求错误 ' + response.code,
-                desc: '路径：' + self.url + '，' +
-                    response.msg || '未知错误，请联系管理员或稍后重试' +
-                    '。'
-            }, 'notice', 'warning', 5);
-            return new Promise(() => {
-            });
-        }*/
     },
     error => {
         const response = error.response.data;

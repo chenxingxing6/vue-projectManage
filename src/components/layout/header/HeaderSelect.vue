@@ -1,5 +1,6 @@
+<!--切换不同项目组-->
 <template>
-    <div v-if="currentOrganization">
+    <!--<div v-if="currentOrganization">
         <a-dropdown class="action-item" placement="bottomCenter">
             <div class="organization-select">
                 <span>{{currentOrganization.name}}</span>
@@ -11,7 +12,7 @@
                 </a-menu-item>
             </a-menu>
         </a-dropdown>
-    </div>
+    </div>-->
 </template>
 
 <script>

@@ -4,31 +4,32 @@
         <a-spin :spinning="windowLoading">
             <a-layout id="layout" :class="layoutClass">
                 <a-layout-header :class="{'collapsed':collapsed}">
+                    <!-- 左边菜单 -->
                     <div class="logo" @click="()=>{this.$router.push(config.HOME_PAGE)}">
                         <img class="logo-img" src="../assets/image/common/logo.png" alt="">
                         <span class="title">
-                            企业网盘
+                            星云网盘
                         </span>
                     </div>
+                    <!-- 中间菜单 -->
                     <a-menu
-                            mode="horizontal"
-                            v-model="selectedModelKeys"
-                            @click="menuModelClick"
-                            @openChange="onModelOpenChange"
-                            :style="{ lineHeight: '63px',paddingLeft:'15px' }"
-                    >
-                        <a-menu-item
-                                v-for="(model,index) in menu"
-                                :key="model.id.toString()"
-                                :disabled="!model.status"
-                        >
+                    mode="horizontal"
+                    v-model="selectedModelKeys"
+                    @click="menuModelClick"
+                    @openChange="onModelOpenChange"
+                    :style="{ lineHeight: '63px',paddingLeft:'15px' }">
+                    <a-menu-item
+                            v-for="(model,index) in menu"
+                            :key="model.id.toString()"
+                            :disabled="!model.status">
                             <a-icon v-if="model.icon" :type="model.icon"/>
                             <span>{{model.title}}</span>
                         </a-menu-item>
                     </a-menu>
+                    <!-- 右边菜单 -->
                     <div class="right-menu">
                         <div class="m-r-lg" v-if="config.WS_URI">
-                            <a-badge title="当前在线" :count="online" showZero :numberStyle="{backgroundColor: '#52c41a'} "
+                            <a-badge title="当前在线111" :count="online" showZero :numberStyle="{backgroundColor: '#52c41a'} "
                                      :offset="[10,0]">
                                 <a-icon type="team"/>
                             </a-badge>
@@ -44,6 +45,7 @@
                         </div>
                     </div>
                 </a-layout-header>
+                <!-- 内容 -->
                 <a-layout style="padding-top: 65px;">
                     <a-sider
                             mode="inline"
@@ -94,7 +96,7 @@
                     <a-layout
                             class="main-content"
                             :style="collapsed ? { paddingLeft: '80px'} : { paddingLeft: '256px'}">
-                        <!--<vue-scroll ref="contentscroll">-->
+                     <!--   <vue-scroll ref="contentscroll">-->
                         <a-layout-content>
                             <transition name="router-fade" mode="out-in">
                                 <a-spin :spinning="pageLoading">
@@ -102,12 +104,12 @@
                                 </a-spin>
                             </transition>
                         </a-layout-content>
-                        <!-- <a-footer style="text-align: center">
+                         <a-footer style="text-align: center">
                              <template v-if="system">
-                                 <span @click="footerClick">  Copyright © 2018 Pear Project技术部出品 </span>
+                                 <span @click="footerClick">  Copyright © 2019 华东交通大学 蓝星花 </span>
                              </template>
-                         </a-footer>-->
-                        <!--</vue-scroll>-->
+                         </a-footer>
+                      <!--  </vue-scroll>-->
                     </a-layout>
                 </a-layout>
             </a-layout>

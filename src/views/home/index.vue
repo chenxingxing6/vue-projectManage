@@ -1,5 +1,9 @@
 <template>
-    <div class="home-index">
+    <div style="margin: 0 auto; display: block; text-align: center; padding: 20px;">
+        <h1>看什么看👀</h1>
+    </div>
+   <!-- <div class="home-index">
+        /home/index.vue下面
         <div class="page-header">
             <p class="day-text muted">『 {{ yiyan.hitokoto }}』 —— 《{{ yiyan.from }}》 <a class="muted" @click="getYiYan">
                 <a-icon type="reload"/>
@@ -15,7 +19,7 @@
                         <div class="team muted" v-if="userInfo.position">{{userInfo.position}} | {{ userInfo.department }}</div>
                     </div>
                 </div>
-                <div class="right-content">
+             &lt;!&ndash;   <div class="right-content">
                     <div class="content-item">
                         <div class="item-title muted">
                             任务数
@@ -40,10 +44,10 @@
                             <span>{{projectTotal}}</span>
                         </div>
                     </div>
-                </div>
+                </div>&ndash;&gt;
             </div>
         </div>
-        <!--<wrapper-content :showHeader="false">-->
+        &lt;!&ndash;<wrapper-content :showHeader="false">&ndash;&gt;
         <div class="page-wrapper">
             <a-row :gutter="24">
                 <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
@@ -105,12 +109,12 @@
                                         </router-link>
                                     </div>
                                     <div slot="description">
-                                        <!--<a-tooltip :mouseEnterDelay="0.3" :title="item.create_time">-->
+                                        &lt;!&ndash;<a-tooltip :mouseEnterDelay="0.3" :title="item.create_time">&ndash;&gt;
                                         {{ formatTime(item.create_time) }} -
                                         <router-link target="_blank" :to="`/project/space/task/${item.project_code}`" class="muted">
                                             {{item.project_name}}
                                         </router-link>
-                                        <!--</a-tooltip>-->
+                                        &lt;!&ndash;</a-tooltip>&ndash;&gt;
                                     </div>
                                 </a-list-item-meta>
                             </a-list-item>
@@ -145,7 +149,7 @@
                             </a-list-item>
                         </a-list>
                     </a-card>
-                    <!-- <a-col
+                    &lt;!&ndash; <a-col
                              style="padding: 0 12px"
                              :xl="8"
                              :lg="24"
@@ -163,13 +167,13 @@
                                  <a>操作六</a>
                                  <a-button size="small" type="primary" ghost icon="plus">添加</a-button>
                              </div>
-                         </a-card>-->
-                    <!--    <a-card title="XX 指数" style="margin-bottom: 24px" :loading="radarLoading" :bordered="false" :body-style="{ padding: 0 }">
+                         </a-card>&ndash;&gt;
+                    &lt;!&ndash;    <a-card title="XX 指数" style="margin-bottom: 24px" :loading="radarLoading" :bordered="false" :body-style="{ padding: 0 }">
                             <div style="min-height: 400px;">
                                 &lt;!&ndash; :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  &ndash;&gt;
                                 <radar :data="radarData" />
                             </div>
-                        </a-card>-->
+                        </a-card>&ndash;&gt;
                     <a-card :loading="loading" title="团队" :bordered="false">
                         <div class="members">
                             <a-row>
@@ -185,8 +189,8 @@
                 </a-col>
             </a-row>
         </div>
-        <!--</wrapper-content>-->
-    </div>
+        &lt;!&ndash;</wrapper-content>&ndash;&gt;
+    </div>-->
 </template>
 <script>
     import {mapState} from 'vuex'
@@ -222,8 +226,8 @@
             }
         },
         created() {
-            this.getYiYan();
-            this.init();
+           /* this.getYiYan();
+            this.init();*/
         },
         methods: {
             init(reset = true) {

@@ -37,6 +37,7 @@ Vue.use(VueClipboards);
 import uploader from 'vue-simple-uploader'
 Vue.use(uploader);
 
+
 Vue.prototype.$message = message;
 Vue.prototype.$notification = notification;
 Vue.prototype.$notice = notice;

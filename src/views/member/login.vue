@@ -113,12 +113,12 @@
     import {mapActions} from 'vuex'
     import {mapState} from 'vuex'
     import {Login, getCaptcha} from '@/api/user'
+    import {Menu} from '@/api/mock'
     import {info} from '@/api/system';
     import config from "@/config/config";
     import {checkResponse, createRoute, timeFix} from '@/assets/js/utils'
-    import {getStore} from '@/assets/js/storage'
     import {checkInstall} from "../../api/common/common";
-    import {setStore} from "../../assets/js/storage";
+    import {getStore, setStore} from '@/assets/js/storage';
 
     export default {
         components: {},
@@ -225,6 +225,11 @@
                             app.loginBtn = false;
                             app.loginSuccess(res);
                         });
+                       /* app.loginBtn = false;
+                        app.loginSuccess(res);
+                        Menu().then(res => {
+                            app.$store.dispatch('SET_MENU', res.data);
+                        })*/
                     }
                     this.loginBtn = false
                 }).catch(res => {
