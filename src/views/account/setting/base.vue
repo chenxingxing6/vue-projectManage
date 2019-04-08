@@ -14,7 +14,7 @@
                                     :form="form"
                                     hideRequiredMark
                                     @submit.prevent="handleSubmit">
-                               <!-- <a-form-item
+                               <a-form-item
                                         label='邮箱'
                                 >
                                     <a-input
@@ -23,7 +23,7 @@
                                             {rules: [{ required: true, message: '请输入您的邮箱' }]}
                                             ]"
                                     />
-                                </a-form-item>-->
+                                </a-form-item>
                                 <a-form-item
                                         label='昵称'
                                 >
@@ -157,6 +157,8 @@
 
 <style lang="less">
     .account-setting-base {
+        padding: 0px 265px 0px;
+
         .wrapper-main {
             padding-left: 0;
         }
