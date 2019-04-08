@@ -20,3 +20,9 @@ export function getNotice(page, pageSize) {
     return $http.post('/mock/getNotice', {page: page, pageSize: pageSize});
 }
 
+
+/*获取验证码*/
+export function getCaptcha(mobile) {
+    return $http.post('/mock/getCaptcha', {mobile: mobile});
+}
+

@@ -112,7 +112,8 @@
     import md5 from 'md5'
     import {mapActions} from 'vuex'
     import {mapState} from 'vuex'
-    import {Login, getCaptcha} from '@/api/user'
+    import {Login} from '@/api/user'
+    import {getCaptcha} from '@/api/mock'
     import {info} from '@/api/system';
     import config from "@/config/config";
     import {checkResponse, createRoute, timeFix} from '@/assets/js/utils'

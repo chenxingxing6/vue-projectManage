@@ -1,5 +1,5 @@
 <template>
-    <div class="account-index">
+   <!-- <div class="account-index">
         <wrapper-content>
             <div class="action">
             </div>
@@ -95,7 +95,7 @@
                     <a-radio-group v-model="currentUser.authorize"  buttonStyle="solid">
                         <a-radio-button :value="auth.value" v-for="auth in authList" :key="auth.value">{{auth.label}}</a-radio-button>
                     </a-radio-group>
-                    <!--<a-checkbox-group :options="authList" v-model="currentUser.authorizeArr"/>-->
+                    &lt;!&ndash;<a-checkbox-group :options="authList" v-model="currentUser.authorizeArr"/>&ndash;&gt;
                 </div>
                 <div class="action-btn">
                     <a-button type="primary"
@@ -108,7 +108,7 @@
                 </div>
             </div>
         </a-modal>
-    </div>
+    </div>-->
 </template>
 <script>
     import AInput from 'ant-design-vue/es/input'

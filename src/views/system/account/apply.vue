@@ -1,5 +1,5 @@
 <template>
-    <div class="admin-auth-apply">
+  <!--  <div class="admin-auth-apply">
         <wrapper-content>
             <div slot="page-action">
 
@@ -18,7 +18,7 @@
             >
             </Tree>
         </wrapper-content>
-    </div>
+    </div>-->
 </template>
 <script>
     import {Button, Tree} from 'ant-design-vue';

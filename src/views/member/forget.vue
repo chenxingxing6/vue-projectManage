@@ -51,7 +51,8 @@
 
 <script>
     import md5 from 'md5'
-    import {getCaptcha, forget} from '@/api/user'
+    import {forget} from '@/api/user'
+    import {getCaptcha} from '@/api/mock'
     import {checkResponse} from "../../assets/js/utils";
     import {notice} from "../../assets/js/notice";
 
