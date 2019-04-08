@@ -157,7 +157,6 @@
 
 <style lang="less">
     .account-setting-base {
-        padding: 0px 265px 0px;
 
         .wrapper-main {
             padding-left: 0;

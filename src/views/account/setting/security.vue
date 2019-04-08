@@ -415,7 +415,6 @@
 
 <style lang="less">
     .account-setting-security {
-        padding: 0px 265px 0px;
 
         .wrapper-main {
             padding-left: 0;
