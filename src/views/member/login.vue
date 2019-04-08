@@ -113,7 +113,6 @@
     import {mapActions} from 'vuex'
     import {mapState} from 'vuex'
     import {Login, getCaptcha} from '@/api/user'
-    import {Menu} from '@/api/mock'
     import {info} from '@/api/system';
     import config from "@/config/config";
     import {checkResponse, createRoute, timeFix} from '@/assets/js/utils'
@@ -146,15 +145,15 @@
         },
         computed: {
             ...mapState({
-                system: state => state.system,
+               // system: state => state.system,
             })
         },
         created() {
-            this.checkInstall();
+          /*  this.checkInstall();*/
         },
         methods: {
             ...mapActions(['Login', 'Logout']),
-            checkInstall() {
+           /* checkInstall() {
                 checkInstall().then(res => {
                     if (!checkResponse(res)) {
                         this.$router.push({name: 'install'});
@@ -164,7 +163,7 @@
                         this.$store.dispatch('setSystem', res.data);
                     });
                 });
-            },
+            },*/
             // handler
             handleUsernameOrEmail(rule, value, callback) {
                 const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
@@ -225,11 +224,6 @@
                             app.loginBtn = false;
                             app.loginSuccess(res);
                         });
-                       /* app.loginBtn = false;
-                        app.loginSuccess(res);
-                        Menu().then(res => {
-                            app.$store.dispatch('SET_MENU', res.data);
-                        })*/
                     }
                     this.loginBtn = false
                 }).catch(res => {

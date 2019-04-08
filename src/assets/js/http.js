@@ -25,16 +25,20 @@ $http.interceptors.request.use(
             const querystring = require('querystring');
             config.data = querystring.stringify(config.data);
         }
+        /*如果是mock数据，就用get方法*/
+        if (config.url.indexOf("mock") >=0){
+            config.method = 'get';
+        }
         let tokenList = getStore('tokenList', true);
         if (tokenList) {
             let accessToken = tokenList.accessToken;
             let tokenType = tokenList.tokenType;
             config.headers.Authorization = `${tokenType} ${accessToken}`;
         }
-        let organization = getStore('currentOrganization', true);
+       /* let organization = getStore('currentOrganization', true);
         if (organization) {
             config.headers.organizationCode = organization.code;
-        }
+        }*/
         return config;
     },
     error => {

@@ -4,9 +4,9 @@ export function getMenuForUser() {
     return $http.post('project/index');
 }
 
-export function getMenu() {
+/*export function getMenu() {
     return $http.post('project/menu/menu');
-}
+}*/
 
 export function doMenu(data) {
     let url = 'project/menu/menuAdd';

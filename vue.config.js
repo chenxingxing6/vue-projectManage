@@ -7,6 +7,7 @@ function resolve(dir) {
 const HOST = 'localhost';
 const PORT = '8045';
 const DEV_URL = 'https://beta.vilson.xyz/index.php/';
+
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
     productionSourceMap: false,

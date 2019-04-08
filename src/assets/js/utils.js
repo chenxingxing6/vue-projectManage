@@ -4,6 +4,7 @@ import {getStore} from "./storage";
 
 const PROD_URL = config.PROD_URL;
 const crossDomain = config.crossDomain;
+const MOCK_URL = config.MOCK_URL;
 
 /**
  * 判断客户端返回状态
@@ -68,8 +69,17 @@ export const showWarConfirm = (options = {}, callback = function () {
     });
 };
 
-
+/**
+ * 获取请求的全部url
+ *
+ * @param api
+ * @returns {string}
+ */
 export const getApiUrl = (api) => {
+    /*判断是否为mock数据*/
+    if (api.indexOf("mock") >=0){
+        return MOCK_URL + api;
+    }
     if (crossDomain) {
         return PROD_URL + '/' + api; //开启跨域直接返回
     }

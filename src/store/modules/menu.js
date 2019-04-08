@@ -1,5 +1,5 @@
 import {getMenuForUser} from "@/api/menu";
-import {Menu} from "@/api/mock";
+import {getMenu} from "@/api/mock";
 import {getStore, setStore} from '@/assets/js/storage';
 
 const common = {
@@ -17,9 +17,9 @@ const common = {
     },
     actions: {
         GET_MENU({commit}) {
-            Menu().then(res => {
-                setStore('menu', res.data.data);
-                commit('SET_MENU', res.data.data);
+            getMenu().then(res => {
+                setStore('menu', res.data);
+                commit('SET_MENU', res.data);
             });
         },
         SET_MENU({commit},data) {

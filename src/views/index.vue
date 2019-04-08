@@ -105,7 +105,7 @@
                             </transition>
                         </a-layout-content>
                          <a-footer style="text-align: center">
-                             <template v-if="system">
+                             <template>
                                  <span @click="footerClick">  Copyright © 2019 华东交通大学 蓝星花 </span>
                              </template>
                          </a-footer>
@@ -164,7 +164,6 @@
                 theme: state => state.theme,
                 logged: state => state.logged,
                 menu: state => state.menu.menu,
-                system: state => state.system,
                 pageLoading: state => state.pageLoading,
                 windowLoading: state => state.windowLoading,
                 organizationList: state => state.organizationList,

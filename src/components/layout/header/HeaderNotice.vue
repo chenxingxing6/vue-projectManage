@@ -3,67 +3,8 @@
         <template slot="content">
             <a-spin :spinning="loading">
                 <a-tabs class="header-notice-content" :tabBarGutter="25">
-                    <a-tab-pane key="1">
-                        <span slot="tab">消息<span
-                                v-if="total && totalSum['message']">({{totalSum['message']}})</span></span>
-                        <template v-if="total && totalSum['message']">
-                            <a-list>
-                                <template v-for="item in list['message']">
-                                    <a-list-item :key="item.id">
-                                        <a-list-item-meta :description="item.create_time">
-                                             <span slot="title">
-                                                    <p>{{item.title}}</p>
-                                                    <p class="ant-list-item-meta-description" v-html="item.content"></p>
-                                             </span>
-                                            <a-avatar slot="avatar"
-                                                      :src="item.avatar"/>
-                                        </a-list-item-meta>
-                                    </a-list-item>
-                                </template>
-                            </a-list>
-                            <div class="footer-action">
-                                <a class="item muted" @click="setRead('message')">清空消息</a>
-                                <a class="item muted" @click="showMore('1')">查看更多</a>
-                            </div>
-                        </template>
-                        <template v-else>
-                            <div class="notFound">
-                                <img src="../../../assets/image/notify/laba.svg" alt="not found">
-                                <div>你已读完所有消息</div>
-                            </div>
-                        </template>
-                    </a-tab-pane>
-                    <a-tab-pane key="2">
-                        <span slot="tab">通知<span
-                                v-if="total && totalSum['notice']">({{totalSum['notice']}})</span></span>
-                        <template v-if="total && totalSum['notice']">
-                            <a-list>
-                                <template v-for="item in list['notice']">
-                                    <a-list-item :key="item.id">
-                                        <a-list-item-meta :description="item.create_time">
-                                             <span slot="title">
-                                                    <p v-html="item.title"></p>
-                                             </span>
-                                            <a-avatar style="background-color: white" slot="avatar"
-                                                      src="https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png"/>
-                                        </a-list-item-meta>
-                                    </a-list-item>
-                                </template>
-                            </a-list>
-                            <div class="footer-action">
-                                <a class="item muted" @click="setRead('notice')">清空通知</a>
-                                <a class="item muted" @click="()=>{$router.push('/notify/notice')}">查看更多</a>
-                            </div>
-                        </template>
-                        <template v-else>
-                            <div class="notFound">
-                                <img src="../../../assets/image/notify/bell.svg" alt="not found">
-                                <div>你已查看所有通知</div>
-                            </div>
-                        </template>
-                    </a-tab-pane>
                     <a-tab-pane key="3">
-                        <span slot="tab">待办<span
+                        <span slot="tab">通知<span
                                 v-if="task.total && task.total">({{task.total}})</span></span>
                         <template v-if="task.total && task.total">
                             <a-list>
@@ -89,14 +30,8 @@
                                 </template>
                             </a-list>
                             <div class="footer-action">
-                                <a class="item muted" @click="setRead('task')">清空待办</a>
+                                <a class="item muted" @click="setRead('task')">清空通知</a>
                                 <a class="item muted">查看更多</a>
-                            </div>
-                        </template>
-                        <template v-else>
-                            <div class="notFound">
-                                <img src="../../../assets/image/notify/ticket.svg" alt="not found">
-                                <div>你已完成所有待办</div>
                             </div>
                         </template>
                     </a-tab-pane>
@@ -114,10 +49,10 @@
 <script>
     import {mapState} from 'vuex'
     import moment from 'moment';
-    import {noReads} from "../../../api/notify";
     import {notice} from "../../../assets/js/notice";
     import {showMsgNotification} from "../../../assets/js/notify";
     import {selfList} from "../../../api/task";
+    import {getNotice} from "../../../api/mock";
     import {relativelyTime} from "../../../assets/js/dateTime";
 
     export default {
@@ -163,16 +98,6 @@
         methods: {
             init() {
                 this.fetchNotice();
-                this.getTasks();
-            },
-            fetchNotice() {
-                let app = this;
-                noReads().then(res => {
-                    app.list = res.data.list;
-                    app.messageTotal = res.data.total;
-                    app.total = app.messageTotal + app.task.total;
-                    app.totalSum = res.data.totalSum;
-                });
             },
             setRead(type) {
                 this.total -= this.list[type].length;
@@ -185,8 +110,8 @@
                         this.$router.push('/notify/notice');
                 }
             },
-            getTasks() {
-                selfList({page: this.task.page, pageSize: this.task.pageSize}).then(res => {
+            fetchNotice() {
+                getNotice({page: this.task.page, pageSize: this.task.pageSize}).then(res => {
                     this.task.list = res.data.list;
                     this.task.total = res.data.total;
                     this.total = this.messageTotal + this.task.total;
