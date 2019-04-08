@@ -1,5 +1,5 @@
 <template>
-    <div class="members-profile">
+   <!-- <div class="members-profile">
         <a-breadcrumb separator=">" class="breadcrumb">
             <a-breadcrumb-item>
                 <router-link to="/">
@@ -79,11 +79,11 @@
                         </a-col>
                     </a-row>
                 </a-tab-pane>
-                <!--<a-tab-pane class="info-content" tab="最近动态*" key="2" forceRender>
+                &lt;!&ndash;<a-tab-pane class="info-content" tab="最近动态*" key="2" forceRender>
                     <p class="action-wrapper">
                         <span class="title">最近动态</span>
                     </p>
-                </a-tab-pane>-->
+                </a-tab-pane>&ndash;&gt;
                 <a-tab-pane class="info-content" tab="任务安排" key="3">
                     <p class="action-wrapper">
                         <span class="title">
@@ -229,7 +229,7 @@
             <task-detail v-if="task.currentTask.code" :taskCode="task.currentTask.code"
                          @close="detailClose"></task-detail>
         </a-modal>
-    </div>
+    </div>-->
 </template>
 
 <script>

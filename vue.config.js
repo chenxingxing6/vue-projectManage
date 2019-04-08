@@ -4,7 +4,7 @@ function resolve(dir) {
     return path.join(__dirname, dir)
 }
 
-const HOST = 'localhost';
+const HOST = '127.0.0.1';
 const PORT = '8045';
 const DEV_URL = 'https://beta.vilson.xyz/index.php/';
 

@@ -16,6 +16,7 @@ const routes = [].concat(
 //     routes: routers
 // });
 const menu = getStore('menu', true);
+//后台查询出来的菜单注册到路由里面
 if (menu) {
     menu.forEach(function (v) {
         routes.push(createRoute(v));
@@ -39,12 +40,6 @@ const router = new Router({
             component: Index,
             children: routes
         },
-        // {
-        //     name: 'login',
-        //     path: '/login',
-        //     component: resolve => require(['@/views/login'], resolve),
-        //     meta: {model: 'Login'},
-        // },
         {
             name: 'member',
             path: '/member',
@@ -68,12 +63,7 @@ const router = new Router({
                     name: 'forget',
                     component: () => import(/* webpackChunkName: "user" */ '@/views/member/forget'),
                     meta: {model: 'Login'},
-                },
-                // {
-                //     path: 'register-result',
-                //     name: 'registerResult',
-                //     component: () => import(/* webpackChunkName: "user" */ '@/views/member/RegisterResult')
-                // }
+                }
             ]
         },
         {
@@ -101,10 +91,10 @@ const router = new Router({
             meta: {model: 'error'},
         },
         {
-            name: '500',
-            path: '/500',
-            component: resolve => require(['@/views/error/500'], resolve),
-            meta: {model: 'error'},
+            name: 'demo',
+            path: '/demo',
+            component: resolve => require(['@/views/member/demo'], resolve),
+            meta: {model: 'diskdemo'},
         },
     ]
 });
