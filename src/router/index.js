@@ -95,7 +95,7 @@ const router = new Router({
             path: '/demo',
             component: resolve => require(['@/views/member/demo'], resolve),
             meta: {model: 'diskdemo'},
-        },
+        }
     ]
 });
 

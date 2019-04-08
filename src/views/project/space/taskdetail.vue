@@ -1,5 +1,5 @@
 <template>
-    <a-modal
+ <!--   <a-modal
             class="task-detail-modal"
             width="min-content"
             :closable="false"
@@ -10,7 +10,7 @@
     >
         <task-detail :taskCode="code" @close="detailClose"></task-detail>
 
-    </a-modal>
+    </a-modal>-->
 </template>
 
 <script>

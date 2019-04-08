@@ -21,19 +21,8 @@
             </div>
             <section class="nav-body">
                 <ul class="nav-wrapper nav nav-underscore pull-left">
-                    <li><a class="app" data-app="tasks"
-                           @click="$router.push('/project/space/task/' + project.code)">任务</a></li>
-                    <li class="actives"><a class="app" data-app="works"
-                                           @click="$router.push('/project/space/files/' + project.code)">
-                        文件</a>
-                    <li><a class="app" data-app="build"
-                           @click="$router.push('/project/space/overview/' + project.code)">
-                        概览</a>
-                    </li>
-                    <li class=""><a class="app" data-app="build"
-                                    @click="$router.push('/project/build/' + project_id)">
-                        版本 * </a>
-                    </li>
+                    <li class="actives"><a class="app" data-app="works" @click="$router.push('/project/space/files/' + project.code)">文件</a></li>
+                    <li><a class="app" data-app="build" @click="$router.push('/project/space/overview/' + project.code)">概览</a></li>
                 </ul>
             </section>
         </div>
@@ -164,7 +153,8 @@
     import {collect} from "../../../api/projectCollect";
     import {checkResponse} from "../../../assets/js/utils";
     import {relativelyTime} from "../../../assets/js/dateTime";
-    import {edit, list, recycle} from "../../../api/file";
+    import {edit, recycle} from "../../../api/file";
+    import {getFiles} from "../../../api/mock";
     import pagination from "@/mixins/pagination";
     import {notice} from "../../../assets/js/notice";
 
@@ -203,7 +193,7 @@
             }
         },
         created() {
-            this.getProject();
+            //this.getProject();
             this.getFiles();
         },
         mounted() {
@@ -231,7 +221,7 @@
                 }
                 app.requestData.projectCode = this.code;
                 app.requestData.deleted = 0;
-                list(app.requestData).then(res => {
+                getFiles(app.requestData).then(res => {
                     if (reset) {
                         this.files = [];
                     }

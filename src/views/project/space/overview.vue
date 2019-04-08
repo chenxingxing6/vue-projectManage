@@ -21,8 +21,7 @@
             </div>
             <section class="nav-body">
                 <ul class="nav-wrapper nav nav-underscore pull-left">
-                    <li><a class="app" data-app="tasks"
-                           @click="$router.push('/project/space/task/' + project.code)">任务</a></li>
+
                     <li class=""><a class="app" data-app="works"
                                     @click="$router.push('/project/space/files/' + project.code)">
                         文件</a>
@@ -30,15 +29,11 @@
                                            @click="$router.push('/project/space/overview/' + project.code)">
                         概览</a>
                     </li>
-                    <li class=""><a class="app" data-app="build"
-                                    @click="$router.push('/project/build/' + project_id)">
-                        版本 * </a>
-                    </li>
                 </ul>
             </section>
         </div>
         <wrapper-content :showHeader="false">
-            <div class="content-left">
+            <div class="content-wrapper">
                 <div class="content-item log-list">
                     <div class="title">
                         项目动态
@@ -80,40 +75,10 @@
                     </div>
                 </div>
             </div>
-            <div class="content-right">
-                <div class="content-item">
-                    <div class="list-content">
-                        <div class="default-list">
-                            <a-list>
-                                <a-list-item :key="index" v-for="(item, index) in [project]">
-                                    <a-list-item-meta>
-                                        <a-avatar slot="avatar" :src="item.cover"/>
-                                        <div slot="title">
-                                            <span>{{ item.name }}</span>
-                                        </div>
-                                        <div slot="description">
-                                            {{item.owner_name}}
-                                        </div>
-                                    </a-list-item-meta>
-                                </a-list-item>
-                            </a-list>
-                        </div>
-                    </div>
-                    <p class="muted">{{project.description}}</p>
-                    <div>
-                        <ve-line
-                                :data="chartData"
-                                :settings="chartSettings"
-                                :extend="chartExtend"
-                                :legend-visible="false"
-                                height="200px"
-                        ></ve-line>
-                    </div>
-                </div>
-            </div>
         </wrapper-content>
     </div>
 </template>
+
 
 <script>
     import moment from "moment";
@@ -122,6 +87,7 @@
     import {collect} from "../../../api/projectCollect";
     import {checkResponse} from "../../../assets/js/utils";
     import {getLogBySelfProject, dateTotalForProject} from "../../../api/task";
+    import {getFileLog} from "../../../api/mock";
     import {relativelyTime} from "../../../assets/js/dateTime";
     import pagination from "../../../mixins/pagination";
 
@@ -188,7 +154,7 @@
         methods: {
             init() {
                 this.getProjectLog();
-                this.overviewForProject();
+                //this.overviewForProject();
             },
             getProject() {
                 this.loading = true;
@@ -205,7 +171,7 @@
                     app.showLoadingMore = false;
                 }
                 this.requestData.projectCode = this.code;
-                getLogBySelfProject(this.requestData).then(res => {
+                getFileLog(this.requestData).then(res => {
                     let list = [];
                     res.data.list.forEach((item) => {
                         list.push(item);
@@ -260,7 +226,6 @@
         }
     }
 </script>
-
 <style lang="less">
     /*@import "../../../assets/css/components/task";*/
 
@@ -295,6 +260,8 @@
                 }
             }
 
+
+
             .content-left {
                 width: 730px;
 
@@ -320,6 +287,75 @@
 
             .content-right {
                 width: 325px;
+            }
+
+
+            .content-wrapper {
+                width: 100%;
+
+                .log-list {
+                    background: #fff;
+
+                    .list-content {
+
+                        .list-item-title {
+                            padding: 10px 20px;
+
+                            .ant-list-item-action {
+                                li {
+                                    color: #fff;
+                                }
+
+                                em {
+                                    width: 0;
+                                }
+                            }
+                        }
+
+                        .list-item {
+                            border-bottom: none;
+                            margin-bottom: 2px;
+                            /*border-bottom: 1px solid #f5f5f5;*/
+                            padding: 10px 20px;
+                            transition: background-color 218ms;
+
+                            &:hover {
+                                background-color: #f5f5f5;
+                            }
+
+                            .ant-list-item-meta-title {
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                                position: relative;
+                                margin-bottom: 0;
+                                line-height: 32px;
+                            }
+
+                            .ant-list-item-action {
+                                em {
+                                    width: 0;
+                                }
+                            }
+                        }
+
+                        .other-info {
+                            display: flex;
+
+                            .info-item {
+                                display: flex;
+                                flex-direction: column;
+                                padding-left: 0;
+                                width: 90px;
+                                text-align: right;
+                            }
+
+                            .schedule {
+                                width: 250px;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
