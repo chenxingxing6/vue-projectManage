@@ -163,7 +163,6 @@
     import pagination from "@/mixins/pagination";
     import moment from 'moment';
     import {collect} from "../../../api/projectCollect";
-    import {list as projectTemplates} from "../../../api/projectTemplate";
 
     export default {
         components: {
@@ -206,7 +205,6 @@
         },
         created() {
             this.init();
-            this.projectTemplates();
         },
         methods: {
             moment,
@@ -226,11 +224,6 @@
                     app.showLoadingMore = app.pagination.total > app.dataSource.length;
                     app.loading = false;
                     app.loadingMore = false
-                });
-            },
-            projectTemplates() {
-                projectTemplates({pageSize: 100}).then(res => {
-                    this.templateList = res.data.list;
                 });
             },
             onLoadMore() {

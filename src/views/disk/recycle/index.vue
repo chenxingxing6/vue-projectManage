@@ -45,11 +45,11 @@
     </div>
 </template>
 <script>
-    import {list, doData, del} from '@/api/project';
+
     import {checkResponse} from '@/assets/js/utils';
     import pagination from "@/mixins/pagination";
     import moment from 'moment';
-    import {recovery, recycle} from "../../../api/project";
+
 
     export default {
         mixins: [pagination],
