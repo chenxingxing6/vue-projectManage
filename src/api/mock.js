@@ -38,6 +38,6 @@ export function getFileLog(data) {
 
 /*获取关注用户列表*/
 export function getFollowUser(data) {
-    return $http.post('/mock/getFollowUser', data);
+    return $http.post('/mock/getFollowUser');
 }
 

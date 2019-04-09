@@ -38,7 +38,7 @@
                             <a-list-item-meta>
                                 <a-avatar slot="avatar" :src="item.imgPath"/>
                                 <div slot="title">
-                                    <router-link :to="`/followuser/detail/${item.id}`" class="text-default">{{ item.username }}</router-link>
+                                    <router-link :to="{path: `/followuser/detail`, query:{id:item.id}}" class="text-default">{{ item.username }}</router-link>
                                     <a-tag class="m-l-sm">已关注</a-tag>
                                 </div>
                                 <div slot="description">
@@ -48,12 +48,12 @@
                                 </div>
                             </a-list-item-meta>
                             <template>
-                                <a class="muted" slot="actions" @click="deleteAccount(item,index)" v-if="item.isfollow == 1">
+                                <a class="muted" slot="actions" @click="cancleFollow(item, index)" v-if="item.isfollow == 1">
                                     <a-tooltip :title="`取消关注`">
                                         <a-icon type="user-delete"/>
                                     </a-tooltip>
                                 </a>
-                                <a class="muted" slot="actions" @click="deleteAccount(item,index)" v-else>
+                                <a class="muted" slot="actions" @click="addFollow(item, index)" v-else>
                                     <a-tooltip :title="`添加关注`">
                                         <a-icon type="user-add"/>
                                     </a-tooltip>
@@ -69,15 +69,8 @@
 
 <script>
     import _ from 'lodash'
-    import inviteDepartmentMember from '../../components/project/inviteDepartmentMember'
-    import createDepartment from '../../components/project/createDepartment'
-    import {list} from "../../api/department";
-    import {del, forbid , resume} from "../../api/user";
     import pagination from "../../mixins/pagination";
     import {checkResponse} from "../../assets/js/utils";
-    import {notice} from "../../assets/js/notice";
-    import {removeMember} from "../../api/departmentMember";
-    import {del as deleteDepartment} from "../../api/department";
     import {getFollowUser as getFollowUser} from "../../api/mock";
 
     export default {
@@ -93,18 +86,10 @@
                     {icon: 'user', title: '未关注'},
                 ],
                 currentMenu: {},
-                currentDepartmentCode: '',
-                currentTreeNode: '',//当前部门树节点
-                treeData: [],
-                departmentLoading: false,
                 loading: false,
                 members: [],
                 showLoadingMore: false,
                 loadingMore: false,
-                showInviteMember: false,
-                showCreateDepartment: false,
-                showEditDepartment: false,
-                showCreateChildDepartment: false,
             }
         },
         watch: {
@@ -120,7 +105,6 @@
             getMembers({key} = {}) {
                 let app = this;
                 if (key != undefined) {
-                    this.currentDepartmentCode = '';
                     this.currentMenu = this.menus[key];
                     this.selectedKeys = [key.toString()];
                     this.requestData.searchType = key;
@@ -151,7 +135,26 @@
                 this.pagination.page++;
                 this.init(false);
             },
-            deleteAccount(member, index) {
+            cancleFollow(member, index) {
+                let app = this;
+                this.$confirm('取消关注该用户, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then(() => {
+                   /* del(member.code).then((res) => {
+                        if (!checkResponse(res)) {
+                            return;
+                        }
+                        app.members.splice(index, 1);
+                        notice({title: '取消成功'}, 'notice', 'success');
+                    });*/
+                }).catch(() => {
+                    //notice({title: '移除失败'}, 'notice', 'error');
+                });
+            },
+            addFollow(member, index) {
                 let app = this;
                 this.$confirm('关注该用户, 是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -159,16 +162,22 @@
                     type: 'warning',
                     center: true
                 }).then(() => {
-                    del(member.code).then((res) => {
+                   /* del(member.code).then((res) => {
                         if (!checkResponse(res)) {
                             return;
                         }
                         app.members.splice(index, 1);
-                        notice({title: '移除成功'}, 'notice', 'success');
-                    });
+                        notice({title: '关注成功'}, 'notice', 'success');
+                    });*/
                 }).catch(() => {
                     //notice({title: '移除失败'}, 'notice', 'error');
                 });
+            },
+            emitEmpty() {
+                this.$refs.keywordInput.focus();
+                this.keyword = '';
+                this.requestData.keyword = '';
+                this.getMembers();
             },
         }
     }

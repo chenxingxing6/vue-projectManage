@@ -8,20 +8,20 @@
                 </router-link>
             </a-breadcrumb-item>
             <a-breadcrumb-item>
-                <router-link to="/members">
+                <router-link to="/followuser">
                     <a-icon type="team"/>
-                    成员
+                    关注用户
                 </router-link>
             </a-breadcrumb-item>
-            <a-breadcrumb-item>{{member.name}}</a-breadcrumb-item>
+            <a-breadcrumb-item>{{member.username}}</a-breadcrumb-item>
         </a-breadcrumb>
         <div class="header">
             <div class="member-info">
                 <template v-if="member">
                     <div class="base">
-                        <a-avatar size="large" class="m-r" :src="member.avatar"></a-avatar>
+                        <a-avatar size="large" class="m-r" :src="member.imgPath"></a-avatar>
                         <div class="title">
-                            {{member.name}}
+                            {{member.username}}
                         </div>
                     </div>
                     <div class="mail muted">
@@ -35,34 +35,28 @@
             <a-tabs :animated="false" defaultActiveKey="1">
                 <a-tab-pane class="info-content base-info" tab="详细资料" key="1">
                     <a-row class="content-wrapper">
-                        <a-col :span="8">
+                        <a-col :span="24">
                             <div class="info-item">
                                 <span class="muted">姓名</span>
-                                <span>{{member.name}}</span>
+                                <span>{{member.username}}</span>
                             </div>
                         </a-col>
-                        <a-col :span="8">
+                        <a-col :span="24">
                             <div class="info-item">
                                 <span class="muted">手机</span>
                                 <span>{{member.mobile}}</span>
                             </div>
                         </a-col>
-                        <a-col :span="8">
+                        <a-col :span="24">
                             <div class="info-item">
                                 <span class="muted">邮箱</span>
                                 <span>{{member.email}}</span>
                             </div>
                         </a-col>
-                        <a-col :span="8">
-                            <div class="info-item">
-                                <span class="muted">职位</span>
-                                <span>{{member.position}}</span>
-                            </div>
-                        </a-col>
-                        <a-col :span="8">
+                        <a-col :span="24">
                             <div class="info-item">
                                 <span class="muted">部门</span>
-                                <span>{{member.departments}}</span>
+                                <span>{{member.dept}}</span>
                             </div>
                         </a-col>
                         <a-col :span="8">
@@ -80,10 +74,11 @@
 </template>
 
 <script>
+    import {getFollowUser as getFollowUser} from "../../api/mock";
     export default {
         data() {
             return {
-                //code: this.$route.params.code,
+                userId: this.$route.query.id,
                 member: {},
             }
         },
@@ -94,12 +89,12 @@
         },
         methods: {
             init() {
-                this.getMember();
+                this.getInfo();
             },
-            getMember() {
-                /* read(this.code).then(res => {
-                     this.member = res.data;
-                 });*/
+            getInfo() {
+                 getFollowUser({aa: this.userId}).then(res => {
+                     this.member = res.data.list[0];
+                 });
             }
         }
     }
