@@ -21,14 +21,8 @@
             </div>
             <section class="nav-body">
                 <ul class="nav-wrapper nav nav-underscore pull-left">
-
-                    <li class="actives"><a class="app" data-app="works"
-                                    @click="$router.push('/disk/files')">
-                        文件</a>
-                    <li><a class="app" data-app="build"
-                                           @click="$router.push('/disk/overview')">
-                        概览</a>
-                    </li>
+                    <li class="actives"><a class="app" data-app="works" @click="$router.push('/disk/files')">文件</a></li>
+                    <li><a class="app" data-app="build" @click="$router.push('/disk/overview')">概览</a></li>
                 </ul>
             </section>
         </div>
@@ -199,7 +193,6 @@
             }
         },
         created() {
-            this.getProject();
             this.getFiles();
         },
         mounted() {
@@ -209,9 +202,8 @@
         },
         methods: {
             getProject() {
-                this.loading = true;
                 getProject(this.code).then((res) => {
-                    this.loading = false;
+
                     this.project = res.data;
                     this.$store.dispatch('setTempData', {
                         projectCode: this.project.code,
@@ -227,7 +219,9 @@
                 }
                 app.requestData.projectCode = this.code;
                 app.requestData.deleted = 0;
+                this.loading = true;
                 getFiles(app.requestData).then(res => {
+                    this.loading = false;
                     if (reset) {
                         this.files = [];
                     }

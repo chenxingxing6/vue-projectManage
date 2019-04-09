@@ -83,21 +83,15 @@
 
 
 <script>
-    import moment from "moment";
-    import VeLine from 'v-charts/lib/line.common'
     import {read as getProject} from "../../api/project";
     import {collect} from "../../api/projectCollect";
     import {checkResponse} from "../../assets/js/utils";
-    import {getLogBySelfProject, dateTotalForProject} from "../../api/task";
     import {getFileLog} from "../../api/mock";
     import {relativelyTime} from "../../assets/js/dateTime";
     import pagination from "../../mixins/pagination";
 
     export default {
         name: "project-space-overview",
-        components: {
-            VeLine
-        },
         mixins: [pagination],
         data() {
             return {
@@ -107,56 +101,14 @@
                 activities: [],
                 showLoadingMore: false,
                 loadingMore: false,
-                chartData: {
-                    columns: ['日期', '任务'],
-                    rows: []
-                },
-                chartSettings: {
-                    area: true,
-                    itemStyle: {
-                        color: '#1890ff'
-                    },
-                    areaStyle: {
-                        color: '#e6f7ff'
-                    }
-                },
-                chartExtend: {
-                    grid: {
-                        left: '-20',
-                        right: '0',
-                        top: '10',
-                        bottom: '0'
-                    },
-                    xAxis: {
-                        show: false,
-                    },
-                    yAxis: {
-                        show: false,
-                    },
-                    tooltip: {
-                        backgroundColor: '#fff',
-                        textStyle: {
-                            color: '#333'
-                        },
-                        borderWidth: 1,
-                        borderColor: '#e8e8e8',
-                    },
-                    axisPointer: {
-                        lineStyle: {
-                            width: 0
-                        }
-                    }
-                }
             }
         },
         created() {
-            this.getProject();
             this.init();
         },
         methods: {
             init() {
                 this.getProjectLog();
-                //this.overviewForProject();
             },
             getProject() {
                 this.loading = true;
@@ -201,18 +153,6 @@
                 this.pagination.page++;
                 this.getProjectLog(false);
             },
-            overviewForProject() {
-                dateTotalForProject({projectCode: this.code}).then(res => {
-                    let list = [];
-                    res.data.forEach((v) => {
-                        list.push({
-                            '日期': moment(v.date).format('M月D日'),
-                            '任务': v.total,
-                        })
-                    });
-                    this.chartData.rows = list;
-                })
-            },
             collectProject() {
                 const type = this.project.collected ? 'cancel' : 'collect';
                 collect(this.project.code, type).then((res) => {
@@ -229,7 +169,6 @@
     }
 </script>
 <style lang="less">
-    /*@import "../../../assets/css/components/task";*/
 
     .project-space-overview {
         .project-navigation {
