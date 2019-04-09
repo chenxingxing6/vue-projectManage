@@ -54,7 +54,6 @@
             return {
                 columns,
                 dataSource: [],
-                selectedRowKeys: [],
                 loading: true,
                 searchForm: {},
                 searchLoading: false,
@@ -68,17 +67,11 @@
                 let app = this;
                 app.requestData.type = 'system';
                 app.loading = false;
-                app.selectedRowKeys = [];
                 getNotice(app.requestData).then(res => {
                     app.dataSource = res.data.list;
                     app.pagination.total = res.data.total;
                     app.loading = false;
                 });
-            },
-            rowClick() {
-                let app = this;
-
-
             },
             handleSearchSubmit() {
                 let app = this;

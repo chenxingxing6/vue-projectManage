@@ -25,12 +25,6 @@
                 <div class="title">
                     <span>{{currentMenu.title}} · {{pagination.total}}</span>
                 </div>
-                <div class="actions">
-                    <a @click="showInviteMember = true">
-                        <a-icon type="user-add"/>
-                        添加成员
-                    </a>
-                </div>
             </div>
             <div class="members-content">
                 <vue-scroll ref="contentscroll">
@@ -42,35 +36,26 @@
                         </div>
                         <a-list-item :key="index" v-for="(item, index) in members">
                             <a-list-item-meta>
-                                <a-avatar slot="avatar" :src="item.avatar"/>
+                                <a-avatar slot="avatar" :src="item.imgPath"/>
                                 <div slot="title">
-                                    <router-link :to="`/members/profile/${item.code}`" class="text-default">{{ item.name }}</router-link>
-                                    <a-tag class="m-l-sm" v-if="item.is_owner">拥有者</a-tag>
+                                    <router-link :to="`/followuser/detail/${item.id}`" class="text-default">{{ item.username }}</router-link>
+                                    <a-tag class="m-l-sm">已关注</a-tag>
                                 </div>
                                 <div slot="description">
-                                    <!--<a-tooltip :mouseEnterDelay="0.3" :title="item.create_time">-->
                                     <span>{{item.email}}
-                                    <span v-if="item.departments"> - {{ item.departments }}</span>
+                                    <span> - 智慧商圈服务端</span>
                                 </span>
-                                    <!--</a-tooltip>-->
                                 </div>
                             </a-list-item-meta>
-                            <template v-if="!item.is_owner">
-                                <a class="muted" slot="actions" v-if="item.status == 0"
-                                   @click="resumeAccount(item,index)">
-                                    <a-tooltip title="启用账号">
-                                        <a-icon type="check-circle"/>
-                                    </a-tooltip>
-                                </a>
-                                <a class="muted" slot="actions" v-if="item.status == 1"
-                                   @click="forbidAccount(item,index)">
-                                    <a-tooltip title="停用账号">
-                                        <a-icon type="stop"/>
-                                    </a-tooltip>
-                                </a>
-                                <a class="muted" slot="actions" @click="deleteAccount(item,index)">
-                                    <a-tooltip :title="`从${actionTitle}内移除`">
+                            <template>
+                                <a class="muted" slot="actions" @click="deleteAccount(item,index)" v-if="item.isfollow == 1">
+                                    <a-tooltip :title="`取消关注`">
                                         <a-icon type="user-delete"/>
+                                    </a-tooltip>
+                                </a>
+                                <a class="muted" slot="actions" @click="deleteAccount(item,index)" v-else>
+                                    <a-tooltip :title="`添加关注`">
+                                        <a-icon type="user-add"/>
                                     </a-tooltip>
                                 </a>
                             </template>
@@ -78,10 +63,7 @@
                     </a-list>
                 </vue-scroll>
             </div>
-
         </div>
-        <invite-department-member v-model="showInviteMember" :department-code="currentDepartmentCode"
-                                  v-if="showInviteMember" @update="getMembers"></invite-department-member>
     </div>
 </template>
 
@@ -100,10 +82,6 @@
 
     export default {
         name: "members",
-        components: {
-            inviteDepartmentMember,
-            createDepartment,
-        },
         mixins: [pagination],
         data() {
             return {
@@ -129,11 +107,6 @@
                 showCreateChildDepartment: false,
             }
         },
-        computed: {
-            actionTitle() {
-                return this.currentDepartmentCode ? '部门' : '组织'
-            }
-        },
         watch: {
             keyword() {
                 this.search();
@@ -142,27 +115,8 @@
         created() {
             this.currentMenu = this.menus[0];
             this.getMembers({key: 0});
-            //this.getDepartment();
         },
         methods: {
-            getDepartment() {
-                this.departmentLoading = true;
-                list({page: 1, pageSize: 100}).then(res => {
-                    let list = [];
-                    if (res.data.list) {
-                        res.data.list.forEach((v) => {
-                            list.push({
-                                key: v.code,
-                                title: v.name,
-                                isLeaf: !v.hasNext,
-                                scopedSlots: {icon: 'custom'}
-                            })
-                        });
-                    }
-                    this.treeData = list;
-                    this.departmentLoading = false;
-                });
-            },
             getMembers({key} = {}) {
                 let app = this;
                 if (key != undefined) {
@@ -197,166 +151,24 @@
                 this.pagination.page++;
                 this.init(false);
             },
-            onSelect(selectedKeys, e) {
-                // this.onLoadData(e.node);
-                this.selectedKeys = [];
-                this.currentMenu = e.node.dataRef;
-                this.currentDepartmentCode = e.node.dataRef.key;
-                this.currentTreeNode = e.node;
-                let app = this;
-                this.requestData.searchType = 4;
-                this.requestData.departmentCode = e.node.dataRef.key;
-                app.loading = true;
-                getMembers(this.requestData).then(res => {
-                    app.members = res.data.list;
-                    app.pagination.total = res.data.total;
-                    app.showLoadingMore = app.pagination.total > app.members.length;
-                    app.loading = false;
-                    app.loadingMore = false
-                });
-            },
-            onLoadData(treeNode) {
-                return new Promise((resolve) => {
-                    list({page: 1, pageSize: 100, pcode: treeNode.dataRef.key}).then(res => {
-                        let list = [];
-                        if (res.data.list.length) {
-                            res.data.list.forEach((v) => {
-                                list.push({
-                                    key: v.code,
-                                    title: v.name,
-                                    isLeaf: !v.hasNext,
-                                    scopedSlots: {icon: 'custom'}
-                                })
-                            });
-                        }
-                        treeNode.dataRef.isLeaf = !list.length > 0;
-                        treeNode.dataRef.children = list;
-                        this.treeData = [...this.treeData];
-                        resolve();
-                    });
-                })
-            },
-            createDepartmentSuccess(data) {
-                let list = [...this.treeData];
-                list.push({
-                    key: data.code,
-                    title: data.name,
-                    isLeaf: true,
-                    scopedSlots: {icon: 'custom'}
-                });
-                this.treeData = [];
-                this.treeData = list;
-                this.showCreateDepartment = false
-            },
-            createChildDepartmentSuccess() {
-                this.onLoadData(this.currentTreeNode);
-                this.showCreateChildDepartment = false;
-            },
-            editDepartmentSuccess(data) {
-                this.currentTreeNode.dataRef.title = data;
-                this.showEditDepartment = false;
-            },
-            deleteDepartment() {
-                let app = this;
-                this.$confirm({
-                    title: '您确定要删除当前部门吗？',
-                    content: `删除部门会同时删除其子部门，部门中的成员不会被移出组织。`,
-                    okText: '删除',
-                    okType: 'danger',
-                    cancelText: '再想想',
-                    onOk() {
-                        deleteDepartment(app.currentDepartmentCode).then((res) => {
-                            if (!checkResponse(res)) {
-                                return;
-                            }
-                            if (app.currentTreeNode.$parent.dataRef) {
-                                app.onLoadData(app.currentTreeNode.$parent);
-                                app.onSelect(null, {node: app.currentTreeNode.$parent});
-                            } else {
-                                app.getMembers({key: 0});
-                                app.getDepartment();
-                            }
-                            notice({title: '删除成功'}, 'notice', 'success');
-                        });
-                        return Promise.resolve();
-                    }
-                });
-            },
-            forbidAccount(member, index) {
-                let app = this;
-                this.$confirm({
-                    title: '您确定要停用当前帐号吗？',
-                    content: `被停用的帐号将无法访问该${this.actionTitle}，但帐号信息仍保留，方便工作交接和管理。支持帐号恢复`,
-                    okText: '停用',
-                    okType: 'danger',
-                    cancelText: '再想想',
-                    onOk() {
-                        forbid(member.code).then((res) => {
-                            if (!checkResponse(res)) {
-                                return;
-                            }
-                            app.members.splice(index, 1);
-                            notice({title: '已成功停用账号'}, 'notice', 'success');
-                        });
-                        return Promise.resolve();
-                    }
-                });
-            },
-            resumeAccount(member, index) {
-                let app = this;
-                this.$confirm({
-                    title: '您确定要启用账号吗？',
-                    content: `被启用的帐号将重新加入该${this.actionTitle}`,
-                    okText: '启用',
-                    okType: 'primary',
-                    cancelText: '再想想',
-                    onOk() {
-                        resume(member.code).then((res) => {
-                            if (!checkResponse(res)) {
-                                return;
-                            }
-                            app.members.splice(index, 1);
-                            notice({title: '已成功启用账号'}, 'notice', 'success');
-                        });
-                        return Promise.resolve();
-                    }
-                });
-            },
             deleteAccount(member, index) {
                 let app = this;
-                this.$confirm({
-                    title: `确认从${this.actionTitle}中移除成员吗？`,
-                    content: `移除后该账号在${this.actionTitle}内的相关信息将会被清除`,
-                    okText: '移除',
-                    okType: 'danger',
-                    cancelText: '再想想',
-                    onOk() {
-                        if (app.currentDepartmentCode) {
-                            removeMember(member.code, app.currentDepartmentCode).then((res) => {
-                                if (!checkResponse(res)) {
-                                    return;
-                                }
-                                app.members.splice(index, 1);
-                                notice({title: '移除成功'}, 'notice', 'success');
-                            });
-                        } else {
-                            del(member.code).then((res) => {
-                                if (!checkResponse(res)) {
-                                    return;
-                                }
-                                app.members.splice(index, 1);
-                                notice({title: '移除成功'}, 'notice', 'success');
-                            });
+                this.$confirm('关注该用户, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then(() => {
+                    del(member.code).then((res) => {
+                        if (!checkResponse(res)) {
+                            return;
                         }
-                        return Promise.resolve();
-                    }
+                        app.members.splice(index, 1);
+                        notice({title: '移除成功'}, 'notice', 'success');
+                    });
+                }).catch(() => {
+                    //notice({title: '移除失败'}, 'notice', 'error');
                 });
-            },
-            emitEmpty() {
-                this.$refs.keywordInput.focus();
-                this.keyword = '';
-                this.requestData.keyword = '';
-                this.getMembers();
             },
         }
     }

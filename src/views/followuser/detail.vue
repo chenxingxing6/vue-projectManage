@@ -97,9 +97,9 @@
                 this.getMember();
             },
             getMember() {
-               /* read(this.code).then(res => {
-                    this.member = res.data;
-                });*/
+                /* read(this.code).then(res => {
+                     this.member = res.data;
+                 });*/
             }
         }
     }

@@ -31,6 +31,12 @@ export default [
         component: resolve => require(['@/views/member/demo'], resolve),
         meta: {model: 'diskdemo', info:{show_slider: false}},
     },
+    {
+        name: 'detail',
+        path: '/followuser/detail',
+        component: resolve => require(['@/views/followuser/detail'], resolve),
+        meta: {model: 'followuser', info:{show_slider: false}},
+    },
  /*   {
         name: 'files',
         path: '/disk/files',
