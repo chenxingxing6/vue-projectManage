@@ -9,7 +9,6 @@
                         <a-icon v-if="keyword" slot="suffix" class="muted" type="close-circle" @click="emitEmpty"/>
                     </a-input>
                 </div>
-                <div class="content-item muted">用户</div>
                 <div class="menus">
                     <a-menu mode="inline" v-model="selectedKeys" @click="getMembers">
                         <a-menu-item :key="index.toString()" v-for="(item,index) in menus">
@@ -25,12 +24,6 @@
                 <div class="title">
                     <span>{{currentMenu.title}} · {{pagination.total}}</span>
                 </div>
-             <!--   <div class="actions">
-                    <a @click="showInviteMember = true">
-                        <a-icon type="user-add"/>
-                        添加成员
-                    </a>
-                </div>-->
             </div>
             <div class="members-content">
                 <vue-scroll ref="contentscroll">
@@ -110,9 +103,9 @@
                 keyword: '',
                 selectedKeys: ['0'],
                 menus: [
-                    {icon: 'team', title: '所有'},
-                    {icon: 'usergroup-add', title: '图片'},
-                    {icon: 'user', title: '文档'},
+                    {icon: 'usergroup-add', title: '所有文件'},
+                    {icon: 'user', title: '图片'},
+                    {icon: 'user', title: '视频'},
                 ],
                 currentMenu: {},
                 currentDepartmentCode: '',

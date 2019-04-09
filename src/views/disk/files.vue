@@ -22,11 +22,11 @@
             <section class="nav-body">
                 <ul class="nav-wrapper nav nav-underscore pull-left">
 
-                    <li class=""><a class="app" data-app="works"
-                                    @click="$router.push('/project/space/files/' + project.code)">
+                    <li class="actives"><a class="app" data-app="works"
+                                    @click="$router.push('/disk/files')">
                         文件</a>
-                    <li class="actives"><a class="app" data-app="build"
-                                           @click="$router.push('/project/space/overview/' + project.code)">
+                    <li><a class="app" data-app="build"
+                                           @click="$router.push('/disk/overview')">
                         概览</a>
                     </li>
                 </ul>
@@ -155,13 +155,14 @@
 
 <script>
     import {mapState} from 'vuex'
-    import {read as getProject} from "../../../api/project";
-    import {collect} from "../../../api/projectCollect";
-    import {checkResponse} from "../../../assets/js/utils";
-    import {relativelyTime} from "../../../assets/js/dateTime";
-    import {edit, list, recycle} from "../../../api/file";
+    import {read as getProject} from "../../api/project";
+    import {collect} from "../../api/projectCollect";
+    import {checkResponse} from "../../assets/js/utils";
+    import {relativelyTime} from "../../assets/js/dateTime";
+    import {edit, list, recycle} from "../../api/file";
     import pagination from "@/mixins/pagination";
-    import {notice} from "../../../assets/js/notice";
+    import {notice} from "../../assets/js/notice";
+    import {getFiles} from "../../api/mock";
 
 
     export default {
@@ -226,7 +227,7 @@
                 }
                 app.requestData.projectCode = this.code;
                 app.requestData.deleted = 0;
-                list(app.requestData).then(res => {
+                getFiles(app.requestData).then(res => {
                     if (reset) {
                         this.files = [];
                     }
@@ -337,7 +338,6 @@
 </script>
 
 <style lang="less">
-    /*@import "../../../assets/css/components/task";*/
 
     .project-space-files {
         .project-navigation {

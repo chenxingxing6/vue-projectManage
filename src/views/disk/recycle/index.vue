@@ -1,5 +1,5 @@
 <template>
-    <div class="project-archive-index">
+    <div class="project-recycle-index">
         <wrapper-content :showHeader="false">
             <div style="display: flex;justify-content: center">
                 <img style="height: 250px;"  src="../../../assets/image/common/nullContent.png" alt="" v-show="!dataSource.length">
@@ -18,25 +18,25 @@
                 </div>
                 <a-list-item slot="renderItem" slot-scope="item,index">
                      <span slot="actions">
-                         <a-tooltip title="恢复项目" @click="doAction(item,'recoveryArchive',index)">
+                         <a-tooltip title="恢复项目" @click="doAction(item,'recovery',index)">
                              <a-icon type="undo"/>
                          </a-tooltip>
                     </span>
-                    <span slot="actions" @click="doAction(item,'del',index)">
-                         <a-tooltip title="移至回收站">
+                   <!-- <span slot="actions" @click="doAction(item,'del',index)">
+                         <a-tooltip title="彻底删除">
                               <a-icon type="delete"/>
                          </a-tooltip>
-                    </span>
+                    </span>-->
                     <a-list-item-meta
                             :description="item.description"
                     >
-                        <router-link  :to="'/project/space/task/' + item.code" slot="title">{{item.name}}</router-link>
+                        <router-link :to="'/project/space/task/' + item.code"  slot="title">{{item.name}}</router-link>
                         <a-avatar slot="avatar" icon="user" :src="item.cover"/>
                     </a-list-item-meta>
                     <div class="other-info muted">
                         <div class="info-item">
                             <span>移动日期</span>
-                            <span>{{moment(item.archive_time).format('YYYY-MM-DD')}}</span>
+                            <span>{{moment(item.deleted_time).format('YYYY-MM-DD')}}</span>
                         </div>
                     </div>
                 </a-list-item>
@@ -49,7 +49,7 @@
     import {checkResponse} from '@/assets/js/utils';
     import pagination from "@/mixins/pagination";
     import moment from 'moment';
-    import {recoveryArchive, recycle} from "../../../api/project";
+    import {recovery, recycle} from "../../../api/project";
 
     export default {
         mixins: [pagination],
@@ -80,7 +80,7 @@
                     this.pagination.pageSize = 1000;
                     this.showLoadingMore = false;
                 }
-                this.requestData.archive = 1;
+                this.requestData.recycle = 1;
                 this.requestData.type = 'other';
                 app.loading = true;
                 list(app.requestData).then(res => {
@@ -105,35 +105,22 @@
                 this.currentProject = record;
                 let app = this;
                 app.newData = {id: 0};
-                 if (action == 'recoveryArchive') {
+                 if (action == 'recovery') {
                     this.$confirm({
-                        title: '取消归档项目？',
-                                content: `取消归档「${this.currentProject.name}」后就可以正常使用了`,
-                        okText: '取消归档',
+                        title: '确定恢复项目？',
+                                content: `恢复「${this.currentProject.name}」后就可以正常使用了`,
+                        okText: '恢复项目',
                         okType: 'primary',
                         cancelText: '再想想',
                         onOk() {
-                            recoveryArchive(record.code).then(()=>{
+                            recovery(record.code).then(()=>{
                                 app.dataSource.splice(index, 1);
+                                // app.init();
                             });
                             return Promise.resolve();
                         }
                     });
-                }else if (action == 'del') {
-                     this.$confirm({
-                         title: '确定放入回收站？',
-                         content: `一旦将项目「${this.currentProject.name}」放入回收站，所有与项目有关的信息将会被放入回收站`,
-                         okText: '放入回收站',
-                         okType: 'danger',
-                         cancelText: '再想想',
-                         onOk() {
-                             recycle(record.code).then(()=>{
-                                 app.dataSource.splice(index, 1);
-                             });
-                             return Promise.resolve();
-                         }
-                     });
-                 }
+                }
             },
         }
     }
@@ -141,7 +128,7 @@
 <style lang="less">
     @import "../../../../node_modules/ant-design-vue/lib/style/themes/default";
 
-    .project-archive-index {
+    .project-recycle-index {
         .project-list {
             .ant-list-item-meta-avatar {
                 .ant-avatar {

@@ -21,7 +21,7 @@
                             任务数
                         </div>
                         <div class="item-text">
-                            <span>{{tasksTotal}}</span>
+                            <span>111</span>
                         </div>
                     </div>
                     <div class="content-item">
@@ -37,155 +37,64 @@
                             项目总数
                         </div>
                         <div class="item-text">
-                            <span>{{projectTotal}}</span>
+                            <span>111</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--<wrapper-content :showHeader="false">-->
         <div class="page-wrapper">
-            <a-row :gutter="24">
-                <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
-                    <a-card
-                            class="project-list"
-                            :loading="loading"
-                            style="margin-bottom: 24px;"
-                            :bordered="false"
-                            title="进行中的项目"
-                            :body-style="{ padding: 0 }">
-                        <router-link to="/project/list/my" slot="extra">全部项目</router-link>
-                        <div>
-                            <a-card-grid class="project-card-grid" :key="i" v-for="(item, i) in projectList">
-                                <a-card :bordered="false" :body-style="{ padding: 0 }" @click="routerLink('/project/space/task/' + item.code)">
-                                    <a-card-meta>
-                                        <div slot="title" class="card-title">
-                                            <a-avatar size="small" :src="item.cover"/>
-                                            <router-link :to="'/project/space/task/' + item.code">{{ item.name }}
-                                            </router-link>
-                                        </div>
-                                        <div slot="description" class="card-description">
-                                            <a-tooltip :mouseEnterDelay="0.3"
-                                                       :title="item.description">
-                                            <span class="description-text">
-                                                <span v-if="item.description">{{ item.description }}</span>
-                                                <span v-else>暂无介绍</span>
-                                            </span>
-                                            </a-tooltip>
-                                            <a-tooltip placement="right" :mouseEnterDelay="0.3"
-                                                       :title="`当前进度：${item.schedule}%`">
-                                                <a-progress :strokeWidth="2" :showInfo="false"
-                                                            :percent="item.schedule"/>
-                                            </a-tooltip>
-                                        </div>
-                                    </a-card-meta>
-                                    <div class="project-item">
-                                        <a href="/#/">{{ item.owner_name }}</a>
-                                        <span class="datetime">{{ formatTime(item.create_time) }}</span>
-                                    </div>
-                                </a-card>
-                            </a-card-grid>
-                            <p class="muted text-center m-t-md m-b-md" v-if="!projectList.length">暂无项目</p>
-                        </div>
-                    </a-card>
-                    <a-card class="activities-list" :loading="loading" title="动态"  :bordered="false">
-                        <a-list>
-                            <a-list-item :key="index" v-for="(item, index) in activities">
-                                <a-list-item-meta>
-                                    <a-avatar slot="avatar" :src="item.member_avatar"/>
-                                    <div slot="title">
-                                        <span>{{ item.member_name }}</span>
-                                        <span v-if="item.is_comment == 0">  <span v-html="item.remark "></span></span>&nbsp;
-                                        <template v-if="item.is_comment == 1">发表了评论
-                                            <p class="comment-text">{{ item.content }}</p>
-                                        </template>
-                                        <router-link target="_blank"
-                                                :to="`/project/space/task/${item.project_code}/detail/${item.source_code}`"
-                                                class="right-item">「 {{ item.task_name }} 」
-                                        </router-link>
-                                    </div>
-                                    <div slot="description">
-                                        <!--<a-tooltip :mouseEnterDelay="0.3" :title="item.create_time">-->
-                                        {{ formatTime(item.create_time) }} -
-                                        <router-link target="_blank" :to="`/project/space/task/${item.project_code}`" class="muted">
-                                            {{item.project_name}}
-                                        </router-link>
-                                        <!--</a-tooltip>-->
-                                    </div>
-                                </a-list-item-meta>
-                            </a-list-item>
-                        </a-list>
-                    </a-card>
-                </a-col>
-                <a-col
-                        style="padding: 0 12px"
-                        :xl="8"
-                        :lg="24"
-                        :md="24"
-                        :sm="24"
-                        :xs="24">
-                    <a-card class="tasks-list" :title="`我的任务 · ${tasks.length}`" style="margin-bottom: 24px"
-                            :bordered="false"
-                            :loading="loading">
-                        <a-list>
-                            <a-list-item :key="index" v-for="(item, index) in tasks">
-                                <a-list-item-meta>
-                                    <div slot="title">
-                                        <router-link target="_blank"
-                                                :to="`/project/space/task/${item.projectInfo.code}/detail/${item.code}`">
-                                            {{ item.name }}
-                                        </router-link>
-                                    </div>
-                                    <div slot="description">
-                                        <span class="label m-r-xs" :class="showTimeLabel(item.end_time)" v-if="item.end_time">{{showTaskTime(item.begin_time, item.end_time)}}</span>
-                                        <router-link target="_blank" class="muted" :to="'/project/space/task/' + item.projectInfo.code">{{ item.projectInfo.name }}
-                                        </router-link>
-                                    </div>
-                                </a-list-item-meta>
-                            </a-list-item>
-                        </a-list>
-                    </a-card>
-                    <!-- <a-col
-                             style="padding: 0 12px"
-                             :xl="8"
-                             :lg="24"
-                             :md="24"
-                             :sm="24"
-                             :xs="24">
-                         <a-card title="快速开始 / 便捷导航" style="margin-bottom: 24px" :bordered="false"
-                                 :body-style="{padding: 0}">
-                             <div class="item-group">
-                                 <a>操作一</a>
-                                 <a>操作二</a>
-                                 <a>操作三</a>
-                                 <a>操作四</a>
-                                 <a>操作五</a>
-                                 <a>操作六</a>
-                                 <a-button size="small" type="primary" ghost icon="plus">添加</a-button>
-                             </div>
-                         </a-card>-->
-                    <!--    <a-card title="XX 指数" style="margin-bottom: 24px" :loading="radarLoading" :bordered="false" :body-style="{ padding: 0 }">
-                            <div style="min-height: 400px;">
-                                &lt;!&ndash; :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  &ndash;&gt;
-                                <radar :data="radarData" />
-                            </div>
-                        </a-card>-->
-                    <a-card :loading="loading" title="团队" :bordered="false">
-                        <div class="members">
+            <a-card :loading="loading" :bordered="false" :body-style="{padding: '0'}">
+                <div class="salesCard">
+                    <a-tabs default-active-key="1" size="large"
+                            :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
+                        <a-tab-pane forceRender tab="文件数" key="1">
                             <a-row>
-                                <a-col :span="12" v-for="(item, index) in accounts" :key="index">
-                                    <a>
-                                        <a-avatar size="small" :src="item.avatar"/>
-                                        <span class="member">{{ item.name }}</span>
-                                    </a>
+                                <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
+                                    <div class="chart-wrappers-single">
+                                        <ve-histogram
+                                                :data="projectTotalData.chartData"
+                                                :settings="projectTotalData.chartSettings"
+                                                :extend="projectTotalData.chartExtend"
+                                                :legend-visible="false"
+                                                height="300px"></ve-histogram>
+                                    </div>
+                                </a-col>
+                                <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
+                                    <rank-list title="文件数排行榜" :list="rankList"/>
                                 </a-col>
                             </a-row>
-                        </div>
+                        </a-tab-pane>
+                        <a-tab-pane forceRender tab="分享数" key="2">
+                            <a-row>
+                                <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
+                                    <div class="chart-wrappers-single">
+                                        <ve-histogram
+                                                :data="projectTotalData.chartData"
+                                                :settings="projectTotalData.chartSettings"
+                                                :extend="projectTotalData.chartExtend"
+                                                :legend-visible="false"
+                                                height="300px"></ve-histogram>
+                                    </div>
+                                </a-col>
+                                <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
+                                    <rank-list title="分享数排行榜" :list="rankList"/>
+                                </a-col>
+                            </a-row>
+                        </a-tab-pane>
+                    </a-tabs>
+                </div>
+            </a-card>
+            <a-row :gutter="12">
+                <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
+                    <a-card :loading="loading" :bordered="false" title="最近操作记录" :style="{ marginTop: '24px' }">
+                        <p>2019.12.03 13:24 删除了text文件</p>
+                        <p>2019.12.03 13:24 修改了text文件</p>
+                        <p>2019.12.03 13:24 添加了text文件</p>
                     </a-card>
                 </a-col>
             </a-row>
         </div>
-        <!--</wrapper-content>-->
     </div>
 </template>
 <script>
@@ -193,24 +102,71 @@
     import moment from "moment";
     import {getYiYan} from "../../api/other";
     import {formatTaskTime, relativelyTime, showHelloTime} from "../../assets/js/dateTime";
-    import {selfList as getProjectList} from "../../api/project";
-    import {list as accountList} from "../../api/user";
-    import pagination from "../../mixins/pagination";
-    import {getLogBySelfProject, selfList} from "../../api/task";
+    import VeLine from 'v-charts/lib/line.common'
+    import VeHistogram from 'v-charts/lib/histogram.common'
+    import ChartCard from '@/components/chart/ChartCard'
+    import Trend from '@/components/Trend'
+    import MiniProgress from '@/components/chart/MiniProgress'
+    import RankList from '@/components/chart/RankList'
+    import pagination from "@/mixins/pagination";
+
+
+    const rankList = [];
+    for (let i = 0; i < 7; i++) {
+        rankList.push({
+            name: 'XX公司 ' + (i + 1) + ' 号员工',
+            total: 1234.56 - i * 100
+        })
+    }
+
+    const projectList = [];
+    for (let i = 1; i < 13; i++) {
+        projectList.push({
+            "日期": `${i}月`,
+            "数量": (Math.random() * 10 + 1).toFixed(0)
+        })
+    }
 
     export default {
-        components: {},
+        components: {
+            VeLine,
+            VeHistogram,
+            ChartCard,
+            MiniProgress,
+            Trend,
+            RankList
+        },
         mixins: [pagination],
         data() {
             return {
                 loading: false,
                 yiyan: {},
-                projectList: [],
-                projectTotal: 0,
                 activities: [],
-                tasks: [],
-                tasksTotal: 0,
                 accounts: [],
+                rankList,
+                projectTotalData: {
+                    chartData: {
+                        columns: ['日期', '数量'],
+                        rows: projectList
+                    },
+                    chartSettings: {
+                        itemStyle: {
+                            color: '#1890ff'
+                        },
+                    },
+                    chartExtend: {
+                        grid: {
+                            left: '30',
+                            right: '0',
+                            top: '15',
+                            bottom: '0'
+                        },
+                        series: {
+                            barWidth: 45,
+                        },
+                    }
+                },
+
             }
         },
         computed: {
@@ -222,45 +178,15 @@
             }
         },
         created() {
-           /* this.getYiYan();
-            this.init();*/
+           this.getYiYan();
+           this.init();
         },
         methods: {
             init(reset = true) {
                 if (reset) {
-                    this.projectList = [];
                     this.pagination.page = 1;
                     this.pagination.pageSize = 9;
                 }
-                this.getProjectList();
-                this.getTasks();
-                this.getTaskLog();
-                this.getAccountList();
-
-            },
-            getProjectList() {
-                this.loading = true;
-                getProjectList(this.requestData).then(res => {
-                    this.projectList = res.data.list;
-                    this.projectTotal = res.data.total;
-                    this.loading = false;
-                });
-            },
-            getTasks() {
-                selfList({page: 1, pageSize: 10}).then(res => {
-                    this.tasks = res.data.list;
-                    this.tasksTotal = res.data.total;
-                })
-            },
-            getTaskLog() {
-                getLogBySelfProject().then(res => {
-                    this.activities = res.data;
-                })
-            },
-            getAccountList() {
-                accountList().then(res => {
-                    this.accounts = res.data.list;
-                })
             },
             getYiYan() {
                 let app = this;

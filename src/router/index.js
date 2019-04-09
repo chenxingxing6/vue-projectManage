@@ -89,12 +89,6 @@ const router = new Router({
             path: '/403',
             component: resolve => require(['@/views/error/403'], resolve),
             meta: {model: 'error'},
-        },
-        {
-            name: 'demo',
-            path: '/demo',
-            component: resolve => require(['@/views/member/demo'], resolve),
-            meta: {model: 'diskdemo'},
         }
     ]
 });

@@ -22,14 +22,14 @@
                     <a-form-item
                     >
                         <a-button icon="search" type="primary" htmlType='submit'
-                                :loading="searchLoading"
+                                  :loading="searchLoading"
                         >搜索
                         </a-button>
                     </a-form-item>
                 </a-form>
             </div>
             <div class="action">
-                <a-button icon="check" class="m-r-sm" :disabled="!selectedRowKeys.length" @click="listAction({key:'setReadied'})">
+                <a-button icon="check" :disabled="!selectedRowKeys.length" @click="listAction({key:'setReadied'})">
                     <span>批量标记已读</span>
                 </a-button>
                 <a-button icon="delete" type="danger" :disabled="!selectedRowKeys.length" @click="listAction({key:'delete'})">
@@ -56,7 +56,7 @@
     import pagination from "@/mixins/pagination";
 
     const columns = [{
-        title: '消息标题',
+        title: '公告标题',
         dataIndex: 'title',
         width: '20%',
     },{
@@ -68,7 +68,6 @@
             customRender: 'action'
         }
     }];
-
     export default {
         mixins: [pagination],
         data() {
@@ -87,7 +86,7 @@
         methods: {
             init() {
                 let app = this;
-                app.requestData.type = 'notice';
+                app.requestData.type = 'system';
                 app.loading = true;
                 app.selectedRowKeys = [];
                 list(app.requestData).then(res => {
@@ -115,7 +114,7 @@
                         break;
                     case 'delete':
                         this.$confirm({
-                            title: '确认删除这些消息?',
+                            title: '确认删除这些公告?',
                             content: '删除后不可恢复',
                             okText: '删除',
                             okType: 'danger',
@@ -138,7 +137,7 @@
                 let app = this;
                 if (action == 'del') {
                     this.$confirm({
-                        title: '确认删除此消息?',
+                        title: '确认删除此公告?',
                         content: '删除后不可恢复',
                         okText: '删除',
                         okType: 'danger',
