@@ -41,3 +41,9 @@ export function getFollowUser(data) {
     return $http.post('/mock/getFollowUser');
 }
 
+
+/*获取分享列表*/
+export function getShares(data) {
+    return $http.get('/mock/getShares');
+}
+

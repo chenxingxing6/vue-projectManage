@@ -22,44 +22,61 @@
             </div>
             <div class="members-content">
                 <vue-scroll ref="contentscroll">
-                    <a-list class="member-list" :loading="loading">
+                    <a-list
+                            class="project-list"
+                            :loading="loading"
+                            itemLayout="horizontal"
+                            :dataSource="dataSource">
                         <div v-if="showLoadingMore" slot="loadMore"
                              :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
                             <a-spin v-if="loadingMore"/>
-                            <a-button v-else @click="onLoadMore">加载更多</a-button>
+                            <a-button v-else @click="onLoadMore">查看更多项目</a-button>
                         </div>
-                        <a-list-item :key="index" v-for="(item, index) in members">
-                            <a-list-item-meta>
-                                <a-avatar slot="avatar" :src="item.imgPath"/>
-                                <div slot="title">
-                                    <router-link :to="{path: `/followuser/detail`, query:{id:item.id}}" class="text-default">{{ item.username }}</router-link>
-                                </div>
-                            </a-list-item-meta>
-                            <template>
-                                <a class="muted" slot="actions" @click="cancleFollow(item, index)" v-if="item.isfollow == 1">
-                                    <a-tooltip :title="`取消关注`">
-                                        <a-icon type="user-delete"/>
-                                    </a-tooltip>
-                                </a>
-                                <a class="muted" slot="actions" @click="addFollow(item, index)" v-else>
-                                    <a-tooltip :title="`添加关注`">
-                                        <a-icon type="user-add"/>
-                                    </a-tooltip>
-                                </a>
-                            </template>
-                        </a-list-item>
+
+                        <a-list-item slot="renderItem" slot-scope="item,index">
+                            <span slot="actions" @click="del(item,index)">
+                         <a-tooltip title="移至回收站">
+                              <a-icon type="delete"/>
+                         </a-tooltip>
+                    </span>
+                            <span slot="actions" @click="inviteProjectMember(item)">
+                         <a-tooltip title="查看详情">
+                           <i class="el-icon-view"></i>
+                         </a-tooltip>
+                    </span>
+                    <a-list-item-meta
+                            :description="item.createTime">
+                        <router-link slot="title" :to="'/disk/list' + item.id">{{item.fileName}}</router-link>
+                        <a-avatar slot="avatar" icon="file" style="padding-top: 5px"/>
+                    </a-list-item-meta>
+                    <div class="other-info muted">
+                        <div class="info-item">
+                            <span>过期时间</span>
+                            <span>{{item.expiredTime}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span>分享用户</span>
+                            <span>{{item.toUserName}}</span>
+                        </div>
+                    </div>
+                </a-list-item>
                     </a-list>
                 </vue-scroll>
             </div>
         </div>
+        <invite-project-member v-model="showInviteMember" v-if="showInviteMember"></invite-project-member>
     </div>
 </template>
 
 <script>
     import pagination from "../../mixins/pagination";
-    import {getFollowUser as getFollowUser} from "../../api/mock";
+    import {getShares} from "../../api/mock";
+    import inviteProjectMember from '../../components/project/inviteProjectMember'
 
     export default {
+        components: {
+            inviteProjectMember
+        },
         name: "members",
         mixins: [pagination],
         data() {
@@ -72,9 +89,10 @@
                 ],
                 currentMenu: {},
                 loading: false,
-                members: [],
+                dataSource: [],
                 showLoadingMore: false,
                 loadingMore: false,
+                showInviteMember: false,
             }
         },
         created() {
@@ -82,6 +100,9 @@
             this.getMembers({key: 0});
         },
         methods: {
+            inviteProjectMember() {
+                this.showInviteMember = true;
+            },
             getMembers({key} = {}) {
                 let app = this;
                 if (key != undefined) {
@@ -90,12 +111,13 @@
                     this.requestData.searchType = key;
                 }
                 app.loading = true;
-                getFollowUser(this.requestData).then(res => {
-                    app.members = res.data.list;
+                getShares().then(res => {
+                    app.dataSource = res.data.list;
                     app.pagination.total = res.data.total;
-                    app.showLoadingMore = app.pagination.total > app.members.length;
+                    app.showLoadingMore = app.pagination.total > app.dataSource.length;
                     app.loading = false;
                     app.loadingMore = false
+                }).catch(()=>{
                 });
             },
             onLoadMore() {
@@ -103,42 +125,17 @@
                 this.pagination.page++;
                 this.init(false);
             },
-            cancleFollow(member, index) {
+            del(member, index) {
                 let app = this;
-                this.$confirm('取消关注该用户, 是否继续?', '提示', {
+                this.$confirm('删除该记录, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning',
                     center: true
                 }).then(() => {
-                    /* del(member.code).then((res) => {
-                         if (!checkResponse(res)) {
-                             return;
-                         }
-                         app.members.splice(index, 1);
-                         notice({title: '取消成功'}, 'notice', 'success');
-                     });*/
+
                 }).catch(() => {
-                    //notice({title: '移除失败'}, 'notice', 'error');
-                });
-            },
-            addFollow(member, index) {
-                let app = this;
-                this.$confirm('关注该用户, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning',
-                    center: true
-                }).then(() => {
-                    /* del(member.code).then((res) => {
-                         if (!checkResponse(res)) {
-                             return;
-                         }
-                         app.members.splice(index, 1);
-                         notice({title: '关注成功'}, 'notice', 'success');
-                     });*/
-                }).catch(() => {
-                    //notice({title: '移除失败'}, 'notice', 'error');
+
                 });
             },
         }
@@ -146,6 +143,8 @@
 </script>
 
 <style lang="less">
+    @import "~ant-design-vue/lib/style/themes/default";
+
     .members-index {
         margin: 24px auto;
         display: flex;
@@ -266,6 +265,38 @@
                 height: 75vh;
                 .member-list{
                     margin-right: 12px;
+                }
+
+
+                .project-list {
+                    .ant-list-item-meta-avatar {
+                        .ant-avatar {
+                            width: 45px;
+                            height: 45px;
+                            border-radius: 3px;
+                        }
+                    }
+
+                    .ant-list-item-content {
+                        .other-info {
+                            display: flex;
+
+                            .info-item {
+                                display: flex;
+                                flex-direction: column;
+                                padding-left: 30px;
+                                width: 180px;
+                            }
+                        }
+                    }
+
+                    .ant-list-item-action {
+                        .anticon:hover {
+                            svg {
+                                color: @primary-color;
+                            }
+                        }
+                    }
                 }
             }
         }
