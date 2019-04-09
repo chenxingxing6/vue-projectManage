@@ -38,6 +38,11 @@ import uploader from 'vue-simple-uploader'
 Vue.use(uploader);
 
 
+//引入element ui
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+Vue.use(ElementUI);
+
 Vue.prototype.$message = message;
 Vue.prototype.$notification = notification;
 Vue.prototype.$notice = notice;

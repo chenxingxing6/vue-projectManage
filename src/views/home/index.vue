@@ -88,9 +88,6 @@
             <a-row :gutter="12">
                 <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="20">
                     <a-card :loading="loading" :bordered="false" title="最近操作记录" :style="{ marginTop: '24px' }">
-                       <!-- <p>2019.12.03 13:24 删除了text文件</p>
-                        <p>2019.12.03 13:24 修改了text文件</p>
-                        <p>2019.12.03 13:24 添加了text文件</p>-->
                         <div class="block">
                             <el-timeline>
                                 <el-timeline-item timestamp="2018/4/12" placement="top">

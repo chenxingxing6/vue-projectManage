@@ -11,27 +11,17 @@
                                 <template v-for="item in task.list">
                                     <a-list-item :key="item.id">
                                         <a-list-item-meta>
-                                            <a-avatar slot="avatar"
-                                                      :src="item.executor.avatar"/>
+                                            <a-avatar slot="avatar" :src="item.img"/>
                                             <span slot="title">
-                                                    <p>
-                                                        {{item.name}}
-                                                         <a-tag style="position: absolute;right: 0" color="red"
-                                                                v-if="item.end_time">还剩{{showDiff(item.end_time,new Date())}}</a-tag>
-                                                         <a-tag style="position: absolute;right: 0" color="gold" v-else>已耗时{{showDiff(new Date(),item.create_time)}}</a-tag>
-                                                    </p>
-                                             </span>
-                                            <span slot="description">
-                                                    <span>来自项目{{item.projectInfo.name}}</span>
-                                                    <span v-if="item.end_time">，需在{{formatTime(item.end_time)}}前完成</span>
+                                                <p>{{item.title}}</p>
                                              </span>
                                         </a-list-item-meta>
                                     </a-list-item>
                                 </template>
                             </a-list>
                             <div class="footer-action">
-                                <a class="item muted" @click="setRead('task')">清空通知</a>
-                                <a class="item muted">查看更多</a>
+                              <!--  <a class="item muted" @click="setRead('task')">清空通知</a>-->
+                                <a class="item muted" @click="showMore()">查看更多</a>
                             </div>
                         </template>
                     </a-tab-pane>
@@ -47,13 +37,9 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex'
     import moment from 'moment';
-    import {notice} from "../../../assets/js/notice";
-    import {showMsgNotification} from "../../../assets/js/notify";
     import {selfList} from "../../../api/task";
     import {getNotice} from "../../../api/mock";
-    import {relativelyTime} from "../../../assets/js/dateTime";
 
     export default {
         name: 'HeaderNotice',
@@ -62,7 +48,6 @@
                 showNotice: false,
                 loading: false,
                 total: 0,
-                messageTotal: 0,
                 totalSum: 0,
                 list: [],
                 task: {
@@ -70,25 +55,6 @@
                     pageSize: 5,
                     total: 0,
                     list: [],
-                }
-            }
-        },
-        computed: {
-            ...mapState({
-                socketAction: state => state.socketAction,
-                currentOrganization: state => state.currentOrganization,
-            })
-        },
-        watch: {
-            socketAction(val) {
-                if (val.action === 'notice') {
-                    this.init();
-                } else if (val.action === 'task') {
-                    this.init();
-                    const permission = showMsgNotification(val.title, val.msg, {icon: val.data.notify.avatar});
-                    if (permission === false) {
-                        notice(val, 'notice', 'info', 10);
-                    }
                 }
             }
         },
@@ -103,33 +69,20 @@
                 this.total -= this.list[type].length;
                 this.list[type] = [];
             },
-            showMore(key) {
-                switch (key) {
-                    default:
-                        this.showNotice = false;
-                        this.$router.push('/notify/notice');
-                }
+            showMore() {
+                this.showNotice = false;
+                this.$router.push('/notify/notice');
             },
             fetchNotice() {
                 getNotice({page: this.task.page, pageSize: this.task.pageSize}).then(res => {
                     this.task.list = res.data.list;
                     this.task.total = res.data.total;
-                    this.total = this.messageTotal + this.task.total;
+                    this.total = this.task.total;
                 })
             },
             formatTime(time) {
                 return moment(time).format('YY年MM月DD日 HH:mm');
-            },
-            showDiff(time, time2) {
-                let diff = moment(time).diff(moment(time2), 'days');
-                if (diff <= 0) {
-                    diff = moment(time).diff(moment(time2), 'hours');
-                    diff += '小时'
-                } else {
-                    diff += '天'
-                }
-                return diff;
-            },
+            }
         }
     }
 </script>
