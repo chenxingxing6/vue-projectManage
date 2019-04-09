@@ -18,23 +18,23 @@
                 <div class="right-content">
                     <div class="content-item">
                         <div class="item-title muted">
-                            任务数
+                            分享数
                         </div>
                         <div class="item-text">
-                            <span>111</span>
+                            <span>22</span>
                         </div>
                     </div>
-                    <div class="content-item">
+                   <!-- <div class="content-item">
                         <div class="item-title muted">
                             团队内排名
                         </div>
                         <div class="item-text">
                             <span>2 <span class="small muted">/ 8</span> </span>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="content-item">
                         <div class="item-title muted">
-                            项目总数
+                            文件总数
                         </div>
                         <div class="item-text">
                             <span>111</span>
@@ -86,11 +86,34 @@
                 </div>
             </a-card>
             <a-row :gutter="12">
-                <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
+                <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="20">
                     <a-card :loading="loading" :bordered="false" title="最近操作记录" :style="{ marginTop: '24px' }">
-                        <p>2019.12.03 13:24 删除了text文件</p>
+                       <!-- <p>2019.12.03 13:24 删除了text文件</p>
                         <p>2019.12.03 13:24 修改了text文件</p>
-                        <p>2019.12.03 13:24 添加了text文件</p>
+                        <p>2019.12.03 13:24 添加了text文件</p>-->
+                        <div class="block">
+                            <el-timeline>
+                                <el-timeline-item timestamp="2018/4/12" placement="top">
+                                    <el-card>
+                                        <h4>更新 Github 模板</h4>
+                                        <p>王小虎 提交于 2018/4/12 20:46</p>
+                                    </el-card>
+                                </el-timeline-item>
+                                <br>
+                                <el-timeline-item timestamp="2018/4/3" placement="top">
+                                    <el-card>
+                                        <h4>更新 Github 模板</h4>
+                                        <p>王小虎 提交于 2018/4/3 20:46</p>
+                                    </el-card>
+                                </el-timeline-item>
+                                <el-timeline-item timestamp="2018/4/2" placement="top">
+                                    <el-card>
+                                        <h4>更新 Github 模板</h4>
+                                        <p>王小虎 提交于 2018/4/2 20:46</p>
+                                    </el-card>
+                                </el-timeline-item>
+                            </el-timeline>
+                        </div>
                     </a-card>
                 </a-col>
             </a-row>
@@ -99,7 +122,6 @@
 </template>
 <script>
     import {mapState} from 'vuex'
-    import moment from "moment";
     import {getYiYan} from "../../api/other";
     import {formatTaskTime, relativelyTime, showHelloTime} from "../../assets/js/dateTime";
     import VeLine from 'v-charts/lib/line.common'
@@ -114,7 +136,7 @@
     const rankList = [];
     for (let i = 0; i < 7; i++) {
         rankList.push({
-            name: 'XX公司 ' + (i + 1) + ' 号员工',
+            name: '杭州二维火科技有限公司  ' + (i + 1) + '号员工',
             total: 1234.56 - i * 100
         })
     }
@@ -141,8 +163,7 @@
             return {
                 loading: false,
                 yiyan: {},
-                activities: [],
-                accounts: [],
+                updatelog: [],
                 rankList,
                 projectTotalData: {
                     chartData: {
@@ -199,22 +220,7 @@
             },
             showTaskTime(time, timeEnd) {
                 return formatTaskTime(time, timeEnd);
-            },
-            showTimeLabel(time) {
-                let str = 'label-primary';
-                if (time == null) {
-                    return str;
-                }
-                let cha = moment(moment(time).format("YYYY-MM-DD")).diff(moment().format("YYYY-MM-DD"), 'days');
-                if (cha < 0) {
-                    str = 'label-danger';
-                } else if (cha == 0) {
-                    str = 'label-warning';
-                } else if (cha > 7) {
-                    str = 'label-normal'
-                }
-                return str;
-            },
+            }
         }
     }
 </script>

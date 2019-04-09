@@ -111,13 +111,10 @@
 <script>
     import md5 from 'md5'
     import {mapActions} from 'vuex'
-    import {mapState} from 'vuex'
-    import {Login} from '@/api/user'
-    import {getCaptcha} from '@/api/mock'
+    import {getCaptcha, Login} from '@/api/mock'
     import {info} from '@/api/system';
     import config from "@/config/config";
     import {checkResponse, createRoute, timeFix} from '@/assets/js/utils'
-    import {checkInstall} from "../../api/common/common";
     import {getStore, setStore} from '@/assets/js/storage';
 
     export default {
@@ -145,26 +142,11 @@
             }
         },
         computed: {
-            ...mapState({
-               // system: state => state.system,
-            })
         },
         created() {
-          /*  this.checkInstall();*/
         },
         methods: {
             ...mapActions(['Login', 'Logout']),
-           /* checkInstall() {
-                checkInstall().then(res => {
-                    if (!checkResponse(res)) {
-                        this.$router.push({name: 'install'});
-                        return false;
-                    }
-                    info().then(res => {
-                        this.$store.dispatch('setSystem', res.data);
-                    });
-                });
-            },*/
             // handler
             handleUsernameOrEmail(rule, value, callback) {
                 const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
@@ -207,7 +189,6 @@
                 }
 
                 if (!flag) return;
-
                 app.loginBtn = true;
                 console.log(loginParams);
                 loginParams.clientid = getStore('client_id');
@@ -216,11 +197,9 @@
                         loginParams.token = res.token;
                         const obj = {
                             userInfo: res.data.member,
-                            tokenList: res.data.tokenList
+                            tokenList: 7033929,
                         };
                         app.$store.dispatch('SET_LOGGED', obj);
-                        app.$store.dispatch('setOrganizationList', res.data.organizationList);
-                        app.$store.dispatch('setCurrentOrganization', res.data.organizationList[0]);
                         app.$store.dispatch('GET_MENU').then(() => {
                             app.loginBtn = false;
                             app.loginSuccess(res);
@@ -228,6 +207,7 @@
                     }
                     this.loginBtn = false
                 }).catch(res => {
+                    debugger
                     this.loginBtn = false
                 });
             },

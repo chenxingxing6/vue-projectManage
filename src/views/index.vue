@@ -28,15 +28,6 @@
                     </a-menu>
                     <!-- 右边菜单 -->
                     <div class="right-menu">
-                        <div class="m-r-lg" v-if="config.WS_URI">
-                            <a-badge title="当前在线111" :count="online" showZero :numberStyle="{backgroundColor: '#52c41a'} "
-                                     :offset="[10,0]">
-                                <a-icon type="team"/>
-                            </a-badge>
-                        </div>
-                        <div class="action action-organization" v-if="organizationList.length > 1">
-                            <header-select></header-select>
-                        </div>
                         <div class="action">
                             <header-notice></header-notice>
                         </div>
@@ -166,7 +157,6 @@
                 menu: state => state.menu.menu,
                 pageLoading: state => state.pageLoading,
                 windowLoading: state => state.windowLoading,
-                organizationList: state => state.organizationList,
                 socketAction: state => state.socketAction,
             }),
             layoutClass() {
@@ -222,11 +212,6 @@
                     that.openKeys = [];
                     that.selectedKeys = [];
                 }
-                //这里有点问题
-                // if (!that.menus) {
-                //     that.$store.dispatch('setBreadCrumbInfo', that.breadCrumbInfo);
-                //     return false;
-                // }
                 let openKey = null;
 
                 function getArray(data, id) {

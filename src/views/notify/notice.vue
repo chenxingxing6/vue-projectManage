@@ -87,13 +87,13 @@
             init() {
                 let app = this;
                 app.requestData.type = 'system';
-                app.loading = true;
+                app.loading = false;
                 app.selectedRowKeys = [];
-                list(app.requestData).then(res => {
+                /*list(app.requestData).then(res => {
                     app.dataSource = res.data.list;
                     app.pagination.total = res.data.total;
                     app.loading = false;
-                });
+                });*/
             },
             onSelectChange(selectedRowKeys) {
                 this.selectedRowKeys = selectedRowKeys
