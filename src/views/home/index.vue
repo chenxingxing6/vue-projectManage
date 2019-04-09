@@ -220,6 +220,8 @@
 </script>
 <style lang="less">
     .home-index {
+        margin: 10px auto;
+
         .page-header {
             .header-content {
                 margin-bottom: 16px;
