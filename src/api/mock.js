@@ -47,3 +47,9 @@ export function getShares(data) {
     return $http.get('/mock/getShares');
 }
 
+
+/*获取资源列表*/
+export function getSource(data) {
+    return $http.get('/mock/getSource');
+}
+
