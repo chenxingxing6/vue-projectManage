@@ -85,7 +85,6 @@
 <script>
     import _ from 'lodash'
     import {inviteMember, list, searchInviteMember} from "../../api/projectMember";
-    import {list as getTaskMembers, inviteMemberBatch} from "../../api/taskMember";
 
     export default {
         name: "projectMemberMenu",
@@ -118,7 +117,7 @@
             };
         },
         created() {
-            this.init();
+            //this.init();
         },
         watch: {
             keyword() {

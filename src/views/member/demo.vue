@@ -1,371 +1,156 @@
 <template>
-    <div class="project-list-index">
-        <wrapper-content :showHeader="false">
-            <!--  <div class="page-search">
-                  <a-form
-                          layout="inline"
-                          :autoFormCreate="(form)=>{this.searchForm = form}"
-                          @submit.prevent="handleSearchSubmit"
-                  >
-                      <a-form-item
-                              label='名称'
-                              fieldDecoratorId="name"
-                      >
-                          <a-input placeholder='请输入'/>
-                      </a-form-item>
-                      <a-form-item
-                              label='创建日期'
-                              fieldDecoratorId="date"
-                      >
-                          <a-range-picker :placeholder="['开始日期','结束日期']"></a-range-picker>
-                      </a-form-item>
-                      <a-form-item
-                      >
-                          <a-button icon="search" type="primary" htmlType='submit'
-                                    :loading="actionInfo.confirmLoading"
-                          >搜索
-                          </a-button>
-                      </a-form-item>
-                  </a-form>
-              </div>-->
-            <div class="action">
-                <a-button type="primary" icon="plus" @click="doAction(null,'new')">创建新项目</a-button>
+    <div class="task-detail" v-if="flag">
+        <a-spin class="task-detail-spin" :spinning="loading">
+            <div class="task-header">
+                    <span class="head-title">
+                        <span>查看文件</span>
+                    </span>
+                <span class="header-action text-right">
+                     <a-tooltip :mouseEnterDelay="0.5">
+                        <template slot="title">
+                            <span>最小化</span>
+                        </template>
+                        <a class="action-item muted" @click="reset()"><a-icon type="minus"/></a>
+                     </a-tooltip>
+                     <a-tooltip :mouseEnterDelay="0.5">
+                        <template slot="title">
+                            <span>最大化</span>
+                        </template>
+                        <a class="action-item muted" @click="max()"><a-icon type="plus"/></a>
+                     </a-tooltip>
+                     <a-tooltip :mouseEnterDelay="0.5">
+                        <template slot="title">
+                            <span>关闭面板</span>
+                        </template>
+                        <a class="action-item muted" @click="close()"><a-icon type="close"/></a>
+                     </a-tooltip>
+                    </span>
             </div>
-            <a-list
-                    class="project-list"
-                    :loading="loading"
-                    itemLayout="horizontal"
-                    :dataSource="dataSource"
-            >
-                <div v-if="showLoadingMore" slot="loadMore"
-                     :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
-                    <a-spin v-if="loadingMore"/>
-                    <a-button v-else @click="onLoadMore">查看更多项目</a-button>
+            <div class="task-wrap" style="border: 1px solid #e5e5e5;">
+                <div class="task-content">
+                    <iframe  :src="url" height="700px" width="100%" scrolling="no"></iframe>
                 </div>
-                <a-list-item slot="renderItem" slot-scope="item,index">
-                    <span slot="actions" @click="inviteProjectMember(item)">
-                         <a-tooltip title="添加成员">
-                             <a-icon type="user-add"/>
-                         </a-tooltip>
-                    </span>
-                    <span slot="actions" @click="doAction(item,'del',index)">
-                         <a-tooltip title="移至回收站">
-                              <a-icon type="delete"/>
-                         </a-tooltip>
-                    </span>
-                    <span slot="actions" @click="doAction(item,'edit',index)">
-                         <a-tooltip title="项目设置">
-                              <a-icon type="setting"/>
-                         </a-tooltip>
-                    </span>
-                    <span slot="actions">
-                         <a-tooltip :title="item.collected ? '取消收藏' : '加入收藏'" @click="doAction(item,'collect',index)">
-                             <a-icon type="star" v-show="!item.collected"/>
-                             <a-icon type="star" theme="filled" style="color: #ffaf38;" v-show="item.collected"/>
-                         </a-tooltip>
-                    </span>
-                    <a-list-item-meta
-                            :description="item.description"
-                    >
-                        <router-link slot="title" :to="'/project/space/task/' + item.code">{{item.name}}</router-link>
-                        <a-avatar slot="avatar" icon="user" :src="item.cover"/>
-                    </a-list-item-meta>
-                    <div class="other-info muted">
-                        <div class="info-item">
-                            <span>创建日期</span>
-                            <span>{{moment(item.create_time).format('YYYY-MM-DD')}}</span>
-                        </div>
-                        <div class="info-item">
-                            <span>创建人</span>
-                            <span>{{item.owner_name}}</span>
-                        </div>
-                        <div class="info-item schedule">
-                            <span>进度</span>
-                            <a-progress :strokeWidth="5" :percent="item.schedule"/>
-                        </div>
-                    </div>
-                </a-list-item>
-            </a-list>
-        </wrapper-content>
-        <a-modal
-                :width="360"
-                v-model="actionInfo.modalStatus"
-                :title="actionInfo.modalTitle"
-                :bodyStyle="{paddingBottom:'1px'}"
-                :footer="null"
-        >
-            <a-form
-                    @submit.prevent="handleSubmit"
-                    :form="form"
-            >
-                <a-form-item
-                >
-                    <a-input placeholder='项目名称（必填）'
-                             v-decorator="[
-                                            'name',
-                                            {rules: [{ required: true, message: '请输入项目名称' }]}
-                                            ]"/>
-                </a-form-item>
-                <a-form-item
-                >
-                    <a-select
-                            placeholder='项目模板'
-                            v-decorator="[
-                                            'templateCode',
-                                            ]"
-                    >
-                        <a-select-option :key="0">
-                            空白项目
-                        </a-select-option>
-                        <a-select-option :key="template.code" v-for="template in templateList">
-                            {{template.name}}
-                        </a-select-option>
-                    </a-select>
-                </a-form-item>
-                <a-form-item
-                >
-                    <a-textarea placeholder='项目简介'
-                                :rows="2"
-                                v-decorator="['description']"
-                    />
-                </a-form-item>
-                <a-form-item
-                >
-                    <div class="action-btn">
-                        <a-button type="primary" htmlType='submit'
-                                  block
-                                  size="large"
-                                  :loading="actionInfo.confirmLoading"
-                                  class="middle-btn">完成并创建
-                        </a-button>
-                    </div>
-                </a-form-item>
-            </a-form>
-        </a-modal>
-        <a-modal
-                class="project-config-modal"
-                :width="800"
-                v-model="projectModal.modalStatus"
-                :title="projectModal.modalTitle"
-                :footer="null"
-        >
-            <project-config :code="currentProjectCode" @update="updateProject"></project-config>
-        </a-modal>
-        <invite-project-member v-model="showInviteMember" :project-code="currentProjectCode"
-                               v-if="showInviteMember"></invite-project-member>
+            </div>
+        </a-spin>
     </div>
 </template>
+
 <script>
-    import inviteProjectMember from '../../components/project/inviteProjectMember'
-    import projectConfig from '@/components/project/projectConfig'
-    import {list, doData, recycle} from '@/api/project';
-    import {checkResponse} from '@/assets/js/utils';
-    import pagination from "@/mixins/pagination";
-    import moment from 'moment';
-    import {collect} from "../../api/projectCollect";
+    import $ from 'jquery'
+    import {notice} from "@/assets/js/notice";
 
     export default {
-        components: {
-            inviteProjectMember,
-            projectConfig
-        },
-        mixins: [pagination],
+        name: "task-detail",
         data() {
             return {
-                dataSource: [],
-                loading: true,
-                showLoadingMore: false,
-                loadingMore: false,
-                showInviteMember: false,
-                currentProject: {},
-                currentProjectCode: 0,
-                currentProjectIndex: 0,
-                newData: {
-                    code: ''
-                },
-                form: this.$form.createForm(this),
-                searchForm: {},
-                actionInfo: {
-                    modalStatus: false,
-                    confirmLoading: false,
-                    modalTitle: '编辑项目',
-                },
-                /*项目设置*/
-                projectModal: {
-                    modalStatus: false,
-                    modalTitle: '项目设置',
-                },
-                templateList: [],
+                loading: false,
+                flag: true,
+                url: 'http://193.112.27.123:8012/onlinePreview?url=http%3A%2F%2F193.112.27.123%3A8012%2Fdemo%2Ftimg.gif',
             }
         },
-        watch: {
-            $route: function () {
-                this.init();
-            },
-        },
-        created() {
-           this.init();
-            //this.projectTemplates();
-        },
         methods: {
-            moment,
-            init(reset = true) {
-                let app = this;
-                if (reset) {
-                    this.dataSource = [];
-                    this.pagination.page = 1;
-                    this.pagination.pageSize = 1000;
-                    this.showLoadingMore = false;
-                }
-                this.requestData.type = this.$route.params.type;
-                app.loading = true;
-                list(app.requestData).then(res => {
-                    app.dataSource = app.dataSource.concat(res.data.list);
-                    app.pagination.total = res.data.total;
-                    app.showLoadingMore = app.pagination.total > app.dataSource.length;
-                    app.loading = false;
-                    app.loadingMore = false
-                });
+            close() {
+                this.flag = false;
             },
-
-            onLoadMore() {
-                this.loadingMore = true;
-                this.pagination.page++;
-                this.init(false);
+            max() {
+                $(".task-detail-spin").css("width", "100%");
             },
-            inviteProjectMember(item) {
-                this.currentProject = item;
-                this.currentProjectCode = item.code;
-                this.showInviteMember = true;
-            },
-            doAction(record, action, index) {
-                this.currentProject = record;
-                this.currentProjectIndex = index;
-                let app = this;
-                app.newData = {id: 0};
-                if (action == 'new') {
-                    setTimeout(function () {
-                        app.form && app.form.resetFields();
-                    }, 0);
-                    app.actionInfo.modalStatus = true;
-                    app.actionInfo.modalTitle = '创建项目';
-                } else if (action == 'edit') {
-                    app.currentProjectCode = record.code;
-                    app.projectModal.modalStatus = true;
-                } else if (action == 'del') {
-                    this.$confirm({
-                        title: '确定放入回收站？',
-                        content: `一旦将项目「${this.currentProject.name}」放入回收站，所有与项目有关的信息将会被放入回收站`,
-                        okText: '放入回收站',
-                        okType: 'danger',
-                        cancelText: '再想想',
-                        onOk() {
-                            recycle(record.code).then(() => {
-                                app.dataSource.splice(index, 1);
-                                // app.init();
-                            });
-                            return Promise.resolve();
-                        }
-                    });
-                } else if (action == 'collect') {
-                    const type = record.collected ? 'cancel' : 'collect';
-                    collect(record.code, type).then(() => {
-                        app.$set(app.dataSource[index], 'collected', !record.collected);
-                        if (this.requestData.type == 'collect') {
-                            app.dataSource.splice(index, 1);
-                        }
-                    });
-                }
-            },
-            updateProject(data) {
-                this.dataSource[this.currentProjectIndex] = JSON.parse(JSON.stringify(data));
-            },
-            handleSubmit() {
-                let app = this;
-                app.form.validateFields(
-                    (err) => {
-                        if (!err) {
-                            app.handleOk();
-                        }
-                    })
-            },
-            handleOk() {
-                let app = this;
-                app.actionInfo.confirmLoading = true;
-                let obj = app.form.getFieldsValue();
-                if (app.newData.code) {
-                    //编辑
-                    obj.projectCode = app.newData.code;
-                } else {
-                    //新增
-                    Object.assign(obj, app.newData);
-                }
-
-                doData(obj).then(res => {
-                    app.actionInfo.confirmLoading = false;
-                    if (!checkResponse(res)) {
-                        return;
-                    }
-                    app.form.resetFields();
-                    app.newData = {id: 0};
-                    app.actionInfo.modalStatus = false;
-                    app.init();
-
-                });
-            },
-            handleSearchSubmit() {
-                let app = this;
-                app.searchForm.validateFields(
-                    (err) => {
-                        if (!err) {
-                            app.search();
-                        }
-                    })
-            },
-            search() {
-                let obj = this.searchForm.getFieldsValue();
-                Object.assign(this.requestData, obj);
-                this.init();
+            reset() {
+                $(".task-detail-spin").css("width", "50%");
             },
         }
     }
 </script>
+
+
 <style lang="less">
     @import "~ant-design-vue/lib/style/themes/default";
 
-    .project-list-index {
-        .project-list {
-            .ant-list-item-meta-avatar {
-                .ant-avatar {
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 3px;
+    .task-detail {
+        background: #FFF;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        min-height: 1px;
+        min-width: 1px;
+        margin: 10px auto;
+
+        .task-detail-spin {
+            width: 50%;
+            height: 80%;
+        }
+
+        .task-header {
+            padding: 20px 0;
+            border: 1px solid #e5e5e5;
+            background: whitesmoke;
+            display: flex;
+            vertical-align: middle;
+
+
+            .head-title {
+                padding: 0 20px 0 20px;
+                flex: 1 1;
+
+                .breadcrumb {
+                    display: inline;
+
+                    a {
+                        color: inherit;
+
+                        &:hover {
+                            color: #40a9ff;
+                        }
+
+                    }
                 }
             }
 
-            .ant-list-item-content {
-                .other-info {
+            .header-action {
+                font-size: 16px;
+                padding: 0 20px;
+                display: flex;
+                max-height: 24px;
+
+                .action-item {
+                    margin-left: 10px;
+                    padding: 4px;
+                    transition: 218ms;
+                    transition-property: background, color;
+                    border-radius: 4px;
+                    align-items: center;
                     display: flex;
+                    text-align: center;
+                    justify-content: center;
+                    min-width: 32px;
 
-                    .info-item {
-                        display: flex;
-                        flex-direction: column;
-                        padding-left: 48px;
+                    span {
+                        margin-left: 6px;
+                        font-size: 14px;
                     }
 
-                    .schedule {
-                        width: 250px;
+                    &.active {
+                        color: #3da8f5;
+                    }
+
+                    &:hover {
+                        background: #ecf6fe;
+                        color: #3da8f5;
+                        border-radius: 4px;
                     }
                 }
             }
 
-            .ant-list-item-action {
-                .anticon:hover {
-                    svg {
-                        color: @primary-color;
-                    }
-                }
+            &.disabled {
+                background: #f5f5f5;
             }
         }
+
     }
 </style>

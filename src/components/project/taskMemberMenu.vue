@@ -87,7 +87,6 @@
 <script>
     import _ from 'lodash'
     import {list} from "../../api/projectMember";
-    import {list as getTaskMembers} from "../../api/taskMember";
     import {assignTask} from "../../api/task";
 
     export default {
@@ -125,7 +124,7 @@
             };
         },
         created() {
-            this.init();
+           // this.init();
         },
         watch: {
             keyword() {

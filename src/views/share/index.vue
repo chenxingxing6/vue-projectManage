@@ -64,7 +64,8 @@
                 </vue-scroll>
             </div>
         </div>
-        <invite-project-member v-model="showInviteMember" v-if="showInviteMember"></invite-project-member>
+        <!--<invite-project-member v-model="showInviteMember" v-if="showInviteMember"></invite-project-member>-->
+        <box v-model="showInviteMember" v-if="showInviteMember">111</box>
     </div>
 </template>
 
@@ -72,10 +73,13 @@
     import pagination from "../../mixins/pagination";
     import {getShares} from "../../api/mock";
     import inviteProjectMember from '../../components/project/inviteProjectMember'
+    import box from '../../components/file/box'
 
     export default {
         components: {
-            inviteProjectMember
+            inviteProjectMember,
+            'box':box
+
         },
         name: "members",
         mixins: [pagination],
@@ -126,7 +130,6 @@
                 this.init(false);
             },
             del(member, index) {
-                let app = this;
                 this.$confirm('删除该记录, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
