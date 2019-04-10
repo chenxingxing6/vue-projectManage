@@ -39,7 +39,7 @@
                               <a-icon type="delete"/>
                          </a-tooltip>
                     </span>
-                            <span slot="actions" @click="inviteProjectMember(item)">
+                            <span slot="actions" @click="seeDetail(item)">
                          <a-tooltip title="查看详情">
                            <i class="el-icon-view"></i>
                          </a-tooltip>
@@ -64,20 +64,17 @@
                 </vue-scroll>
             </div>
         </div>
-        <!--<invite-project-member v-model="showInviteMember" v-if="showInviteMember"></invite-project-member>-->
-        <box v-model="showInviteMember" v-if="showInviteMember">111</box>
+        <box v-model="showInviteMember" v-if="showInviteMember" :seeUrl="seeUrl"></box>
     </div>
 </template>
 
 <script>
     import pagination from "../../mixins/pagination";
     import {getShares} from "../../api/mock";
-    import inviteProjectMember from '../../components/project/inviteProjectMember'
     import box from '../../components/file/box'
 
     export default {
         components: {
-            inviteProjectMember,
             'box':box
 
         },
@@ -85,7 +82,6 @@
         mixins: [pagination],
         data() {
             return {
-                keyword: '',
                 selectedKeys: ['0'],
                 menus: [
                     {icon: 'team', title: '我的分享'},
@@ -97,6 +93,7 @@
                 showLoadingMore: false,
                 loadingMore: false,
                 showInviteMember: false,
+                seeUrl: 'http://193.112.27.123:8012/onlinePreview?url=http%3A%2F%2F193.112.27.123%3A8012%2Fdemo%2Ftimg.gif',
             }
         },
         created() {
@@ -104,8 +101,9 @@
             this.getMembers({key: 0});
         },
         methods: {
-            inviteProjectMember() {
+            seeDetail() {
                 this.showInviteMember = true;
+                this.seeUrl = "http://193.112.27.123:8012/test.txt";
             },
             getMembers({key} = {}) {
                 let app = this;

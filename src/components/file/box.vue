@@ -1,54 +1,47 @@
 <template>
-    <div>
-        <a-modal>
-            <div class="task-detail" v-if="flag">
-                <a-spin class="task-detail-spin" :spinning="loading">
-                    <div class="task-header">
-                    <span class="head-title">
-                        <span>查看文件</span>
-                    </span>
-                        <span class="header-action text-right">
-                     <a-tooltip :mouseEnterDelay="0.5">
-                        <template slot="title">
-                            <span>最小化</span>
-                        </template>
-                        <a class="action-item muted" @click="reset()"><a-icon type="minus"/></a>
-                     </a-tooltip>
-                     <a-tooltip :mouseEnterDelay="0.5">
-                        <template slot="title">
-                            <span>最大化</span>
-                        </template>
-                        <a class="action-item muted" @click="max()"><a-icon type="plus"/></a>
-                     </a-tooltip>
-                     <a-tooltip :mouseEnterDelay="0.5">
-                        <template slot="title">
-                            <span>关闭面板</span>
-                        </template>
-                        <a class="action-item muted" @click="close()"><a-icon type="close"/></a>
-                     </a-tooltip>
-                    </span>
-                    </div>
-                    <div class="task-wrap" style="border: 1px solid #e5e5e5;">
-                        <div class="task-content">
-                            <iframe  :src="url" height="700px" width="100%" scrolling="no"></iframe>
-                        </div>
-                    </div>
-                </a-spin>
-            </div>
-        </a-modal>
+    <div class="wrap" v-if="flag">
+   <div class="my-box" >
+       <a-spin class="task-detail-spin" :spinning="loading">
+           <div class="task-header" style="background: white;">
+                <span class="head-title">
+                    <span>查看文件</span>
+                </span>
+               <span class="header-action text-right">
+                 <a-tooltip :mouseEnterDelay="0.5">
+                    <template slot="title">
+                        <span>最小化</span>
+                    </template>
+                    <a class="action-item muted" @click="reset()"><a-icon type="minus"/></a>
+                 </a-tooltip>
+                 <a-tooltip :mouseEnterDelay="0.5">
+                    <template slot="title">
+                        <span>最大化</span>
+                    </template>
+                    <a class="action-item muted" @click="max()"><a-icon type="plus"/></a>
+                 </a-tooltip>
+                 <a-tooltip :mouseEnterDelay="0.5">
+                    <template slot="title">
+                        <span>关闭面板</span>
+                    </template>
+                    <a class="action-item muted" @click="close()"><a-icon type="close"/></a>
+                 </a-tooltip>
+                </span>
+           </div>
+           <div class="task-wrap">
+               <div class="task-content">
+                   <iframe  :src="seeUrl" height="700px" width="100%"></iframe>
+               </div>
+           </div>
+       </a-spin>
+   </div>
     </div>
-
 </template>
 
 <script>
-    import _ from 'lodash'
-    import moment from 'moment';
-    import {inviteMember, searchInviteMember} from "../../api/projectMember";
-    import {checkResponse} from "../../assets/js/utils";
-    import {createInviteLink} from "../../api/common/common";
+    import $ from 'jquery'
 
     export default {
-        name: "box",
+        name: "box-detail",
         props: {
             value: {
                 type: Boolean,
@@ -56,10 +49,10 @@
                     return false
                 }
             },
-            projectCode: {
-                type: [String, Number],
+            seeUrl: {
+                type: [String],
                 default() {
-                    return ''
+                    return 'http://193.112.27.123:8012/test.txt'
                 }
             }
         },
@@ -67,55 +60,136 @@
             return {
                 loading: false,
                 flag: true,
-                url: 'http://193.112.27.123:8012/onlinePreview?url=http%3A%2F%2F193.112.27.123%3A8012%2Fdemo%2Ftimg.gif',
-                actionInfo: {
-                    modalStatus: this.value,
-                    confirmLoading: false,
-                    modalTitle: '查看文件',
-                    url: 'http://193.112.27.123:8012/onlinePreview?url=http%3A%2F%2F193.112.27.123%3A8012%2Fdemo%2Ftimg.gif'
-                }
-            };
+            }
+        },
+        create: function(){
+            this.flag = true;
         },
         watch: {
             value(value) {
-                this.actionInfo.modalStatus = value;
+                this.flag = value;
+            },
+            seeUrl(seeUrl){
+                debugger
+                this.seeUrl = seeUrl;
             }
         },
         methods: {
-            invite(item) {
-                inviteMember(item.memberCode, this.projectCode).then((res) => {
-                    const success = checkResponse(res);
-                    if (success) {
-                        item.joined = true;
-                    }
-                })
+            close() {
+                this.flag = false;
+                this.$emit('input', this.flag);
             },
-            cancel() {
-                this.actionInfo.modalStatus = false;
-                this.$emit('input', this.actionInfo.modalStatus);
-            }
+            max() {
+                $(".task-detail-spin").css("width", "100%");
+            },
+            reset() {
+                $(".task-detail-spin").css("width", "50%");
+            },
         }
     }
 </script>
 
 <style lang="less">
-    .file-box {
-        .ant-modal-body {
-            padding-top: 0;
-            padding-bottom: 24px;
-            min-height: 40vh;
-        }
+    @import "~ant-design-vue/lib/style/themes/default";
 
-        .header {
+    .wrap{
+        position: fixed;
+        bottom: 0;
+        top: 0;
+        left: 0;
+        background: rgba(113, 111, 111, 0.5);
+        width: 100%;
+
+        .my-box {
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            padding: 12px 0;
-        }
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-box-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+            min-height: 1px;
+            min-width: 1px;
+            margin: 100px auto;
 
-        .member-list {
-            padding-top: 12px;
-        }
+            .task-detail-spin {
+                width: 50%;
+                height: 80%;
+            }
 
+            .task-header {
+                background: white;
+                padding: 20px 0;
+               // border: 1px solid #e5e5e5;
+                background: whitesmoke;
+                display: flex;
+                vertical-align: middle;
+
+
+                .head-title {
+                    padding: 0 20px 0 20px;
+                    flex: 1 1;
+
+                    .breadcrumb {
+                        display: inline;
+
+                        a {
+                            color: inherit;
+
+                            &:hover {
+                                color: #40a9ff;
+                            }
+
+                        }
+                    }
+                }
+
+                .header-action {
+                    font-size: 16px;
+                    padding: 0 20px;
+                    display: flex;
+                    max-height: 24px;
+
+                    .action-item {
+                        margin-left: 10px;
+                        padding: 4px;
+                        transition: 218ms;
+                        transition-property: background, color;
+                        border-radius: 4px;
+                        align-items: center;
+                        display: flex;
+                        text-align: center;
+                        justify-content: center;
+                        min-width: 32px;
+
+                        span {
+                            margin-left: 6px;
+                            font-size: 14px;
+                        }
+
+                        &.active {
+                            color: #3da8f5;
+                        }
+
+                        &:hover {
+                            background: #ecf6fe;
+                            color: #3da8f5;
+                            border-radius: 4px;
+                        }
+                    }
+                }
+
+                &.disabled {
+                    background: #f5f5f5;
+                }
+            }
+
+            .task-wrap{
+                background: white;
+            }
+
+        }
     }
 </style>
