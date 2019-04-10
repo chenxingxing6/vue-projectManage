@@ -29,7 +29,7 @@
            </div>
            <div class="task-wrap">
                <div class="task-content">
-                   <iframe  :src="seeUrl" height="700px" width="100%"></iframe>
+                   <iframe :src="getUrl(seeUrl)" height="700px" width="100%"></iframe>
                </div>
            </div>
        </a-spin>
@@ -39,6 +39,7 @@
 
 <script>
     import $ from 'jquery'
+    import {getFileUrl} from "../../assets/js/utils";
 
     export default {
         name: "box-detail",
@@ -52,7 +53,7 @@
             seeUrl: {
                 type: [String],
                 default() {
-                    return 'http://193.112.27.123:8012/test.txt'
+                    return ''
                 }
             }
         },
@@ -63,6 +64,7 @@
             }
         },
         create: function(){
+            debugger
             this.flag = true;
         },
         watch: {
@@ -70,7 +72,6 @@
                 this.flag = value;
             },
             seeUrl(seeUrl){
-                debugger
                 this.seeUrl = seeUrl;
             }
         },
@@ -85,6 +86,9 @@
             reset() {
                 $(".task-detail-spin").css("width", "50%");
             },
+            getUrl(fileUrl){
+                return getFileUrl(fileUrl, 'remote');
+            }
         }
     }
 </script>

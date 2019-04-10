@@ -28,9 +28,9 @@
                             </a-list-item>
                             <a-list-item class="list-item" :key="index" v-for="(item, index) in files">
                                 <a-list-item-meta>
-                                        <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-if="item.extension === 'html'" style="">
-                                            <a-icon type="code" />
-                                        </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-if="item.extension === 'html'" style="">
+                                        <a-icon type="code" />
+                                    </a-avatar>
                                     <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'pdf'">
                                         <a-icon type="file-pdf"/>
                                     </a-avatar>
@@ -63,12 +63,12 @@
                                             <a-input
                                                     :ref="`inputTitle${index}`"
                                                     :auto-focus="true"
-                                                    v-model="item.originalName"
+                                                    v-model="item.title"
                                                     v-show="item.editing"
                                                     @pressEnter="onCellChange(item)"
                                                     @blur="onCellChange(item)"></a-input>
-                                         <!--   <a class="text-default" target="_blank" :href="item | showPreviewUrl"
-                                               v-show="!item.editing">{{item.fullName}}</a>-->
+                                            <!--   <a class="text-default" target="_blank" :href="item | showPreviewUrl"
+                                                  v-show="!item.editing">{{item.fullName}}</a>-->
                                             <a class="text-default" v-show="!item.editing" @click="seeBox(item)">{{item.originalName}}</a>
                                         </a-tooltip>
                                     </div>
@@ -170,11 +170,11 @@
                 handler(newVal, oldVal) {
                     //监听是否有上传文件行为
                     const files = newVal.fileList;
-                   /* const index = files.findIndex(item => item.projectName == this.project.name);
-                    if (index !== -1) {
-                        this.getFiles();
-                    }*/
-                   this.getFiles();
+                    /* const index = files.findIndex(item => item.projectName == this.project.name);
+                     if (index !== -1) {
+                         this.getFiles();
+                     }*/
+                    this.getFiles();
                 },
                 deep: true
             }

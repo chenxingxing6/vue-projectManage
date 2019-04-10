@@ -188,7 +188,7 @@
             <!--uploader: {-->
                 <!--handler(newVal, oldVal) {-->
                     <!--//监听是否有上传文件行为-->
-                    <!--const files = newVal.fileList;-->
+                    <!--const files = newVal.fileList.vue;-->
                     <!--const index = files.findIndex(item => item.projectName == this.project.name);-->
                     <!--if (index !== -1) {-->
                         <!--this.getFiles();-->

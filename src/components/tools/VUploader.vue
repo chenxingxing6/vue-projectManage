@@ -21,15 +21,15 @@
                       @complete="complete"
                       class="uploader-workplace">
                 <vue-scroll>
-                    <!--<a-button @click="testSomeThing">测试</a-button>-->
-                    <!--<uploader-unsupport></uploader-unsupport>-->
-                    <!--<uploader-btn>select files</uploader-btn>-->
-                    <!--<uploader-drop>
+                    <a-button @click="testSomeThing">测试</a-button>
+                    <uploader-unsupport></uploader-unsupport>
+                    <uploader-btn>select files</uploader-btn>
+                    <uploader-drop>
                         <p>Drop files here to upload or</p>
                         <uploader-btn>select files</uploader-btn>
                         <uploader-btn :attrs="attrs">select images</uploader-btn>
                         <uploader-btn :directory="true">select folder</uploader-btn>
-                    </uploader-drop>-->
+                    </uploader-drop>
                     <uploader-list>
                         <template slot-scope="files">
                             <ul class="uploader-wrapper">
@@ -52,11 +52,11 @@
                                                                         {{file.file.name}}
                                                                     </a-tooltip>
                                                                 </div>
-                                                                <div class="file-extra">
+                                                              <!--  <div class="file-extra">
                                                                     <span>{{file.file.projectName ? file.file.projectName : tempData.projectName}}</span>
                                                                     <span v-if="file.status == 'success'">({{file.formatedSize }})</span>
                                                                     <span v-else>({{(Number(file.uploadedSize) / (1024 * 1000)).toFixed(2) }}MB/{{file.formatedSize }})</span>
-                                                                </div>
+                                                                </div>-->
                                                             </div>
                                                             <div class="uploader-progress"
                                                                  v-show="file.status != 'success'">
@@ -89,7 +89,7 @@
 </template>
 
 <script>
-    import {checkResponse, getApiUrl, getAuthorization} from "../../assets/js/utils";
+    import {checkResponse} from "../../assets/js/utils";
     import {mapState} from 'vuex'
     import {getStore} from "../../assets/js/storage";
     import {notice} from "../../assets/js/notice";
@@ -117,13 +117,7 @@
                     testChunks: false,
                     query: function () {
                         return getStore('tempData', true);//query暂时无法动态响应
-                    },
-                    headers: function () {
-                        let organization = getStore('currentOrganization', true);
-                        const auth = getAuthorization();
-                        auth.organizationcode = organization.code;
-                        return auth;
-                    },
+                    }
                 },
                 attrs: {
                     accept: 'image/*'
@@ -189,7 +183,6 @@
                     notice({title: response.msg}, 'notice', 'error');
                     return false;
                 }
-                rootFile.projectName = response.data.projectName;
                 rootFile.fileUrl = response.data.url;
                 console.log('file success', rootFile);
                 this.completeTotal++;

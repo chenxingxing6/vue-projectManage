@@ -6,6 +6,9 @@ const PROD_URL = config.PROD_URL;
 const crossDomain = config.crossDomain;
 const MOCK_URL = config.MOCK_URL;
 
+const local_file_url = config.VIEW_FILE_SERVER_LOCAL;
+const remote_file_url = config.VIEW_FILE_SERVER_SERVER;
+
 /**
  * 判断客户端返回状态
  * @param res
@@ -68,6 +71,23 @@ export const showWarConfirm = (options = {}, callback = function () {
         }
     });
 };
+
+
+/**
+ * 获取文件查看url
+ *
+ * @param fileUrl
+ * @param type
+ * @returns {string}
+ */
+export const getFileUrl = (fileUrl, type) => {
+    if (type === 'local'){
+        return local_file_url + fileUrl;
+    } else {
+        return remote_file_url + fileUrl;
+    }
+};
+
 
 /**
  * 获取请求的全部url

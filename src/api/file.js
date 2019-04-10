@@ -1,5 +1,5 @@
-// import $http from '@/assets/js/http'
-// import {getApiUrl} from "../assets/js/utils";
+import $http from '@/assets/js/http'
+import {getApiUrl} from "../assets/js/utils";
 //
 // export function list(data) {
 //     return $http.post('project/file', data);
@@ -13,9 +13,9 @@
 //     return $http.post('project/file/edit', data);
 // }
 //
-// export function uploadFiles() {
-//     return getApiUrl('project/file/uploadFiles');
-// }
+export function uploadFiles() {
+    return getApiUrl('project/file/uploadFiles');
+}
 //
 // export function recycle(fileCode) {
 //     return $http.post('project/file/recycle', {fileCode: fileCode});
