@@ -1,24 +1,6 @@
 <template>
     <div class="project-space-files">
         <div class="project-navigation">
-            <div class="project-nav-header">
-                <a-breadcrumb>
-                    <a-breadcrumb-item>
-                        <a-tooltip :mouseEnterDelay="0.3" :title="project.name">
-                            <span class="nav-title">{{ project.name }}</span>
-                        </a-tooltip>
-                        <span class="actions">
-                             <a-tooltip :mouseEnterDelay="0.3" :title="project.collected ? '取消收藏' : '加入收藏'"
-                                        @click="collectProject">
-                            <a-icon type="star" theme="filled" style="color: grey;" v-show="!project.collected"/>
-                            <a-icon type="star" theme="filled" style="color: #ffaf38;" v-show="project.collected"/>
-                        </a-tooltip>
-                        </span>
-                        <span class="label label-normal" v-if="project.private === 0"><a-icon
-                                type="global"/> 公开</span>
-                    </a-breadcrumb-item>
-                </a-breadcrumb>
-            </div>
             <section class="nav-body">
                 <ul class="nav-wrapper nav nav-underscore pull-left">
                     <li class="actives"><a class="app" data-app="works" @click="$router.push('/disk/files')">文件</a></li>
@@ -32,27 +14,18 @@
                     <div class="header">
                         <span class="title">我的文件</span>
                         <div class="header-actions">
-                            <!--<a><a-icon type="upload"></a-icon> 上传文件</a>-->
                             <a-button id="upload-file" icon="up-circle" type="dashed">上传</a-button>
                         </div>
                     </div>
                     <div class="list-content">
-                        <a-list
-                                :loading="loading"
-                        >
+                        <a-list :loading="loading">
                             <a-list-item class="list-item-title">
                                 <a-list-item-meta>
-                                    <div class="muted" slot="title">
-                                        名称
-                                    </div>
+                                    <div class="muted" slot="title">名称</div>
                                 </a-list-item-meta>
                                 <div class="other-info muted">
-                                    <div class="info-item">
-                                        <span>大小</span>
-                                    </div>
-                                    <div class="info-item">
-                                        <span>创建日期</span>
-                                    </div>
+                                    <div class="info-item"><span>大小</span></div>
+                                    <div class="info-item"><span>创建日期</span></div>
                                     <div class="info-item">
                                         <span>创建人</span>
                                     </div>

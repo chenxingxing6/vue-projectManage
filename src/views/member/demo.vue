@@ -1,156 +1,344 @@
 <template>
-    <div class="task-detail" v-if="flag">
-        <a-spin class="task-detail-spin" :spinning="loading">
-            <div class="task-header">
-                    <span class="head-title">
-                        <span>查看文件</span>
-                    </span>
-                <span class="header-action text-right">
-                     <a-tooltip :mouseEnterDelay="0.5">
-                        <template slot="title">
-                            <span>最小化</span>
-                        </template>
-                        <a class="action-item muted" @click="reset()"><a-icon type="minus"/></a>
-                     </a-tooltip>
-                     <a-tooltip :mouseEnterDelay="0.5">
-                        <template slot="title">
-                            <span>最大化</span>
-                        </template>
-                        <a class="action-item muted" @click="max()"><a-icon type="plus"/></a>
-                     </a-tooltip>
-                     <a-tooltip :mouseEnterDelay="0.5">
-                        <template slot="title">
-                            <span>关闭面板</span>
-                        </template>
-                        <a class="action-item muted" @click="close()"><a-icon type="close"/></a>
-                     </a-tooltip>
-                    </span>
-            </div>
-            <div class="task-wrap" style="border: 1px solid #e5e5e5;">
-                <div class="task-content">
-                    <iframe  :src="url" height="700px" width="100%" scrolling="no"></iframe>
+    <div class="project-space-files">
+        <wrapper-content :showHeader="false">
+            <div class="content-wrapper">
+                <div class="content-item log-list">
+                    <div class="header">
+                        <span class="title">我的文件</span>
+                        <div class="header-actions">
+                            <a-button id="upload-file" icon="up-circle" type="dashed">上传</a-button>
+                        </div>
+                    </div>
+                    <div class="list-content">
+                        <a-list :loading="loading">
+                            <a-list-item class="list-item-title">
+                                <a-list-item-meta>
+                                    <div class="muted" slot="title">名称</div>
+                                </a-list-item-meta>
+                                <div class="other-info muted">
+                                    <div class="info-item"><span>大小</span></div>
+                                    <div class="info-item"><span>创建日期</span></div>
+                                    <div class="info-item">
+                                        <span>创建人</span>
+                                    </div>
+                                </div>
+                                <span slot="actions" :key="item" v-for="item in 3">
+                                    <span>位</span>
+                                </span>
+                            </a-list-item>
+                            <a-list-item class="list-item" :key="index" v-for="(item, index) in files">
+                                <a-list-item-meta>
+                                    <a-avatar slot="avatar" shape="square" icon="link" :src="item.file_url"/>
+                                    <div slot="title">
+                                        <a-tooltip :mouseEnterDelay="0.3">
+                                            <template slot="title">
+                                                <span>{{item.fullName}}</span>
+                                            </template>
+                                            <a-input
+                                                    :ref="`inputTitle${index}`"
+                                                    :auto-focus="true"
+                                                    v-model="item.title"
+                                                    v-show="item.editing"
+                                                    @pressEnter="onCellChange(item)"
+                                                    @blur="onCellChange(item)"></a-input>
+                                            <a class="text-default" target="_blank" :href="item | showPreviewUrl"
+                                               v-show="!item.editing">{{item.fullName}}</a>
+                                        </a-tooltip>
+                                    </div>
+                                </a-list-item-meta>
+                                <div class="other-info muted">
+                                    <div class="info-item">
+                                        <span>{{(formatSize(item.size))}}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <a-tooltip :title="item.create_time">
+                                            <span>{{ formatTime(item.create_time) }}</span>
+                                        </a-tooltip>
+                                    </div>
+                                    <div class="info-item">
+                                        <span>{{item.creatorName}}</span>
+                                    </div>
+                                </div>
+                                <span slot="actions">
+                                    <a-tooltip title="下载">
+                                        <a class="muted" target="_blank" :href="item.file_url"><a-icon type="download"/></a>
+                                    </a-tooltip>
+                                </span>
+                                <span slot="actions" @click="editFile(item,index)">
+                                    <a-tooltip title="编辑">
+                                        <a-icon type="edit"/>
+                                    </a-tooltip>
+                                </span>
+                                <a class="muted" slot="actions">
+                                    <a-dropdown :trigger="['click']" placement="bottomCenter">
+                                        <a-tooltip :mouseEnterDelay="0.5">
+                                            <template slot="title">
+                                                <span>更多操作</span>
+                                            </template>
+                                            <a class="action-item muted">
+                                                <a-icon type="down"/>
+                                            </a>
+                                        </a-tooltip>
+                                        <a-menu class="field-right-menu"
+                                                @click="doFile($event,item.code)"
+                                                slot="overlay">
+                                            <a-menu-item key="copy" v-clipboard="item.file_url">
+                                                <a-icon type="link"/>
+                                                <span>复制链接</span>
+                                            </a-menu-item>
+                                        </a-menu>
+                                    </a-dropdown>
+                                </a>
+                            </a-list-item>
+                            <div v-if="showLoadingMore" slot="loadMore"
+                                 :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
+                                <a-spin v-if="loadingMore"/>
+                                <a-button v-else @click="onLoadMore">查看更多文件</a-button>
+                            </div>
+                        </a-list>
+                    </div>
                 </div>
             </div>
-        </a-spin>
+        </wrapper-content>
     </div>
 </template>
 
 <script>
-    import $ from 'jquery'
-    import {notice} from "@/assets/js/notice";
+    import {mapState} from 'vuex'
+    import {checkResponse} from "../../assets/js/utils";
+    import {relativelyTime} from "../../assets/js/dateTime";
+    import pagination from "@/mixins/pagination";
+    import {notice} from "../../assets/js/notice";
+    import {getFiles} from "../../api/mock";
 
     export default {
-        name: "task-detail",
+        name: "project-space-files",
+        mixins: [pagination],
         data() {
             return {
-                loading: false,
-                flag: true,
-                url: 'http://193.112.27.123:8012/onlinePreview?url=http%3A%2F%2F193.112.27.123%3A8012%2Fdemo%2Ftimg.gif',
+                code: this.$route.params.code,
+                loading: true,
+                showLoadingMore: false,
+                loadingMore: false,
+                project: {},
+                currentFileIndex: {},
+                files: [],
             }
         },
+        computed: {
+            ...mapState({
+                uploader: state => state.common.uploader,
+
+            }),
+        },
+        watch: {
+            uploader: {
+                handler(newVal, oldVal) {
+                    //监听是否有上传文件行为
+                    const files = newVal.fileList;
+                    const index = files.findIndex(item => item.projectName == this.project.name);
+                    if (index !== -1) {
+                        this.getFiles();
+                    }
+                },
+                deep: true
+            }
+        },
+        created() {
+            this.getFiles();
+        },
+        mounted() {
+            setTimeout(() => {
+                this.uploader.assignBrowse(document.getElementById('upload-file'));
+            }, 500)
+        },
         methods: {
-            close() {
-                this.flag = false;
+            getFiles(reset = true) {
+                let app = this;
+                if (reset) {
+                    this.pagination.page = 1;
+                    this.pagination.pageSize = 50;
+                    this.showLoadingMore = false;
+                }
+                app.requestData.projectCode = this.code;
+                app.requestData.deleted = 0;
+                this.loading = true;
+                getFiles(app.requestData).then(res => {
+                    this.loading = false;
+                    if (reset) {
+                        this.files = [];
+                    }
+                    res.data.list.forEach((v) => {
+                        v.editing = false;
+                    });
+                    app.files = app.files.concat(res.data.list);
+                    app.pagination.total = res.data.total;
+                    app.showLoadingMore = app.pagination.total > app.files.length;
+                    app.loading = false;
+                    app.loadingMore = false
+                })
             },
-            max() {
-                $(".task-detail-spin").css("width", "100%");
+            onLoadMore() {
+                this.loadingMore = true;
+                this.pagination.page++;
+                this.getFiles(false);
             },
-            reset() {
-                $(".task-detail-spin").css("width", "50%");
+            editFile(file, index) {
+                let app = this;
+                this.files.forEach((v) => {
+                    v.editing = false;
+                });
+                this.files[index].editing = true;
+                this.$nextTick(() => {
+                    app.$refs[`inputTitle${index}`][0].focus();
+                });
+                this.currentFileIndex = index;
+            },
+            onCellChange(file) {
+                let currentFile = this.files[this.currentFileIndex];
+                this.files.forEach((v) => {
+                    v.editing = false;
+                });
+                const fullName = `${file.title}.${file.extension}`;
+                if (fullName != currentFile.fullName) {
+                    edit({title: currentFile.title, fileCode: currentFile.code}).then(res => {
+                        const result = checkResponse(res);
+                        if (!result) {
+                            return false;
+                        }
+                        currentFile.title = file.title;
+                        currentFile.fullName = fullName;
+                        notice({
+                            title: '重命名成功',
+                        }, 'notice', 'success');
+                    });
+                }
+            },
+            formatTime(time) {
+                return relativelyTime(time);
+            },
+            formatSize(size) {
+                let type = 'KB';
+                size = size / 1024;
+                if (size >= 1024) {
+                    size /= 1024;
+                    type = 'MB';
+                }
+                return `${size.toFixed(2)} ${type}`;
             },
         }
     }
 </script>
 
-
 <style lang="less">
-    @import "~ant-design-vue/lib/style/themes/default";
 
-    .task-detail {
-        background: #FFF;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-flex: 1;
-        -ms-flex: 1;
-        flex: 1;
-        min-height: 1px;
-        min-width: 1px;
-        margin: 10px auto;
-
-        .task-detail-spin {
-            width: 50%;
-            height: 80%;
+    .project-space-files {
+        .project-navigation {
+            top: 65px;
+            z-index: 4;
         }
 
-        .task-header {
-            padding: 20px 0;
-            border: 1px solid #e5e5e5;
-            background: whitesmoke;
+        .wrapper-main {
+            background: initial;
+
+        }
+
+        .layout-content {
+            padding: 12px;
+            width: 1100px;
+            margin: 12px auto auto;
+            background: initial;
             display: flex;
-            vertical-align: middle;
+            flex-direction: row;
+            justify-content: space-between;
 
+            .content-item {
+                background: #fff;
+                padding: 6px 0 18px 0;
+                border-radius: 4px;
 
-            .head-title {
-                padding: 0 20px 0 20px;
-                flex: 1 1;
+                .header {
+                    padding: 12px 20px 6px 20px;
+                    display: flex;
+                    justify-content: space-between;
 
-                .breadcrumb {
-                    display: inline;
+                    .title {
+                        font-size: 18px;
+                    }
+                }
+            }
 
-                    a {
-                        color: inherit;
+            .content-wrapper {
+                width: 100%;
 
-                        &:hover {
-                            color: #40a9ff;
+                .log-list {
+                    background: #fff;
+
+                    .list-content {
+
+                        .list-item-title {
+                            padding: 10px 20px;
+
+                            .ant-list-item-action {
+                                li {
+                                    color: #fff;
+                                }
+
+                                em {
+                                    width: 0;
+                                }
+                            }
                         }
 
+                        .list-item {
+                            border-bottom: none;
+                            margin-bottom: 2px;
+                            /*border-bottom: 1px solid #f5f5f5;*/
+                            padding: 10px 20px;
+                            transition: background-color 218ms;
+
+                            &:hover {
+                                background-color: #f5f5f5;
+                            }
+
+                            .ant-list-item-meta-title {
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                                position: relative;
+                                margin-bottom: 0;
+                                line-height: 32px;
+                            }
+
+                            .ant-list-item-action {
+                                em {
+                                    width: 0;
+                                }
+                            }
+                        }
+
+                        .other-info {
+                            display: flex;
+
+                            .info-item {
+                                display: flex;
+                                flex-direction: column;
+                                padding-left: 0;
+                                width: 90px;
+                                text-align: right;
+                            }
+
+                            .schedule {
+                                width: 250px;
+                            }
+                        }
                     }
                 }
             }
 
-            .header-action {
-                font-size: 16px;
-                padding: 0 20px;
-                display: flex;
-                max-height: 24px;
-
-                .action-item {
-                    margin-left: 10px;
-                    padding: 4px;
-                    transition: 218ms;
-                    transition-property: background, color;
-                    border-radius: 4px;
-                    align-items: center;
-                    display: flex;
-                    text-align: center;
-                    justify-content: center;
-                    min-width: 32px;
-
-                    span {
-                        margin-left: 6px;
-                        font-size: 14px;
-                    }
-
-                    &.active {
-                        color: #3da8f5;
-                    }
-
-                    &:hover {
-                        background: #ecf6fe;
-                        color: #3da8f5;
-                        border-radius: 4px;
-                    }
-                }
-            }
-
-            &.disabled {
-                background: #f5f5f5;
+            .content-right {
+                width: 325px;
             }
         }
-
     }
 </style>
