@@ -9,6 +9,7 @@ const MOCK_URL = config.MOCK_URL;
 const local_file_url = config.VIEW_FILE_SERVER_LOCAL;
 const remote_file_url = config.VIEW_FILE_SERVER_SERVER;
 
+
 /**
  * 判断客户端返回状态
  * @param res
@@ -99,15 +100,17 @@ export const getApiUrl = (api) => {
     /*判断是否为mock数据*/
     if (api.indexOf("mock") >=0){
         return MOCK_URL + api;
+    }else{
+        return PROD_URL + '/' + api;
     }
-    if (crossDomain) {
+   /* if (crossDomain) {
         return PROD_URL + '/' + api; //开启跨域直接返回
     }
     if (process.env.NODE_ENV === 'production') {
         return PROD_URL + '/' + api;
     } else {
         return '/api/' + api;
-    }
+    }*/
 };
 
 /**
@@ -231,12 +234,12 @@ export function timeFix() {
     return hour < 9 ? '早上好' : (hour <= 11 ? '上午好' : (hour <= 13 ? '中午好' : (hour < 20 ? '下午好' : '晚上好')))
 }
 export function getAuthorization() {
-    let tokenList = getStore('tokenList', true);
+   /* let tokenList = getStore('tokenList', true);
     if (tokenList) {
         let accessToken = tokenList.accessToken;
         let tokenType = tokenList.tokenType;
         return {Authorization: `${tokenType} ${accessToken}`};
-    }
+    }*/
     return {};
 }
 

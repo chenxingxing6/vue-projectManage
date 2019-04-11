@@ -9,6 +9,7 @@ import config from "../../config/config";
 
 const HOME_PAGE = config.HOME_PAGE;
 const crossDomain = config.crossDomain;
+
 let axiosConfig = {};
 if (crossDomain) {
     axiosConfig.withCredentials = true;

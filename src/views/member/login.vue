@@ -190,8 +190,7 @@
 
                 if (!flag) return;
                 app.loginBtn = true;
-                console.log(loginParams);
-                loginParams.clientid = getStore('client_id');
+                //loginParams.clientid = getStore('client_id');
                 Login(loginParams).then(res => {
                     if (checkResponse(res)) {
                         loginParams.token = res.token;
@@ -207,7 +206,6 @@
                     }
                     this.loginBtn = false
                 }).catch(res => {
-                    debugger
                     this.loginBtn = false
                 });
             },

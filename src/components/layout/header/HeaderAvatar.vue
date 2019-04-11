@@ -2,8 +2,8 @@
     <div v-if="userInfo">
         <a-dropdown class="action-item" placement="bottomRight">
             <div class="user-info">
-                <a-avatar :src="userInfo.avatar" alt="">{{userInfo.name}}</a-avatar>
-                <span>{{userInfo.name}}</span>
+                <a-avatar :src="userInfo.imgPath" alt="">{{userInfo.username}}</a-avatar>
+                <span>{{userInfo.username}}</span>
             </div>
             <a-menu slot="overlay" class="middle-menu" :selectable="false" @click="userAction">
                 <a-menu-item key="setting">
