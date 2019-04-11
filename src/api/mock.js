@@ -70,4 +70,10 @@ export function getIndexData(data) {
 }
 
 
+/*分享查询分享的用户*/
+export function findUser(data) {
+    return $http.post('/mock/findUser');
+}
+
+
 

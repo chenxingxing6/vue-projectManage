@@ -1,5 +1,13 @@
 <template>
     <div class="project-space-files">
+        <div class="project-navigation">
+            <section class="nav-body">
+                <ul class="nav-wrapper nav nav-underscore pull-left">
+                    <li class="actives"><a class="app" data-app="works" @click="$router.push('/disk/files')">文件</a></li>
+                    <li><a class="app" data-app="build" @click="$router.push('/disk/overview')">概览</a></li>
+                </ul>
+            </section>
+        </div>
         <wrapper-content :showHeader="false">
             <div class="content-wrapper">
                 <div class="content-item log-list">

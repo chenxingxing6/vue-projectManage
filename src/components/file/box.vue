@@ -81,6 +81,7 @@
             },
             max() {
                 $(".task-detail-spin").css("width", "100%");
+                $(".task-detail-spin").css("height", "100%");
             },
             reset() {
                 $(".task-detail-spin").css("width", "50%");
@@ -116,6 +117,7 @@
             min-height: 1px;
             min-width: 1px;
             margin: 100px auto;
+            margin-top: 145px;
 
             .task-detail-spin {
                 width: 50%;

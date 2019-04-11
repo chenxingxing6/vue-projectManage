@@ -1,6 +1,6 @@
 <template>
     <div class="project-space-files">
-        <div class="project-navigation">
+        <div class="project-navigation" style="background: whitesmoke;">
             <section class="nav-body">
                 <ul class="nav-wrapper nav nav-underscore pull-left">
                     <li class="actives"><a class="app" data-app="works" @click="$router.push('/disk/files')">文件</a></li>
@@ -24,7 +24,7 @@
                                     <div class="muted" slot="title">名称</div>
                                 </a-list-item-meta>
                                 <div class="other-info muted">
-                                    <div class="info-item"><span>大小</span></div>
+                                    <div class="info-item"  style="padding-right: 20px;"><span>大小</span></div>
                                     <div class="info-item"><span>创建日期</span></div>
                                     <div class="info-item">
                                         <span>创建人</span>
@@ -36,47 +36,69 @@
                             </a-list-item>
                             <a-list-item class="list-item" :key="index" v-for="(item, index) in files">
                                 <a-list-item-meta>
-                                    <a-avatar slot="avatar" shape="square" icon="link" :src="item.file_url"/>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-if="item.extension === 'html'" style="">
+                                        <a-icon type="code" />
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'pdf'">
+                                        <a-icon type="file-pdf"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'txt'">
+                                        <a-icon type="file-text"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'doc' || item.extension === 'docx'">
+                                        <a-icon type="file-word"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'jpg'">
+                                        <a-icon type="file-jpg"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'xls' || item.extension === 'xlsx'">
+                                        <a-icon type="file-excel"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'mp3'">
+                                        <a-icon type="customer-service"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'zip'">
+                                        <a-icon type="folder-open"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else>
+                                        <a-icon type="file" />
+                                    </a-avatar>
                                     <div slot="title">
                                         <a-tooltip :mouseEnterDelay="0.3">
                                             <template slot="title">
-                                                <span>{{item.fullName}}</span>
+                                                <span>{{item.originalName}}</span>
                                             </template>
                                             <a-input
                                                     :ref="`inputTitle${index}`"
                                                     :auto-focus="true"
-                                                    v-model="item.title"
+                                                    v-model="item.name"
                                                     v-show="item.editing"
                                                     @pressEnter="onCellChange(item)"
                                                     @blur="onCellChange(item)"></a-input>
-                                            <a class="text-default" target="_blank" :href="item | showPreviewUrl"
-                                               v-show="!item.editing">{{item.fullName}}</a>
+                                            <!--   <a class="text-default" target="_blank" :href="item | showPreviewUrl"
+                                                  v-show="!item.editing">{{item.fullName}}</a>-->
+                                            <a class="text-default" v-show="!item.editing" @click="seeBox(item)">{{item.originalName}}</a>
                                         </a-tooltip>
                                     </div>
                                 </a-list-item-meta>
                                 <div class="other-info muted">
-                                    <div class="info-item">
-                                        <span>{{(formatSize(item.size))}}</span>
+                                    <div class="info-item" style="padding-right: 20px;">
+                                        <span>{{item.length}}</span>
                                     </div>
                                     <div class="info-item">
-                                        <a-tooltip :title="item.create_time">
-                                            <span>{{ formatTime(item.create_time) }}</span>
+                                        <a-tooltip :title="item.createTime">
+                                            <span>{{ formatTime(item.createTime) }}</span>
                                         </a-tooltip>
                                     </div>
                                     <div class="info-item">
-                                        <span>{{item.creatorName}}</span>
+                                        <span>{{item.createUser}}</span>
                                     </div>
                                 </div>
                                 <span slot="actions">
                                     <a-tooltip title="下载">
-                                        <a class="muted" target="_blank" :href="item.file_url"><a-icon type="download"/></a>
+                                        <a class="muted" target="_blank" :href="item.fileUrl"><a-icon type="download"/></a>
                                     </a-tooltip>
                                 </span>
-                                <!-- <span slot="actions">
-                                     <a-tooltip title="更新">
-                                         <a-icon type="upload"/>
-                                     </a-tooltip>
-                                 </span>-->
                                 <span slot="actions" @click="editFile(item,index)">
                                     <a-tooltip title="编辑">
                                         <a-icon type="edit"/>
@@ -93,15 +115,19 @@
                                             </a>
                                         </a-tooltip>
                                         <a-menu class="field-right-menu"
-                                                @click="doFile($event,item.code)"
+                                                @click="opt($event,item)"
                                                 slot="overlay">
-                                            <a-menu-item key="copy" v-clipboard="item.file_url">
+                                            <a-menu-item key="copy" v-clipboard="item.fileUrl" data-clipboard-text="我是可以复制的内容，啦啦啦啦">
                                                 <a-icon type="link"/>
                                                 <span>复制链接</span>
                                             </a-menu-item>
-                                            <a-menu-item key="delete">
-                                                <a-icon type="delete"/>
-                                                <span>移到回收站</span>
+                                            <a-menu-item key="share">
+                                                <a-icon type="share-alt"/>
+                                                <span>分享给其他用户</span>
+                                            </a-menu-item>
+                                            <a-menu-item key="add">
+                                                <a-icon type="share-alt"/>
+                                                <span>分享到企业网盘</span>
                                             </a-menu-item>
                                         </a-menu>
                                     </a-dropdown>
@@ -117,23 +143,27 @@
                 </div>
             </div>
         </wrapper-content>
+        <box v-model="showInviteMember" v-if="showInviteMember" :seeUrl="seeUrl"></box>
+        <share v-model="showShare" v-if="showShare"></share>
     </div>
 </template>
 
 <script>
     import {mapState} from 'vuex'
-    import {read as getProject} from "../../api/project";
-    import {collect} from "../../api/projectCollect";
     import {checkResponse} from "../../assets/js/utils";
     import {relativelyTime} from "../../assets/js/dateTime";
-    import {edit, list, recycle} from "../../api/file";
     import pagination from "@/mixins/pagination";
     import {notice} from "../../assets/js/notice";
-    import {getFiles} from "../../api/mock";
-
+    import {getFiles, fileRename} from "../../api/mock";
+    import box from '../../components/file/box'
+    import share from '../../components/file/share'
 
     export default {
         name: "project-space-files",
+        components: {
+            'box':box,
+            'share':share,
+        },
         mixins: [pagination],
         data() {
             return {
@@ -144,6 +174,9 @@
                 project: {},
                 currentFileIndex: {},
                 files: [],
+                showInviteMember: false,
+                showShare: false,
+                seeUrl: 'http://ppkn5nh6t.bkt.clouddn.com/upload/20190410/dbf66652effa4b309d98b00946043690.jpeg',
             }
         },
         computed: {
@@ -157,16 +190,18 @@
                 handler(newVal, oldVal) {
                     //监听是否有上传文件行为
                     const files = newVal.fileList;
-                    const index = files.findIndex(item => item.projectName == this.project.name);
-                    if (index !== -1) {
-                        this.getFiles();
-                    }
+                    /* const index = files.findIndex(item => item.projectName == this.project.name);
+                     if (index !== -1) {
+                         this.getFiles();
+                     }*/
+                    this.getFiles();
                 },
                 deep: true
             }
         },
         created() {
             this.getFiles();
+            this.pag
         },
         mounted() {
             setTimeout(() => {
@@ -174,15 +209,6 @@
             }, 500)
         },
         methods: {
-            getProject() {
-                getProject(this.code).then((res) => {
-
-                    this.project = res.data;
-                    this.$store.dispatch('setTempData', {
-                        projectCode: this.project.code,
-                    })
-                });
-            },
             getFiles(reset = true) {
                 let app = this;
                 if (reset) {
@@ -213,79 +239,60 @@
                 this.pagination.page++;
                 this.getFiles(false);
             },
-            collectProject() {
-                const type = this.project.collected ? 'cancel' : 'collect';
-                collect(this.project.code, type).then((res) => {
-                    if (!checkResponse(res)) {
-                        return;
-                    }
-                    this.project.collected = !this.project.collected;
-                })
-            },
             editFile(file, index) {
                 let app = this;
-             /*   this.files.forEach((v) => {
+                this.files.forEach((v) => {
                     v.editing = false;
                 });
                 this.files[index].editing = true;
                 this.$nextTick(() => {
                     app.$refs[`inputTitle${index}`][0].focus();
                 });
-                this.currentFileIndex = index;*/
+                this.currentFileIndex = index;
+            },
+            seeBox(file) {
+                var file_url = file.fileUrl;
+                this.showInviteMember = true;
+                this.seeUrl = file_url;
+            },
+            opt(action, item) {
+                let app = this;
+                const actionKey = action.key;
+                switch (actionKey) {
+                    case 'share':
+                        this.showShare = true;
+                        break;
+                    case 'add':
+                        notice({
+                            title: '添加成功',
+                        }, 'notice', 'success');
+                        break;
+                    case 'copy':
+                        notice({
+                            title: '复制链接成功',
+                            msg: item.fileUrl
+                        }, 'notice', 'success', 5);
+                        return true;
+                }
             },
             onCellChange(file) {
                 let currentFile = this.files[this.currentFileIndex];
                 this.files.forEach((v) => {
                     v.editing = false;
                 });
-                const fullName = `${file.title}.${file.extension}`;
-                if (fullName != currentFile.fullName) {
-                    edit({title: currentFile.title, fileCode: currentFile.code}).then(res => {
+                const fullName = `${file.name}.${file.extension}`;
+                if (fullName != currentFile.originalName) {
+                    fileRename({fullName: fullName, fileId: currentFile.id}).then(res => {
                         const result = checkResponse(res);
                         if (!result) {
                             return false;
                         }
-                        currentFile.title = file.title;
-                        currentFile.fullName = fullName;
+                        currentFile.name = file.name;
+                        currentFile.originalName = fullName;
                         notice({
                             title: '重命名成功',
                         }, 'notice', 'success');
                     });
-                }
-            },
-            doFile(action, fileCode) {
-                let app = this;
-                const actionKey = action.key;
-                switch (actionKey) {
-                    case 'delete':
-                        this.$confirm({
-                            title: '移到回收站',
-                            content: `您确定要把该文件移到回收站吗？`,
-                            okText: '移到回收站',
-                            okType: 'danger',
-                            cancelText: `再想想`,
-                            onOk() {
-                               /* recycle(fileCode).then((res) => {
-                                    const result = checkResponse(res);
-                                    if (!result) {
-                                        return false;
-                                    }
-                                    app.getFiles();
-                                });
-                                notice({
-                                    title: '成功移到回收站',
-                                    msg: '可在 菜单－查看回收站－文件 中查看'
-                                }, 'notice', 'success', 5);
-                                return Promise.resolve();*/
-                            }
-                        });
-                        break;
-                    case 'copy':
-                        notice({
-                            title: '复制链接成功',
-                            msg: '在地址栏粘贴并打开可下载该资源'
-                        }, 'notice', 'success', 5);
-                        return true;
                 }
             },
             formatTime(time) {
@@ -381,7 +388,7 @@
                                 white-space: nowrap;
                                 position: relative;
                                 margin-bottom: 0;
-                                line-height: 32px;
+                                line-height: 42px;
                             }
 
                             .ant-list-item-action {
@@ -398,7 +405,7 @@
                                 display: flex;
                                 flex-direction: column;
                                 padding-left: 0;
-                                width: 90px;
+                                width: 100px;
                                 text-align: right;
                             }
 
