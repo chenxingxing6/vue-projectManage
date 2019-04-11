@@ -58,5 +58,16 @@ export function fileRename(data) {
     return $http.post('/mock/file/rename');
 }
 
+/*获取操作记录*/
+export function getOperateLog(data) {
+    return $http.post('/mock/getOperateLog');
+}
+
+
+/*获取首页数据*/
+export function getIndexData(data) {
+    return $http.post('/mock/getIndexData');
+}
+
 
 

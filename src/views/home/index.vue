@@ -21,23 +21,15 @@
                             分享数
                         </div>
                         <div class="item-text">
-                            <span>22</span>
+                            <span>{{shareNum}}</span>
                         </div>
                     </div>
-                   <!-- <div class="content-item">
-                        <div class="item-title muted">
-                            团队内排名
-                        </div>
-                        <div class="item-text">
-                            <span>2 <span class="small muted">/ 8</span> </span>
-                        </div>
-                    </div>-->
                     <div class="content-item">
                         <div class="item-title muted">
                             文件总数
                         </div>
                         <div class="item-text">
-                            <span>111</span>
+                            <span>{{fileNum}}</span>
                         </div>
                     </div>
                 </div>
@@ -90,25 +82,15 @@
                     <a-card :loading="loading" :bordered="false" title="最近操作记录" :style="{ marginTop: '24px' }">
                         <div class="block">
                             <el-timeline>
-                                <el-timeline-item timestamp="2018/4/12" placement="top">
-                                    <el-card>
-                                        <h4>更新 Github 模板</h4>
-                                        <p>王小虎 提交于 2018/4/12 20:46</p>
-                                    </el-card>
-                                </el-timeline-item>
-                                <br>
-                                <el-timeline-item timestamp="2018/4/3" placement="top">
-                                    <el-card>
-                                        <h4>更新 Github 模板</h4>
-                                        <p>王小虎 提交于 2018/4/3 20:46</p>
-                                    </el-card>
-                                </el-timeline-item>
-                                <el-timeline-item timestamp="2018/4/2" placement="top">
-                                    <el-card>
-                                        <h4>更新 Github 模板</h4>
-                                        <p>王小虎 提交于 2018/4/2 20:46</p>
-                                    </el-card>
-                                </el-timeline-item>
+                                <div v-for="item in operateLogs">
+                                    <el-timeline-item placement="top">
+                                        <el-card>
+                                            <h4>{{item.operation}}</h4>
+                                            <p>{{item.userName}} 提交于 {{item.createTime}}</p>
+                                        </el-card>
+                                    </el-timeline-item>
+                                    <br>
+                                </div>
                             </el-timeline>
                         </div>
                     </a-card>
@@ -128,23 +110,8 @@
     import MiniProgress from '@/components/chart/MiniProgress'
     import RankList from '@/components/chart/RankList'
     import pagination from "@/mixins/pagination";
+    import {getOperateLog, getIndexData} from "../../api/mock";
 
-
-    const rankList = [];
-    for (let i = 0; i < 7; i++) {
-        rankList.push({
-            name: '杭州二维火科技有限公司  ' + (i + 1) + '号员工',
-            total: 1234.56 - i * 100
-        })
-    }
-
-    const projectList = [];
-    for (let i = 1; i < 13; i++) {
-        projectList.push({
-            "日期": `${i}月`,
-            "数量": (Math.random() * 10 + 1).toFixed(0)
-        })
-    }
 
     export default {
         components: {
@@ -160,12 +127,14 @@
             return {
                 loading: false,
                 yiyan: {},
-                updatelog: [],
-                rankList,
+                operateLogs: [],
+                shareNum:0,
+                fileNum:0,
+                rankList:[],
                 projectTotalData: {
                     chartData: {
                         columns: ['日期', '数量'],
-                        rows: projectList
+                        rows: []
                     },
                     chartSettings: {
                         itemStyle: {
@@ -197,15 +166,10 @@
         },
         created() {
            this.getYiYan();
-           this.init();
+           this.getOperateLog();
+           this.getIndexData();
         },
         methods: {
-            init(reset = true) {
-                if (reset) {
-                    this.pagination.page = 1;
-                    this.pagination.pageSize = 9;
-                }
-            },
             getYiYan() {
                 let app = this;
                 getYiYan(function (data) {
@@ -217,6 +181,27 @@
             },
             showTaskTime(time, timeEnd) {
                 return formatTaskTime(time, timeEnd);
+            },
+            getOperateLog(){
+                var app = this;
+                app.loading = true;
+                getOperateLog().then(res => {
+                    app.operateLogs = res.data.list;
+                    app.loading = false;
+                }).catch(()=>{
+                });
+            },
+            getIndexData() {
+                var app = this;
+                app.loading = true;
+                getIndexData().then(res => {
+                    app.projectTotalData.chartData.rows = res.data.rankdatas;
+                    app.rankList = res.data.ranks;
+                    app.shareNum = res.data.shareNum;
+                    app.fileNum = res.data.fileNum;
+                    app.loading = false;
+                }).catch(()=>{
+                });
             }
         }
     }
