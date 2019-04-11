@@ -53,3 +53,10 @@ export function getSource(data) {
     return $http.get('/mock/getSource');
 }
 
+/*文件重命名*/
+export function fileRename(data) {
+    return $http.post('/mock/file/rename');
+}
+
+
+

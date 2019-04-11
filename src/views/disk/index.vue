@@ -10,7 +10,7 @@
                     </a-input>
                 </div>
                 <div class="menus">
-                    <a-menu mode="inline" v-model="selectedKeys" @click="getMembers">
+                    <a-menu mode="inline" v-model="selectedKeys" @click="getSource">
                         <a-menu-item :key="index.toString()" v-for="(item,index) in menus">
                             <a-icon :type="item.icon"/>
                             <span>{{item.title}}</span>
@@ -27,38 +27,120 @@
             </div>
             <div class="members-content">
                 <vue-scroll ref="contentscroll">
-                    <a-list class="member-list" :loading="loading">
-                        <div v-if="showLoadingMore" slot="loadMore"
-                             :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
-                            <a-spin v-if="loadingMore"/>
-                            <a-button v-else @click="onLoadMore">加载更多</a-button>
-                        </div>
-                        <a-list-item :key="index" v-for="(item, index) in members">
-                            <a-list-item-meta>
-                                <a-avatar slot="avatar" class="user">
-                                    <a-icon type="file" />
-                                </a-avatar>
-                                <div slot="title">
-                                    {{item.originalName}}
-                                    <a-tag class="m-l-sm">{{item.length}}</a-tag>
+
+                    <div class="list-content">
+                        <a-list :loading="loading">
+                            <a-list-item class="list-item-title">
+                                <a-list-item-meta>
+                                    <div class="muted" slot="title">名称</div>
+                                </a-list-item-meta>
+                                <div class="other-info muted">
+                                    <div class="info-item"  style="padding-right: 20px;"><span>大小</span></div>
+                                    <div class="info-item"><span>创建日期</span></div>
+                                    <div class="info-item">
+                                        <span>创建人</span>
+                                    </div>
                                 </div>
-                                <div slot="description">
-                                    <a-tooltip :mouseEnterDelay="0.3" :title="item.originalName">
-                                    <span>{{ item.opTime }}</span>
+                                <span slot="actions" :key="item" v-for="item in 3">
+                                    <span>位</span>
                                 </span>
-                                    </a-tooltip>
+                            </a-list-item>
+                            <a-list-item class="list-item" :key="index" v-for="(item, index) in files">
+                                <a-list-item-meta>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-if="item.extension === 'html'" style="">
+                                        <a-icon type="code" />
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'pdf'">
+                                        <a-icon type="file-pdf"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'txt'">
+                                        <a-icon type="file-text"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'doc' || item.extension === 'docx'">
+                                        <a-icon type="file-word"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'jpg'">
+                                        <a-icon type="file-jpg"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'xls' || item.extension === 'xlsx'">
+                                        <a-icon type="file-excel"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'mp3'">
+                                        <a-icon type="customer-service"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'zip'">
+                                        <a-icon type="folder-open"/>
+                                    </a-avatar>
+                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else>
+                                        <a-icon type="file" />
+                                    </a-avatar>
+                                    <div slot="title">
+                                        <a-tooltip :mouseEnterDelay="0.3">
+                                            <template slot="title">
+                                                <span>{{item.originalName}}</span>
+                                            </template>
+                                            <a-input
+                                                    :ref="`inputTitle${index}`"
+                                                    :auto-focus="true"
+                                                    v-model="item.name"
+                                                    v-show="item.viewFlag"
+                                                    @pressEnter="onCellChange(item)"
+                                                    @blur="onCellChange(item)"></a-input>
+                                            <a class="text-default" v-show="!item.viewFlag" @click="seeBox(item)">{{item.originalName}}</a>
+                                        </a-tooltip>
+                                    </div>
+                                </a-list-item-meta>
+                                <div class="other-info muted">
+                                    <div class="info-item" style="padding-right: 20px;">
+                                        <span>{{item.length}}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <a-tooltip :title="item.createTime">
+                                            <span>{{ formatTime(item.createTime) }}</span>
+                                        </a-tooltip>
+                                    </div>
+                                    <div class="info-item">
+                                        <span>{{item.createUser}}</span>
+                                    </div>
                                 </div>
-                            </a-list-item-meta>
-                            <template>
-                            <a class="muted" slot="actions"
-                               @click="seeFile(item,index)">
-                                <a-tooltip title="查看文件">
-                                    <a-icon type="eye" />
-                                </a-tooltip>
-                            </a>
-                        </template>
-                        </a-list-item>
-                    </a-list>
+                                <span slot="actions">
+                                    <a-tooltip title="下载">
+                                        <a class="muted" target="_blank" :href="item.fileUrl"><a-icon type="download"/></a>
+                                    </a-tooltip>
+                                </span>
+                                <span slot="actions" @click="editFile(item,index)">
+                                    <a-tooltip title="编辑">
+                                        <a-icon type="edit"/>
+                                    </a-tooltip>
+                                </span>
+                                <a class="muted" slot="actions">
+                                    <a-dropdown :trigger="['click']" placement="bottomCenter">
+                                        <a-tooltip :mouseEnterDelay="0.5">
+                                            <template slot="title">
+                                                <span>更多操作</span>
+                                            </template>
+                                            <a class="action-item muted">
+                                                <a-icon type="down"/>
+                                            </a>
+                                        </a-tooltip>
+                                        <a-menu class="field-right-menu"
+                                                @click="copyUrl(item.fileUrl)"
+                                                slot="overlay">
+                                            <a-menu-item key="copy" v-clipboard="item.fileUrl">
+                                                <a-icon type="link"/>
+                                                <span>复制链接</span>
+                                            </a-menu-item>
+                                        </a-menu>
+                                    </a-dropdown>
+                                </a>
+                            </a-list-item>
+                            <div v-if="showLoadingMore" slot="loadMore"
+                                 :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
+                                <a-spin v-if="loadingMore"/>
+                                <a-button v-else @click="onLoadMore">查看更多文件</a-button>
+                            </div>
+                        </a-list>
+                    </div>
                 </vue-scroll>
             </div>
         </div>
@@ -70,7 +152,10 @@
     import _ from 'lodash'
     import box from '../../components/file/box'
     import pagination from "../../mixins/pagination";
-    import {getSource} from "../../api/mock";
+    import {getSource, fileRename} from "../../api/mock";
+    import {relativelyTime} from "../../assets/js/dateTime";
+    import {notice} from "../../assets/js/notice";
+    import {checkResponse} from "../../assets/js/utils";
 
     export default {
         name: "members",
@@ -89,8 +174,8 @@
                     {icon: 'user', title: '视频'},
                 ],
                 currentMenu: {},
+                files: [],
                 loading: false,
-                members: [],
                 showLoadingMore: false,
                 loadingMore: false,
                 showInviteMember: false,
@@ -116,9 +201,12 @@
                 }
                 app.loading = true;
                 getSource(this.requestData).then(res => {
-                    app.members = res.data.files;
+                    app.files = res.data.list;
+                    app.files.forEach((v) => {
+                        v.viewFlag = false;
+                    });
                     app.pagination.total = res.data.total;
-                    app.showLoadingMore = app.pagination.total > app.members.length;
+                    app.showLoadingMore = app.pagination.total > app.files.length;
                     app.loading = false;
                     app.loadingMore = false
                 });
@@ -140,15 +228,55 @@
                 this.pagination.page++;
                 this.init(false);
             },
-            seeFile(file, index) {
+            seeBox(file) {
+                var file_url = file.fileUrl;
                 this.showInviteMember = true;
-                this.seeUrl = "http://193.112.27.123:8012/test.txt";
+                this.seeUrl = file_url;
+            },
+            onCellChange(file) {
+                let currentFile = this.files[this.currentFileIndex];
+                this.files.forEach((v) => {
+                    v.viewFlag = false;
+                });
+                const fullName = `${file.name}.${file.extension}`;
+                if (fullName != currentFile.originalName) {
+                    fileRename({fullName: fullName, fileId: currentFile.id}).then(res => {
+                        const result = checkResponse(res);
+                        if (!result) {
+                            return false;
+                        }
+                        currentFile.name = file.name;
+                        currentFile.originalName = fullName;
+                        notice({
+                            title: '重命名成功',
+                        }, 'notice', 'success');
+                    });
+                }
+            },
+            copyUrl(url) {
+                notice({
+                    title: '复制成功',
+                }, 'notice', 'success');
+            },
+            editFile(file, index) {
+                let app = this;
+                this.files.forEach((v) => {
+                    v.viewFlag = false;
+                });
+                this.files[index].viewFlag = true;
+                this.$nextTick(() => {
+                    app.$refs[`inputTitle${index}`][0].focus();
+                });
+                this.currentFileIndex = index;
             },
             emitEmpty() {
                 this.$refs.keywordInput.focus();
                 this.keyword = '';
                 this.requestData.keyword = '';
                 this.getSource();
+            },
+            formatTime(time) {
+                return relativelyTime(time);
             },
         }
     }
@@ -277,11 +405,71 @@
                     margin-right: 12px;
                 }
 
+                .list-content {
+
+                    .list-item-title {
+                        padding: 10px 20px;
+
+                        .ant-list-item-action {
+                            li {
+                                color: #fff;
+                            }
+
+                            em {
+                                width: 0;
+                            }
+                        }
+                    }
+
+                    .list-item {
+                        border-bottom: none;
+                        margin-bottom: 2px;
+                        /*border-bottom: 1px solid #f5f5f5;*/
+                        padding: 10px 20px;
+                        transition: background-color 218ms;
+
+                        &:hover {
+                            background-color: #f5f5f5;
+                        }
+
+                        .ant-list-item-meta-title {
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            position: relative;
+                            margin-bottom: 0;
+                            line-height: 42px;
+                        }
+
+                        .ant-list-item-action {
+                            em {
+                                width: 0;
+                            }
+                        }
+                    }
+
+                    .other-info {
+                        display: flex;
+
+                        .info-item {
+                            display: flex;
+                            flex-direction: column;
+                            padding-left: 0;
+                            width: 100px;
+                            text-align: right;
+                        }
+
+                        .schedule {
+                            width: 250px;
+                        }
+                    }
+                }
+
                 .ant-avatar {
                     width: 40px;
                     height: 40px;
-                    border-radius: 50%;
-                    padding-top: 2px;
+                    border-radius: 4px;
+                    padding-top: 3px;
                 }
             }
         }

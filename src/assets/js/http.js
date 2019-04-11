@@ -29,12 +29,12 @@ $http.interceptors.request.use(
         if (config.url.indexOf("mock") >=0){
             config.method = 'get';
         }
-        let tokenList = getStore('tokenList', true);
+      /*  let tokenList = getStore('tokenList', true);
         if (tokenList) {
             let accessToken = tokenList.accessToken;
             let tokenType = tokenList.tokenType;
             config.headers.Authorization = `${tokenType} ${accessToken}`;
-        }
+        }*/
        /* let organization = getStore('currentOrganization', true);
         if (organization) {
             config.headers.organizationCode = organization.code;

@@ -64,7 +64,6 @@
             }
         },
         create: function(){
-            debugger
             this.flag = true;
         },
         watch: {

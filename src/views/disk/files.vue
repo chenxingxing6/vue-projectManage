@@ -224,14 +224,14 @@
             },
             editFile(file, index) {
                 let app = this;
-                this.files.forEach((v) => {
+             /*   this.files.forEach((v) => {
                     v.editing = false;
                 });
                 this.files[index].editing = true;
                 this.$nextTick(() => {
                     app.$refs[`inputTitle${index}`][0].focus();
                 });
-                this.currentFileIndex = index;
+                this.currentFileIndex = index;*/
             },
             onCellChange(file) {
                 let currentFile = this.files[this.currentFileIndex];
@@ -265,7 +265,7 @@
                             okType: 'danger',
                             cancelText: `再想想`,
                             onOk() {
-                                recycle(fileCode).then((res) => {
+                               /* recycle(fileCode).then((res) => {
                                     const result = checkResponse(res);
                                     if (!result) {
                                         return false;
@@ -276,7 +276,7 @@
                                     title: '成功移到回收站',
                                     msg: '可在 菜单－查看回收站－文件 中查看'
                                 }, 'notice', 'success', 5);
-                                return Promise.resolve();
+                                return Promise.resolve();*/
                             }
                         });
                         break;

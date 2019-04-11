@@ -50,7 +50,7 @@
                                         <a-icon type="customer-service"/>
                                     </a-avatar>
                                     <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'zip'">
-                                        <a-icon type=" folder-open"/>
+                                        <a-icon type="folder-open"/>
                                     </a-avatar>
                                     <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else>
                                         <a-icon type="file" />
@@ -63,7 +63,7 @@
                                             <a-input
                                                     :ref="`inputTitle${index}`"
                                                     :auto-focus="true"
-                                                    v-model="item.originalName"
+                                                    v-model="item.name"
                                                     v-show="item.editing"
                                                     @pressEnter="onCellChange(item)"
                                                     @blur="onCellChange(item)"></a-input>
@@ -107,9 +107,9 @@
                                             </a>
                                         </a-tooltip>
                                         <a-menu class="field-right-menu"
-                                                @click="doFile($event,item.id)"
+                                                @click="copyUrl(item.fileUrl)"
                                                 slot="overlay">
-                                            <a-menu-item key="copy" v-clipboard="item.fileUrl">
+                                            <a-menu-item key="copy" v-clipboard="item.fileUrl" data-clipboard-text="我是可以复制的内容，啦啦啦啦">
                                                 <a-icon type="link"/>
                                                 <span>复制链接</span>
                                             </a-menu-item>
@@ -137,7 +137,7 @@
     import {relativelyTime} from "../../assets/js/dateTime";
     import pagination from "@/mixins/pagination";
     import {notice} from "../../assets/js/notice";
-    import {getFiles} from "../../api/mock";
+    import {getFiles, fileRename} from "../../api/mock";
     import box from '../../components/file/box'
 
     export default {
@@ -234,20 +234,25 @@
                 this.showInviteMember = true;
                 this.seeUrl = file_url;
             },
+            copyUrl(url) {
+                notice({
+                    title: '复制成功',
+                }, 'notice', 'success');
+            },
             onCellChange(file) {
                 let currentFile = this.files[this.currentFileIndex];
                 this.files.forEach((v) => {
                     v.editing = false;
                 });
-                const fullName = `${file.title}.${file.extension}`;
-                if (fullName != currentFile.fullName) {
-                    edit({title: currentFile.title, fileCode: currentFile.code}).then(res => {
+                const fullName = `${file.name}.${file.extension}`;
+                if (fullName != currentFile.originalName) {
+                    fileRename({fullName: fullName, fileId: currentFile.id}).then(res => {
                         const result = checkResponse(res);
                         if (!result) {
                             return false;
                         }
-                        currentFile.title = file.title;
-                        currentFile.fullName = fullName;
+                        currentFile.name = file.name;
+                        currentFile.originalName = fullName;
                         notice({
                             title: '重命名成功',
                         }, 'notice', 'success');
