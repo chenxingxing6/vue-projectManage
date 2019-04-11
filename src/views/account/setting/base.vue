@@ -34,14 +34,13 @@
                                             ]"
                                     />
                                 </a-form-item>
-                                <a-form-item
-                                        label='简介'
-                                >
+                              <!--  <a-form-item
+                                        label='简介'>
                                     <a-textarea placeholder='个人简介'
                                                 :rows="4"
                                                 v-decorator="['description']"
                                     />
-                                </a-form-item>
+                                </a-form-item>-->
                                 <a-form-item
                                 >
                                     <a-button type='primary' htmlType='submit' :loading="loading">更新基本信息</a-button>
@@ -50,7 +49,7 @@
                         </div>
                         <div class="setting-info-avatar">
                             <span>头像</span>
-                            <a-avatar class="avatar" :size="150" :src="userInfo.avatar">{{userInfo.name}}</a-avatar>
+                            <a-avatar class="avatar" :size="150" :src="userInfo.imgPath">{{userInfo.username}}</a-avatar>
                             <a-upload
                                     name="avatar"
                                     class="avatar-uploader"
@@ -102,7 +101,7 @@
             this.$nextTick(() => {
                 this.form.setFieldsValue({
                     email: this.userInfo.email,
-                    name: this.userInfo.name,
+                    name: this.userInfo.username,
                     description: this.userInfo.description,
                 });
             })
@@ -115,15 +114,14 @@
                         if (!err) {
                             let obj = app.form.getFieldsValue();
                             obj.id = app.userInfo.id;
-                            obj.avatar = app.userInfo.avatar;
+                            obj.avatar = app.userInfo.imgPath;
                             editPersonal(obj).then(res => {
                                 app.loading = false;
                                 if (!checkResponse(res)) {
                                     return;
                                 }
                                 app.userInfo.email = obj.email;
-                                app.userInfo.name = obj.name;
-                                app.userInfo.name = obj.name;
+                                app.userInfo.name = obj.username;
                                 app.userInfo.description = obj.description;
                             });
                         }
@@ -137,7 +135,7 @@
                 }
                 if (info.file.status === 'done') {
                     getBase64(info.file.originFileObj, (imageUrl) => {
-                        this.userInfo.avatar = info.file.response.data.url;
+                        this.userInfo.imgPath = info.file.response.data.url;
                         this.$store.dispatch('SET_USER', this.userInfo);
                         this.uploadLoading = false;
                         // this.$store.dispatch('SET_USER', this.userInfo);

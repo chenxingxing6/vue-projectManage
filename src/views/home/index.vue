@@ -8,11 +8,11 @@
             <div class="header-content">
                 <div class="left-content">
                     <div class="avatar">
-                        <a-avatar :size="64" :src="userInfo.avatar">{{userInfo.name}}</a-avatar>
+                        <a-avatar :size="64" :src="userInfo.imgPath">{{userInfo.username}}</a-avatar>
                     </div>
                     <div class="user-info">
-                        <div class="title">{{helloTime}}{{ userInfo.name }}，祝你开心每一天！</div>
-                        <div class="team muted" v-if="userInfo.position">{{userInfo.position}} | {{ userInfo.department }}</div>
+                        <div class="title">{{helloTime}}{{ userInfo.username }}，祝你开心每一天！</div>
+                        <div class="team muted">{{userInfo.companyName}} | {{ userInfo.deptName }}</div>
                     </div>
                 </div>
                 <div class="right-content">
