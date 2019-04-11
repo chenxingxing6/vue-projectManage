@@ -117,7 +117,7 @@
                                         <a-menu class="field-right-menu"
                                                 @click="opt($event,item)"
                                                 slot="overlay">
-                                            <a-menu-item key="copy" v-clipboard="item.fileUrl" data-clipboard-text="我是可以复制的内容，啦啦啦啦">
+                                            <a-menu-item key="copy" v-clipboard:copy="item.fileUrl" v-model="item.fileUrl">
                                                 <a-icon type="link"/>
                                                 <span>复制链接</span>
                                             </a-menu-item>

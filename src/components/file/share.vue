@@ -10,7 +10,7 @@
         >
             <div class="header">
                 <span>用户分享</span>
-                <a @click="createInviteLink">通过链接分享</a>
+                <a @click="createShareUrl()">通过链接分享</a>
             </div>
             <div class="search-content">
                 <a-input v-model="keyword" placeholder="输入用户名或邮箱查找">
@@ -26,14 +26,7 @@
                         :locale="{emptyText: (keyword && keyword.length > 1) ? '没有搜索到相关用户' : ''}">
                     <a-list-item slot="renderItem" slot-scope="item">
                     <span slot="actions">
-                        <a-button size="small" type="dashed" icon="user-add"
-                                  v-if="!item.joined"
-                                  @click="invite(item)"
-                        >分享</a-button>
-                     <!--   <template v-else>
-                             <a-icon type="user"></a-icon>
-                            <span> 已加入</span>
-                        </template>-->
+                        <a-button size="small" type="dashed" icon="user-add" @click="shareToUser(item.id)">分享</a-button>
                      </span>
                         <a-list-item-meta :description="item.email">
                             <span slot="title">{{item.username}} <i style="font-size: 5px; font-family: Noteworthy; color: grey;">{{item.dept}}</i></span>
@@ -48,8 +41,7 @@
                 :width="600"
                 v-model="linkInfo.modalStatus"
                 :title="linkInfo.modalTitle"
-                :footer="null"
-        >
+                :footer="null">
             <div class="header">
                 <p>链接有效日期：{{linkInfo.overTime}}</p>
                 <a-input-search
@@ -67,10 +59,9 @@
 <script>
     import _ from 'lodash'
     import moment from 'moment';
-    import {inviteMember, searchInviteMember} from "../../api/projectMember";
-    import {findUser} from "../../api/mock";
+    import {findUser, shareToUser, createShareUrl} from "../../api/mock";
     import {checkResponse} from "../../assets/js/utils";
-    import {createInviteLink} from "../../api/common/common";
+    import {notice} from "../../assets/js/notice";
 
 
 
@@ -119,21 +110,24 @@
             }
         },
         methods: {
-            invite(item) {
-                inviteMember(item.memberCode, this.projectCode).then((res) => {
+            shareToUser(userId) {
+                var fileId = '11';
+                shareToUser(userId, fileId).then((res) => {
                     const success = checkResponse(res);
                     if (success) {
-                        item.joined = true;
+                        notice({
+                            title: '分享成功',
+                        }, 'notice', 'success');
                     }
                 })
             },
-            createInviteLink() {
+            createShareUrl() {
                 if (!this.linkInfo.link) {
-                    createInviteLink({inviteType: 'project', sourceCode: this.projectCode}).then(res => {
+                    createShareUrl().then(res => {
                         const success = checkResponse(res);
                         if (success) {
                             this.linkInfo.modalStatus = true;
-                            this.linkInfo.link = window.location.href.split('#')[0] + '#/invite_from_link/' + res.data.code;
+                            this.linkInfo.link = window.location.href.split('#')[0] + '#/invite_from_link/' + res.data.url;
                             this.linkInfo.overTime = moment(res.data.code.over_time).format('YYYY年M月D日 HH:mm');
                         }
                     });

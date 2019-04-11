@@ -75,5 +75,17 @@ export function findUser(data) {
     return $http.post('/mock/findUser');
 }
 
+/*分享给用户*/
+export function shareToUser(data) {
+    return $http.post('/mock/file/rename');
+}
+
+/*创建分享链接*/
+export function createShareUrl(data) {
+    return $http.post('/mock/createShareUrl');
+}
+
+
+
 
 
