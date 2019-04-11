@@ -46,7 +46,7 @@
                     </span>
                     <a-list-item-meta
                             :description="item.createTime">
-                        <router-link slot="title" :to="'/disk/list' + item.id">{{item.fileName}}</router-link>
+                        <router-link slot="title" :to="''">{{item.fileName}}</router-link>
                         <a-avatar slot="avatar" icon="file" style="padding-top: 5px"/>
                     </a-list-item-meta>
                     <div class="other-info muted">

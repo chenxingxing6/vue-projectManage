@@ -21,7 +21,7 @@
                       @complete="complete"
                       class="uploader-workplace">
                 <vue-scroll>
-                    <a-button @click="testSomeThing">测试</a-button>
+                  <!--  <a-button @click="testSomeThing">测试</a-button>
                     <uploader-unsupport></uploader-unsupport>
                     <uploader-btn>select files</uploader-btn>
                     <uploader-drop>
@@ -29,7 +29,7 @@
                         <uploader-btn>select files</uploader-btn>
                         <uploader-btn :attrs="attrs">select images</uploader-btn>
                         <uploader-btn :directory="true">select folder</uploader-btn>
-                    </uploader-drop>
+                    </uploader-drop>-->
                     <uploader-list>
                         <template slot-scope="files">
                             <ul class="uploader-wrapper">
@@ -201,7 +201,7 @@
             complete() { //所有文件上传完成
                 console.log('complete', arguments);
                 this.progressTotal = this.completeTotal = 0;
-                notice({title: '关联文件成功'}, 'notice', 'success');
+                notice({title: '文件上传成功'}, 'notice', 'success');
                 setTimeout(() => {
                     this.showFiles = false;
                 }, 3000);
