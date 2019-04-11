@@ -18,10 +18,6 @@
 
 <script>
     import _ from 'lodash'
-    import moment from 'moment';
-    import {inviteMember, searchInviteMember} from "../../api/projectMember";
-    import {checkResponse} from "../../assets/js/utils";
-    import {createInviteLink} from "../../api/common/common";
 
     export default {
         name: "box",
@@ -71,23 +67,11 @@
         },
         methods: {
             invite(item) {
-                inviteMember(item.memberCode, this.projectCode).then((res) => {
-                    const success = checkResponse(res);
-                    if (success) {
-                        item.joined = true;
-                    }
-                })
+
             },
             createInviteLink() {
                 if (!this.linkInfo.link) {
-                    createInviteLink({inviteType: 'project', sourceCode: this.projectCode}).then(res => {
-                        const success = checkResponse(res);
-                        if (success) {
-                            this.linkInfo.modalStatus = true;
-                            this.linkInfo.link = window.location.href.split('#')[0] + '#/invite_from_link/' + res.data.code;
-                            this.linkInfo.overTime = moment(res.data.code.over_time).format('YYYY年M月D日 HH:mm');
-                        }
-                    });
+
                 }else{
                     this.linkInfo.modalStatus = true;
                 }
@@ -101,10 +85,6 @@
                         return false;
                     }
                     this.searching = true;
-                    searchInviteMember(this.keyword, this.projectCode).then(res => {
-                        this.searching = false;
-                        this.list = res.data;
-                    });
                 }, 500
             ),
             cancel() {

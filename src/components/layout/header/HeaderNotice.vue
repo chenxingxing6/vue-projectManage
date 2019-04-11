@@ -38,7 +38,6 @@
 
 <script>
     import moment from 'moment';
-    import {selfList} from "../../../api/task";
     import {getNotice} from "../../../api/mock";
 
     export default {

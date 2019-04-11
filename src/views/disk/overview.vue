@@ -7,13 +7,6 @@
                         <a-tooltip :mouseEnterDelay="0.3" :title="project.name">
                             <span class="nav-title">{{ project.name }}</span>
                         </a-tooltip>
-                        <span class="actions">
-                             <a-tooltip :mouseEnterDelay="0.3" :title="project.collected ? '取消收藏' : '加入收藏'"
-                                        @click="collectProject">
-                            <a-icon type="star" theme="filled" style="color: grey;" v-show="!project.collected"/>
-                            <a-icon type="star" theme="filled" style="color: #ffaf38;" v-show="project.collected"/>
-                        </a-tooltip>
-                        </span>
                         <span class="label label-normal" v-if="project.private === 0"><a-icon
                                 type="global"/> 公开</span>
                     </a-breadcrumb-item>
@@ -83,8 +76,6 @@
 
 
 <script>
-    import {read as getProject} from "../../api/project";
-    import {collect} from "../../api/projectCollect";
     import {checkResponse} from "../../assets/js/utils";
     import {getFileLog} from "../../api/mock";
     import {relativelyTime} from "../../assets/js/dateTime";
@@ -109,13 +100,6 @@
         methods: {
             init() {
                 this.getProjectLog();
-            },
-            getProject() {
-                this.loading = true;
-                getProject(this.code).then((res) => {
-                    this.loading = false;
-                    this.project = res.data;
-                });
             },
             getProjectLog(reset = true) {
                 let app = this;
@@ -152,15 +136,6 @@
                 this.loadingMore = true;
                 this.pagination.page++;
                 this.getProjectLog(false);
-            },
-            collectProject() {
-                const type = this.project.collected ? 'cancel' : 'collect';
-                collect(this.project.code, type).then((res) => {
-                    if (!checkResponse(res)) {
-                        return;
-                    }
-                    this.project.collected = !this.project.collected;
-                })
             },
             formatTime(time) {
                 return relativelyTime(time);
