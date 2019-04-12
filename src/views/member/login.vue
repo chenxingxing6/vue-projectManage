@@ -109,7 +109,6 @@
 </template>
 
 <script>
-    import md5 from 'md5'
     import {mapActions} from 'vuex'
     import {getCaptcha, Login} from '@/api/mock'
     import {info} from '@/api/system';
@@ -175,7 +174,9 @@
                         if (!err) {
                             flag = true;
                             loginParams[!app.loginType ? 'account' : 'account'] = values.account;
-                            loginParams.password = md5(values.password)
+                            //loginParams.password = md5(values.password)
+                            loginParams.password = values.password;
+                            loginParams.type = '0';
                         }
                     })
                     // 使用手机号登录
@@ -184,16 +185,19 @@
                         if (!err) {
                             flag = true;
                             loginParams = Object.assign(loginParams, values)
+                            loginParams.type = '1';
                         }
                     })
                 }
 
                 if (!flag) return;
                 app.loginBtn = true;
+                console.log(loginParams)
                 //loginParams.clientid = getStore('client_id');
                 Login(loginParams).then(res => {
-                    if (checkResponse(res)) {
+                    if (checkResponse(res, true)) {
                         loginParams.token = res.token;
+                        setStore("token", res.token);
                         const obj = {
                             userInfo: res.data.member,
                             tokenList: 7033929,
@@ -280,7 +284,7 @@
                         });
                         this.$notification.success({
                             message: '欢迎',
-                            description: `${res.data.member.name}，${timeFix()}，欢迎回来`,
+                            description: `${res.data.member.username}，${timeFix()}，欢迎回来`,
                         })
                     }
                 }, 500);

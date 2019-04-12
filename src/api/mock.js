@@ -1,9 +1,9 @@
 import $http from '@/assets/js/http'
 
 /*登陆*/
-export function Login() {
+export function Login(data) {
     //return $http.post('/mock/login');
-    return $http.post('login', {username: '1111', password: 'password'});
+    return $http.post('login', data);
 }
 
 
