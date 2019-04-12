@@ -30,6 +30,11 @@ $http.interceptors.request.use(
         if (config.url.indexOf("mock") >=0){
             config.method = 'get';
         }
+        let token = getStore('token');
+        if (token){
+            config.headers.Authorization = `${token}`;
+            config.headers.token = `${token}`;
+        }
       /*  let tokenList = getStore('tokenList', true);
         if (tokenList) {
             let accessToken = tokenList.accessToken;

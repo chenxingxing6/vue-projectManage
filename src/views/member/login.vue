@@ -233,7 +233,6 @@
                         getCaptcha(values.mobile)
                             .then(res => {
                                 this.$message.destroy();
-
                                 if (!checkResponse(res)) {
                                     return false;
                                 }

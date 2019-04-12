@@ -6,6 +6,11 @@ export function Login(data) {
     return $http.post('login', data);
 }
 
+/*获取验证码*/
+export function getCaptcha(mobile) {
+    return $http.post('getCaptcha', {mobile: mobile});
+}
+
 
 /*获取菜单*/
 export function getMenu() {
@@ -18,10 +23,7 @@ export function getNotice(page, pageSize) {
 }
 
 
-/*获取验证码*/
-export function getCaptcha(mobile) {
-    return $http.post('/mock/getCaptcha', {mobile: mobile});
-}
+
 
 /*获取文件列表*/
 export function getFiles(data) {
