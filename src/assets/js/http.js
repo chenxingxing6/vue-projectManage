@@ -35,16 +35,6 @@ $http.interceptors.request.use(
             config.headers.Authorization = `${token}`;
             config.headers.token = `${token}`;
         }
-      /*  let tokenList = getStore('tokenList', true);
-        if (tokenList) {
-            let accessToken = tokenList.accessToken;
-            let tokenType = tokenList.tokenType;
-            config.headers.Authorization = `${tokenType} ${accessToken}`;
-        }*/
-       /* let organization = getStore('currentOrganization', true);
-        if (organization) {
-            config.headers.organizationCode = organization.code;
-        }*/
         return config;
     },
     error => {
