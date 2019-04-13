@@ -27,6 +27,16 @@ export function getShares(data) {
 }
 
 
+/*获取网盘文件类型*/
+export function getSourceType() {
+    return $http.post('getSourceType');
+}
+
+/*获取资源列表*/
+export function getSource(data) {
+    return $http.post('getSource', data);
+}
+
 
 /*获取文件列表*/
 export function getFiles(data) {
@@ -43,13 +53,6 @@ export function getFollowUser(data) {
     return $http.post('/getFollowUser', data);
 }
 
-
-
-
-/*获取资源列表*/
-export function getSource(data) {
-    return $http.get('/getSource', data);
-}
 
 /*文件重命名*/
 export function fileRename(data) {

@@ -4,16 +4,16 @@
         <div class="layout-item left">
             <div class="left-content">
                 <div class="search-content">
-                    <a-input size="large" v-model="keyword" ref="keywordInput" placeholder="搜索">
+                    <a-input size="large" v-model="keyword" ref="keywordInput" placeholder="搜索（文件名）">
                         <a-icon slot="prefix" class="muted" type="search"/>
                         <a-icon v-if="keyword" slot="suffix" class="muted" type="close-circle" @click="emitEmpty"/>
                     </a-input>
                 </div>
                 <div class="menus">
-                    <a-menu mode="inline" v-model="selectedKeys" @click="getSource">
+                    <a-menu mode="inline" v-model="selectedKeys">
                         <a-menu-item :key="index.toString()" v-for="(item,index) in menus">
-                            <a-icon :type="item.icon"/>
-                            <span>{{item.title}}</span>
+                            <a-icon type="file"/>
+                            <span @click="getSource(item)">{{item.name}}</span>
                         </a-menu-item>
                     </a-menu>
                 </div>
@@ -22,7 +22,7 @@
         <div class="layout-item right">
             <div class="header">
                 <div class="title">
-                    <span>{{currentMenu.title}} · {{pagination.total}}</span>
+                    <span>{{currentMenu.name}} · {{pagination.total}}</span>
                 </div>
             </div>
             <div class="members-content">
@@ -152,7 +152,7 @@
     import _ from 'lodash'
     import box from '../../components/file/box'
     import pagination from "../../mixins/pagination";
-    import {getSource, fileRename} from "../../api/mock";
+    import {getSource, fileRename, getSourceType} from "../../api/mock";
     import {relativelyTime} from "../../assets/js/dateTime";
     import {notice} from "../../assets/js/notice";
     import {checkResponse} from "../../assets/js/utils";
@@ -168,12 +168,9 @@
             return {
                 keyword: '',
                 selectedKeys: ['0'],
-                menus: [
-                    {icon: 'usergroup-add', title: '所有文件'},
-                    {icon: 'user', title: '图片'},
-                    {icon: 'user', title: '视频'},
-                ],
+                menus: [],
                 currentMenu: {},
+                type: 0,
                 files: [],
                 loading: false,
                 showLoadingMore: false,
@@ -188,27 +185,37 @@
             },
         },
         created() {
-            this.currentMenu = this.menus[0];
-            this.getSource({key: 0});
+            this.getSourceType();
+        },
+        mounted() {
         },
         methods: {
-            getSource({key} = {}) {
+            getSource(item) {
                 let app = this;
-                if (key != undefined) {
-                    this.currentMenu = this.menus[key];
-                    this.selectedKeys = [key.toString()];
-                    this.requestData.searchType = key;
+                if (item != undefined) {
+                    this.currentMenu = item;
+                    app.requestData.searchType = item.type;
                 }
                 app.loading = true;
-                getSource(this.requestData).then(res => {
-                    app.files = res.data.list;
-                    app.files.forEach((v) => {
-                        v.viewFlag = false;
-                    });
-                    app.pagination.total = res.data.total;
-                    app.showLoadingMore = app.pagination.total > app.files.length;
-                    app.loading = false;
-                    app.loadingMore = false
+                getSource(app.requestData).then(res => {
+                    if (checkResponse(res)) {
+                        app.files = res.data.list;
+                        app.files.forEach((v) => {
+                            v.viewFlag = false;
+                        });
+                        app.pagination.total = res.total;
+                        app.showLoadingMore = app.pagination.total > app.files.length;
+                        app.loading = false;
+                        app.loadingMore = false
+                    }
+                });
+            },
+            getSourceType() {
+                let app = this;
+                getSourceType().then(res => {
+                    app.menus = res.data.list;
+                    app.currentMenu = app.menus[0];
+                    app.getSource(app.currentMenu);
                 });
             },
             search: _.debounce(

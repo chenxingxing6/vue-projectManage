@@ -4,7 +4,7 @@
         <div class="layout-item left">
             <div class="left-content">
                 <div class="search-content">
-                    <a-input size="large" v-model="keyword" ref="keywordInput" placeholder="搜索">
+                    <a-input size="large" v-model="keyword" ref="keywordInput" placeholder="搜索(用户名)">
                         <a-icon slot="prefix" class="muted" type="search"/>
                         <a-icon v-if="keyword" slot="suffix" class="muted" type="close-circle" @click="emitEmpty"/>
                     </a-input>
@@ -43,7 +43,7 @@
                                 </div>
                                 <div slot="description">
                                     <span>{{item.email}}
-                                    <span> - 智慧商圈服务端</span>
+                                    <span> {{item.deptName}} </span>
                                 </span>
                                 </div>
                             </a-list-item-meta>
@@ -81,8 +81,7 @@
                 keyword: '',
                 selectedKeys: ['0'],
                 menus: [
-                    {icon: 'team', title: '所有用户'},
-                    {icon: 'usergroup-add', title: '已关注'},
+                    {icon: 'team', title: '已关注'},
                     {icon: 'user', title: '未关注'},
                 ],
                 currentMenu: {},
@@ -112,8 +111,8 @@
                 app.loading = true;
                 getFollowUser(this.requestData).then(res => {
                     app.members = res.data.list;
-                    app.pagination.total = res.data.total;
-                    app.showLoadingMore = app.pagination.total > app.members.length;
+                  /*  app.pagination.total = res.data.total;
+                    app.showLoadingMore = app.pagination.total > app.members.length;*/
                     app.loading = false;
                     app.loadingMore = false
                 });
