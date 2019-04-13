@@ -17,8 +17,8 @@ export function getMenu() {
 }
 
 /*获取通知*/
-export function getNotice(page, pageSize) {
-    return $http.post('/getNotice', {page: page, pageSize: pageSize});
+export function getNotice(data) {
+    return $http.post('/getNotice', data);
 }
 
 

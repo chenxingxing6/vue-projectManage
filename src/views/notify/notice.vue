@@ -7,9 +7,9 @@
                         :autoFormCreate="(form)=>{this.searchForm = form}"
                         @submit.prevent="handleSearchSubmit">
                     <a-form-item
-                            label='关键字'
+                            label='标题'
                             fieldDecoratorId="title">
-                        <a-input placeholder='请输入关键字'/>
+                        <a-input placeholder='请输入标题'/>
                     </a-form-item>
                     <a-form-item
                             label='日期'
@@ -41,11 +41,11 @@
         dataIndex: 'title',
     },{
         title: '时间',
-        dataIndex: 'create_time',
+        dataIndex: 'createTime',
         width: '30%',
     },{
         title: '创建者',
-        dataIndex: 'create_user',
+        dataIndex: 'createUser',
         width: '30%',
     }];
     export default {

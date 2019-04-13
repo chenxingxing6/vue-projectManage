@@ -73,7 +73,7 @@
                 this.$router.push('/notify/notice');
             },
             fetchNotice() {
-                getNotice({page: this.task.page, pageSize: this.task.pageSize}).then(res => {
+                getNotice().then(res => {
                     this.task.list = res.data.list;
                     this.task.total = res.data.total;
                     this.total = this.task.total;
