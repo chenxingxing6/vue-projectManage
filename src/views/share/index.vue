@@ -109,17 +109,17 @@
                 let app = this;
                 if (key != undefined) {
                     this.currentMenu = this.menus[key];
-                    this.selectedKeys = [key.toString()];
-                    this.requestData.searchType = key;
+                    app.selectedKeys = [key.toString()];
+                    app.requestData.searchType = key;
                 }
                 app.loading = true;
-                getShares().then(res => {
+                console.log(app.requestData)
+                getShares(app.requestData).then(res => {
                     app.dataSource = res.data.list;
                     app.pagination.total = res.data.total;
                     app.showLoadingMore = app.pagination.total > app.dataSource.length;
                     app.loading = false;
                     app.loadingMore = false
-                }).catch(()=>{
                 });
             },
             onLoadMore() {

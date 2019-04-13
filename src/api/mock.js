@@ -13,13 +13,19 @@ export function getCaptcha(mobile) {
 
 /*获取菜单*/
 export function getMenu() {
-    return $http.post('/getMenu');
+    return $http.post('getMenu');
 }
 
 /*获取通知*/
 export function getNotice(data) {
-    return $http.post('/getNotice', data);
+    return $http.post('getNotice', data);
 }
+
+/*获取分享列表*/
+export function getShares(data) {
+    return $http.post('getShares', data);
+}
+
 
 
 /*获取文件列表*/
@@ -38,10 +44,6 @@ export function getFollowUser(data) {
 }
 
 
-/*获取分享列表*/
-export function getShares(data) {
-    return $http.get('/getShares', data);
-}
 
 
 /*获取资源列表*/
