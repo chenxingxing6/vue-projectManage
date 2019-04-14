@@ -58,21 +58,7 @@
                 });
             },
             acceptInvite() {
-                if (this.inviteLink.invite_type == 'project') {
-                   /* _joinByInviteLink(this.$route.params.code).then(res => {
-                        const result = checkResponse(res);
-                        if (!result) {
-                            return false;
-                        }
-                        this.$router.replace({name: 'task', params: {code: this.inviteLink.source_code}})
-                    });*/
-                } else if (this.inviteLink.invite_type == 'organization') {
-                   /* joinOrganation(this.$route.params.code).then(res => {
-                       ``
-                        this.$notice({title: '你已成功加入组织', msg: '重新登录后可选择进入该组织'}, 'notice', 'success');
-                        this.$router.replace('/')
-                    });*/
-                }
+
             }
         }
     }

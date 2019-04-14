@@ -37,6 +37,12 @@ export default [
         component: resolve => require(['@/views/followuser/detail'], resolve),
         meta: {model: 'followuser', info:{show_slider: false}},
     },
+    {
+        name: 'link',
+        path: '/share/link',
+        component: resolve => require(['@/views/share/link'], resolve),
+        meta: {model: 'share', info:{show_slider: false}},
+    },
  /*   {
         name: 'files',
         path: '/disk/files',

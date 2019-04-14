@@ -119,7 +119,8 @@
                         return getStore('tempData', true);//query暂时无法动态响应
                     },
                     headers: function () {
-                        const auth = getUserId("11");
+                        const userInfo = getStore('userInfo', true);
+                        const auth =  getUserId(userInfo.id);
                         return auth;
                     },
                 },

@@ -2,18 +2,18 @@
     <div class="inviteFromLink" style="height: 100%;">
         <div class="content">
             <a-spin :spinning="loading">
-                <a-card :title="`来自 ${inviteLink.member.name} 的分享`">
+                <a-card :title="`来自  [${inviteLink.member.dept} - ${inviteLink.member.userName}]  的分享`">
                     <div class="header">
                     <span>
-                        {{inviteLink.member.name}} 邀请你
+                       <a @click="seeBox(inviteLink.member)"> {{inviteLink.member.fileName}} </a>
                     </span>
                     </div>
                     <div class="member-info">
                         <div class="avatar">
-                            <a-avatar size="large" :src="inviteLink.member.avatar"></a-avatar>
+                            <a-avatar size="large" :src="inviteLink.member.imgPath"></a-avatar>
                         </div>
                         <div class="info">
-                            <p>{{inviteLink.member.name}}</p>
+                            <p>{{inviteLink.member.userName}}</p>
                             <p class="muted">{{inviteLink.member.email}}</p>
                         </div>
                     </div>
@@ -23,14 +23,20 @@
                 </a-card>
             </a-spin>
         </div>
+        <box v-model="showInviteMember" v-if="showInviteMember" :seeUrl="seeUrl"></box>
     </div>
 </template>
 <script>
     import {mapState} from 'vuex'
     import {checkResponse} from "@/assets/js/utils";
-    import {getLinkInfo} from "../../api/mock";
+    import {getLinkInfo, shareToUser} from "../../api/mock";
+    import {notice} from "../../assets/js/notice";
+    import box from '../../components/file/box'
 
     export default {
+        components: {
+            'box':box,
+        },
         data() {
             return {
                 loading: false,
@@ -40,6 +46,9 @@
                         email: '341'
                     }
                 },
+                code :this.$route.query.code,
+                seeUrl: '',
+                showInviteMember: false,
             }
         },
         computed: {
@@ -48,19 +57,30 @@
             })
         },
         created() {
-            //this.getInviteInfo();
+            this.getInviteInfo();
         },
         methods: {
             getInviteInfo() {
                 this.loading = true;
-                getLinkInfo(this.$route.params.code).then(res => {
-                    this.inviteLink = res.data;
+                getLinkInfo({code: this.code}).then(res => {
+                    this.inviteLink.member = res.data;
                     this.loading = false;
                 });
             },
             acceptFile() {
-
-            }
+                shareToUser(this.inviteLink.member.userId, this.inviteLink.member.fileId).then((res) => {
+                    const success = checkResponse(res);
+                    if (success) {
+                        notice({
+                            title: '提取成功',
+                        }, 'notice', 'success');
+                    }
+                })
+            },
+            seeBox(file) {
+                this.showInviteMember = true;
+                this.seeUrl = "http://localhost:8012/disk/"+ file.fileName;
+            },
         }
     }
 </script>

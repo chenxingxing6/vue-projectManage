@@ -126,12 +126,12 @@
             },
             createShareUrl() {
                 if (!this.linkInfo.link) {
-                    createShareUrl().then(res => {
+                    createShareUrl({fileId: this.fileId}).then(res => {
                         const success = checkResponse(res);
                         if (success) {
                             this.linkInfo.modalStatus = true;
-                            this.linkInfo.link = window.location.href.split('#')[0] + '#/invite_from_link/' + res.data;
-                            this.linkInfo.overTime = moment(res.data.code.over_time).format('YYYY年M月D日 HH:mm');
+                            this.linkInfo.link = window.location.href.split('#')[0] + '#/share/link?code=' + res.data;
+                            //this.linkInfo.overTime = moment(res.data.code.over_time).format('YYYY年M月D日 HH:mm');
                         }
                     });
                 }else{

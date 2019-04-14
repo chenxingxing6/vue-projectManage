@@ -101,6 +101,10 @@ export function getUserId(userId) {
     return {userId: `${accessToken}`};
 }
 
+export function getLinkInfo(data) {
+    return $http.post('getLinkInfo', data);
+}
+
 
 
 /**--------资源库-------**/
