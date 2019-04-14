@@ -34,11 +34,16 @@
                         </div>
 
                         <a-list-item slot="renderItem" slot-scope="item,index">
+                            <span slot="actions" @click="downLoad(item,index)">
+                         <a-tooltip title="下载">
+                              <a-icon type="download"/>
+                         </a-tooltip>
+                             </span>
                             <span slot="actions" @click="del(item,index)">
                          <a-tooltip title="移至回收站">
                               <a-icon type="delete"/>
                          </a-tooltip>
-                    </span>
+                             </span>
                             <span slot="actions" @click="seeDetail(item)">
                          <a-tooltip title="查看详情">
                            <i class="el-icon-view"></i>
@@ -70,8 +75,9 @@
 
 <script>
     import pagination from "../../mixins/pagination";
-    import {getShares} from "../../api/mock";
+    import {getShares, delByShareId} from "../../api/mock";
     import box from '../../components/file/box'
+    import {notice} from "../../assets/js/notice";
 
     export default {
         components: {
@@ -93,7 +99,7 @@
                 showLoadingMore: false,
                 loadingMore: false,
                 showInviteMember: false,
-                seeUrl: 'http://193.112.27.123:8012/onlinePreview?url=http%3A%2F%2F193.112.27.123%3A8012%2Fdemo%2Ftimg.gif',
+                seeUrl: '',
             }
         },
         created() {
@@ -101,9 +107,9 @@
             this.getMembers({key: 0});
         },
         methods: {
-            seeDetail() {
+            seeDetail(item) {
                 this.showInviteMember = true;
-                this.seeUrl = "http://193.112.27.123:8012/test.txt";
+                this.seeUrl = "http://localhost:8012/disk/"+ item.fileName;
             },
             getMembers({key} = {}) {
                 let app = this;
@@ -113,7 +119,6 @@
                     app.requestData.searchType = key;
                 }
                 app.loading = true;
-                console.log(app.requestData)
                 getShares(app.requestData).then(res => {
                     app.dataSource = res.data.list;
                     app.pagination.total = res.data.total;
@@ -127,17 +132,24 @@
                 this.pagination.page++;
                 this.init(false);
             },
-            del(member, index) {
+            del(share, index) {
+                let app = this;
                 this.$confirm('删除该记录, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning',
                     center: true
                 }).then(() => {
-
+                    delByShareId({shareId: share.id}).then(res => {
+                        app.dataSource.splice(index, 1);
+                        notice({title: '删除成功'}, 'notice', 'success');
+                    });
                 }).catch(() => {
 
                 });
+            },
+            downLoad(file) {
+                window.open("http://localhost:8888/api/fileDownload?fileId="+file.fileId);
             },
         }
     }

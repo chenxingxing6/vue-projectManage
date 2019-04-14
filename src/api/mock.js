@@ -21,10 +21,6 @@ export function getNotice(data) {
     return $http.post('getNotice', data);
 }
 
-/*获取分享列表*/
-export function getShares(data) {
-    return $http.post('getShares', data);
-}
 
 
 
@@ -40,10 +36,6 @@ export function getFileLog(data) {
 }
 
 
-/*文件重命名*/
-export function fileRename(data) {
-    return $http.post('/file/rename', data);
-}
 
 /*获取操作记录*/
 export function getOperateLog(data) {
@@ -73,9 +65,22 @@ export function createShareUrl(data) {
 }
 
 
+/**---------分享--------**/
+/*获取分享列表*/
+export function getShares(data) {
+    return $http.post('getShares', data);
+}
+
+export function delByShareId(data) {
+    return $http.post('delByShareId', data);
+}
+
+
+
+
+
 
 /**--------资源库-------**/
-
 /*获取网盘文件类型*/
 export function getSourceType() {
     return $http.post('getSourceType');
@@ -92,6 +97,10 @@ export function fileDownload(data) {
     return $http.post('fileDownload', data);
 }
 
+/*文件重命名*/
+export function fileRename(data) {
+    return $http.post('/file/rename', data);
+}
 
 
 

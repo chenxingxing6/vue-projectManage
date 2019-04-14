@@ -21,7 +21,7 @@ getUrl(fileUrl){
 ```
 
 ---
-文件下载
+文件下载(资源库，分享，网盘)
 ```js
 downLoad(file) {
     window.location.href = "http://localhost:8888/api/fileDownload?fileId="+file.id;

@@ -117,7 +117,7 @@
             min-height: 1px;
             min-width: 1px;
             margin: 100px auto;
-            margin-top: 145px;
+            margin-top: 75px;
 
             .task-detail-spin {
                 width: 50%;
