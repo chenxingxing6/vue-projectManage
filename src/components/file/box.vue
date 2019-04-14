@@ -87,7 +87,7 @@
                 $(".task-detail-spin").css("width", "50%");
             },
             getUrl(fileUrl){
-                return getFileUrl(fileUrl, 'remote');
+                return getFileUrl(fileUrl, 'local');
             }
         }
     }

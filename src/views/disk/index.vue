@@ -105,7 +105,7 @@
                                 </div>
                                 <span slot="actions">
                                     <a-tooltip title="下载">
-                                        <a class="muted" target="_blank" :href="item.fileUrl"><a-icon type="download"/></a>
+                                        <a class="muted" @click="downLoad(item)"><a-icon type="download"/></a>
                                     </a-tooltip>
                                 </span>
                                 <span slot="actions" @click="editFile(item,index)">
@@ -152,7 +152,7 @@
     import _ from 'lodash'
     import box from '../../components/file/box'
     import pagination from "../../mixins/pagination";
-    import {getSource, fileRename, getSourceType} from "../../api/mock";
+    import {getSource, fileRename, getSourceType, fileDownload} from "../../api/mock";
     import {relativelyTime} from "../../assets/js/dateTime";
     import {notice} from "../../assets/js/notice";
     import {checkResponse} from "../../assets/js/utils";
@@ -247,7 +247,7 @@
                 });
                 const fullName = `${file.name}.${file.extension}`;
                 if (fullName != currentFile.originalName) {
-                    fileRename({fullName: fullName, fileId: currentFile.id}).then(res => {
+                    fileRename({fileName: fullName, fileId: currentFile.id}).then(res => {
                         const result = checkResponse(res);
                         if (!result) {
                             return false;
@@ -259,6 +259,9 @@
                         }, 'notice', 'success');
                     });
                 }
+            },
+            downLoad(file) {
+                window.location.href = "http://localhost:8888/api/fileDownload?fileId="+file.id;
             },
             copyUrl(url) {
                 notice({

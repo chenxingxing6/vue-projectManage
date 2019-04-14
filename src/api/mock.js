@@ -27,15 +27,6 @@ export function getShares(data) {
 }
 
 
-/*获取网盘文件类型*/
-export function getSourceType() {
-    return $http.post('getSourceType');
-}
-
-/*获取资源列表*/
-export function getSource(data) {
-    return $http.post('getSource', data);
-}
 
 
 /*获取文件列表*/
@@ -80,6 +71,29 @@ export function shareToUser(data) {
 export function createShareUrl(data) {
     return $http.post('/createShareUrl', data);
 }
+
+
+
+/**--------资源库-------**/
+
+/*获取网盘文件类型*/
+export function getSourceType() {
+    return $http.post('getSourceType');
+}
+
+/*获取资源列表*/
+export function getSource(data) {
+    return $http.post('getSource', data);
+}
+
+
+/*获取资源列表*/
+export function fileDownload(data) {
+    return $http.post('fileDownload', data);
+}
+
+
+
 
 
 /**--------关注用户-------**/

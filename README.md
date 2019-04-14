@@ -7,5 +7,25 @@
 2019.4.12  登陆接口实现完成
 
 
-base-vue：用户头像上传    uploadAction: 'http://localhost:9000/front/app/updateImg'
+base-vue：用户头像上传    
+```js
+uploadAction: 'http://localhost:9000/front/app/updateImg'
+```
+
+---
+seeBox: 文件查看
+```
+getUrl(fileUrl){
+    return getFileUrl(fileUrl, 'local');
+}
+```
+
+---
+文件下载
+```js
+downLoad(file) {
+    window.location.href = "http://localhost:8888/api/fileDownload?fileId="+file.id;
+},
+```
+
 
