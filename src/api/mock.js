@@ -92,5 +92,17 @@ export function editPersonal(data) {
     return $http.post('updateUserInfo', data);
 }
 
+export function _bindMail(data) {
+    return $http.post('bindUpdate', data);
+}
+
+export function _bindMobile(data) {
+    return $http.post('bindUpdate', data);
+}
+
+export function editPassword(data) {
+    return $http.post('bindUpdate', data);
+}
+
 
 

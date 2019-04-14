@@ -301,9 +301,10 @@
                             }
                             this.setErrorTips('');
                             obj.id = app.userInfo.id;
-                            obj.password = md5(obj.password);
-                            obj.newPassword = md5(obj.newPassword);
-                            obj.confirmPassword = md5(obj.confirmPassword);
+                            //obj.password = md5(obj.password);
+                            //obj.newPassword = md5(obj.newPassword);
+                            //obj.confirmPassword = md5(obj.confirmPassword);
+                            obj.type = 1;
                             editPassword(obj).then(res => {
                                 app.loading = false;
                                 if (!checkResponse(res)) {
@@ -323,6 +324,7 @@
                         if (!err) {
                             let obj = app.mobileForm.getFieldsValue();
                             this.setErrorTips('');
+                            obj.type = 2;
                             app.mobileInfo.confirmLoading = true;
                             _bindMobile(obj).then(res => {
                                 app.mobileInfo.confirmLoading = false;
@@ -331,7 +333,7 @@
                                 }
                                 const obj = {
                                     userInfo: res.data.member,
-                                    tokenList: res.data.tokenList
+                                    tokenList: 7033929
                                 };
                                 app.$store.dispatch('SET_LOGGED', obj);
                                 this.mobileInfo.modalStatus = false;
@@ -347,6 +349,7 @@
                     (err, values) => {
                         if (!err) {
                             let obj = app.mailForm.getFieldsValue();
+                            obj.type = 3;
                             this.setErrorTips('');
                             app.mailInfo.confirmLoading = true;
                             _bindMail(obj).then(res => {
@@ -354,6 +357,11 @@
                                 if (!checkResponse(res)) {
                                     return;
                                 }
+                                const obj = {
+                                    userInfo: res.data.member,
+                                    tokenList: 7033929
+                                };
+                                app.$store.dispatch('SET_LOGGED', obj);
                                 this.mailInfo.modalStatus = false;
                                 app.mailForm && app.mailForm.resetFields();
                             });
