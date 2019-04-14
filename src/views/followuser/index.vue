@@ -38,7 +38,7 @@
                             <a-list-item-meta>
                                 <a-avatar slot="avatar" :src="item.imgPath"/>
                                 <div slot="title">
-                                    <router-link :to="{path: `/followuser/detail`, query:{id:item.id}}" class="text-default">{{ item.username }}</router-link>
+                                    <router-link :to="{path: `/followuser/detail`, query:{id:item.userId}}" class="text-default">{{ item.username }}</router-link>
                                     <a-tag class="m-l-sm">已关注</a-tag>
                                 </div>
                                 <div slot="description">
@@ -48,7 +48,7 @@
                                 </div>
                             </a-list-item-meta>
                             <template>
-                                <a class="muted" slot="actions" @click="cancleFollow(item, index)" v-if="item.isfollow == 1">
+                                <a class="muted" slot="actions" @click="cancleFollow(item, index)" v-if="item.type == 0">
                                     <a-tooltip :title="`取消关注`">
                                         <a-icon type="user-delete"/>
                                     </a-tooltip>
@@ -71,7 +71,8 @@
     import _ from 'lodash'
     import pagination from "../../mixins/pagination";
     import {checkResponse} from "../../assets/js/utils";
-    import {getFollowUser as getFollowUser} from "../../api/mock";
+    import {getFollowUser as getFollowUser, addOrCancleUser} from "../../api/mock";
+    import {notice} from "../../assets/js/notice";
 
     export default {
         name: "members",
@@ -111,8 +112,8 @@
                 app.loading = true;
                 getFollowUser(this.requestData).then(res => {
                     app.members = res.data.list;
-                  /*  app.pagination.total = res.data.total;
-                    app.showLoadingMore = app.pagination.total > app.members.length;*/
+                    app.pagination.total = res.data.total;
+                    //app.showLoadingMore = app.pagination.total > app.members.length;
                     app.loading = false;
                     app.loadingMore = false
                 });
@@ -142,15 +143,15 @@
                     type: 'warning',
                     center: true
                 }).then(() => {
-                   /* del(member.code).then((res) => {
+                    addOrCancleUser({type: 1, userId: member.userId}).then((res) => {
                         if (!checkResponse(res)) {
                             return;
                         }
                         app.members.splice(index, 1);
                         notice({title: '取消成功'}, 'notice', 'success');
-                    });*/
+                    });
                 }).catch(() => {
-                    //notice({title: '移除失败'}, 'notice', 'error');
+                    notice({title: '移除失败'}, 'notice', 'error');
                 });
             },
             addFollow(member, index) {
@@ -161,15 +162,15 @@
                     type: 'warning',
                     center: true
                 }).then(() => {
-                   /* del(member.code).then((res) => {
+                    addOrCancleUser({type: 0, userId: member.userId}).then((res) => {
                         if (!checkResponse(res)) {
                             return;
                         }
                         app.members.splice(index, 1);
                         notice({title: '关注成功'}, 'notice', 'success');
-                    });*/
+                    });
                 }).catch(() => {
-                    //notice({title: '移除失败'}, 'notice', 'error');
+                    notice({title: '移除失败'}, 'notice', 'error');
                 });
             },
             emitEmpty() {

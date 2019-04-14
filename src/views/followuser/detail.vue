@@ -56,13 +56,13 @@
                         <a-col :span="24">
                             <div class="info-item">
                                 <span class="muted">部门</span>
-                                <span>{{member.dept}}</span>
+                                <span>{{member.deptName}}</span>
                             </div>
                         </a-col>
                         <a-col :span="8">
                             <div class="info-item">
                                 <span class="muted">加入时间</span>
-                                <span>{{member.create_time}}</span>
+                                <span>{{formatTime(member.createTime)}}</span>
                             </div>
                         </a-col>
                     </a-row>
@@ -74,7 +74,8 @@
 </template>
 
 <script>
-    import {getFollowUser as getFollowUser} from "../../api/mock";
+    import {getUserDetail} from "../../api/mock";
+    import {formatDateTime} from "../../assets/js/dateTime";
     export default {
         data() {
             return {
@@ -92,9 +93,12 @@
                 this.getInfo();
             },
             getInfo() {
-                 getFollowUser({aa: this.userId}).then(res => {
-                     this.member = res.data.list[0];
+                getUserDetail({userId: this.userId}).then(res => {
+                     this.member = res.data.member;
                  });
+            },
+            formatTime(time){
+                return formatDateTime(time);
             }
         }
     }

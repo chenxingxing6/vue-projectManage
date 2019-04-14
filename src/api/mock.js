@@ -48,11 +48,6 @@ export function getFileLog(data) {
     return $http.post('/getFileLog', data);
 }
 
-/*获取关注用户列表*/
-export function getFollowUser(data) {
-    return $http.post('/getFollowUser', data);
-}
-
 
 /*文件重命名*/
 export function fileRename(data) {
@@ -85,6 +80,21 @@ export function shareToUser(data) {
 export function createShareUrl(data) {
     return $http.post('/createShareUrl', data);
 }
+
+
+/**--------关注用户-------**/
+/*获取关注用户列表*/
+export function getFollowUser(data) {
+    return $http.post('getFollowUser', data);
+}
+export function getUserDetail(data) {
+    return $http.post('getUserDetail', data);
+}
+
+export function addOrCancleUser(data) {
+    return $http.post('addOrCancleUser', data);
+}
+
 
 
 /**--------更多-------**/
