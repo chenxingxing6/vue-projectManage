@@ -73,7 +73,7 @@
     import {mapState} from 'vuex'
     import AccountSetting from "@/components/layout/account/setting"
     import {checkResponse, getApiUrl, getAuthorization, getBase64} from "../../../assets/js/utils";
-    import {editPersonal} from "../../../api/user";
+    import {editPersonal} from "../../../api/mock";
     import {getStore} from "../../../assets/js/storage";
 
     export default {
@@ -86,16 +86,16 @@
                 loading: false,
                 form: this.$form.createForm(this),
                 uploadLoading: false,
-                uploadAction: getApiUrl('project/index/uploadAvatar'),
+                uploadAction: 'http://localhost:9000/front/app/updateImg',
             }
         },
         computed: {
             ...mapState({
                 userInfo: state => state.userInfo,
             }),
-            headers() {
+            /*headers() {
                 return getAuthorization();
-            }
+            }*/
         },
         mounted() {
             this.$nextTick(() => {
@@ -135,7 +135,7 @@
                 }
                 if (info.file.status === 'done') {
                     getBase64(info.file.originFileObj, (imageUrl) => {
-                        this.userInfo.imgPath = info.file.response.data.url;
+                        this.userInfo.imgPath = info.file.response.url;
                         this.$store.dispatch('SET_USER', this.userInfo);
                         this.uploadLoading = false;
                         // this.$store.dispatch('SET_USER', this.userInfo);

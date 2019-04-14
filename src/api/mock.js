@@ -87,6 +87,10 @@ export function createShareUrl(data) {
 }
 
 
+/**--------更多-------**/
+export function editPersonal(data) {
+    return $http.post('updateUserInfo', data);
+}
 
 
 

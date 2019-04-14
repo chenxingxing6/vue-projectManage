@@ -7,3 +7,5 @@
 2019.4.12  登陆接口实现完成
 
 
+base-vue：用户头像上传    uploadAction: 'http://localhost:9000/front/app/updateImg'
+

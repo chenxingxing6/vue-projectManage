@@ -226,7 +226,7 @@
     import {mapState} from 'vuex'
     import AccountSetting from "@/components/layout/account/setting"
     import {checkResponse} from "../../../assets/js/utils";
-    import {_bindMail, _bindMobile, editPassword, getCaptcha} from "../../../api/user";
+    import {_bindMail, _bindMobile, editPassword, getCaptcha} from "../../../api/mock";
 
     export default {
         name: "settingSecurity",
