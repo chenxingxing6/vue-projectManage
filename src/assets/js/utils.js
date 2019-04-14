@@ -234,12 +234,12 @@ export function timeFix() {
     return hour < 9 ? '早上好' : (hour <= 11 ? '上午好' : (hour <= 13 ? '中午好' : (hour < 20 ? '下午好' : '晚上好')))
 }
 export function getAuthorization() {
-   /* let tokenList = getStore('tokenList', true);
+    let tokenList = getStore('tokenList', true);
     if (tokenList) {
         let accessToken = tokenList.accessToken;
         let tokenType = tokenList.tokenType;
         return {Authorization: `${tokenType} ${accessToken}`};
-    }*/
+    }
     return {};
 }
 

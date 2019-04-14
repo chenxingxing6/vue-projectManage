@@ -93,7 +93,7 @@
     import {mapState} from 'vuex'
     import {getStore} from "../../assets/js/storage";
     import {notice} from "../../assets/js/notice";
-    import {uploadFiles} from "../../api/file";
+    import {uploadFiles, getUserId} from "../../api/mock";
 
     export default {
         name: "v-uploader",
@@ -117,7 +117,11 @@
                     testChunks: false,
                     query: function () {
                         return getStore('tempData', true);//query暂时无法动态响应
-                    }
+                    },
+                    headers: function () {
+                        const auth = getUserId("11");
+                        return auth;
+                    },
                 },
                 attrs: {
                     accept: 'image/*'
@@ -165,7 +169,7 @@
                 this.uploader.cancel();
             },
             filesSubmitted(files) { //添加上传文件
-                // this.$refs.uploader.uploader.opts.query = this.tempData;
+                //this.$refs.uploader.uploader.opts.query = 111;
                 this.showUploader = true;
                 this.showFiles = true;
                 this.progressTotal += files.length;
@@ -191,7 +195,7 @@
                 this.completeTotal--;
                 const response = JSON.parse(message);
                 file.cancel();
-                rootFile.projectName = response.data.projectName;
+                //rootFile.projectName = response.data.projectName;
                 console.log('file error', rootFile);
                 notice({title: response.msg}, 'notice', 'error');
             },

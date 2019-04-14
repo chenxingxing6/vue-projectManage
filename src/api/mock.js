@@ -1,4 +1,6 @@
 import $http from '@/assets/js/http'
+import {getApiUrl} from "../assets/js/utils";
+import {getStore} from "../assets/js/storage";
 
 /**---------------登陆--------------**/
 /*登陆*/
@@ -90,8 +92,14 @@ export function delByShareId(data) {
     return $http.post('delByShareId', data);
 }
 
+export function uploadFiles() {
+    return "http://localhost:9000/front/app/uploadFile";
+}
 
-
+export function getUserId(userId) {
+    let accessToken = userId;
+    return {userId: `${accessToken}`};
+}
 
 
 
