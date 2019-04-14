@@ -1,19 +1,12 @@
 <template>
     <div class="project-space-files">
-        <div class="project-navigation" style="background: whitesmoke;">
-            <section class="nav-body">
-                <ul class="nav-wrapper nav nav-underscore pull-left">
-                    <li class="actives"><a class="app" data-app="works" @click="$router.push('/disk/files')">文件</a></li>
-                   <!-- <li><a class="app" data-app="build" @click="$router.push('/disk/overview')">概览</a></li>-->
-                </ul>
-            </section>
-        </div>
         <wrapper-content :showHeader="false">
             <div class="content-wrapper">
                 <div class="content-item log-list">
                     <div class="header">
                         <span class="title">我的文件</span>
                         <div class="header-actions">
+                            <a-button icon="folder-add" type="dashed">创建文件夹</a-button>&nbsp;&nbsp;&nbsp;
                             <a-button id="upload-file" icon="up-circle" type="dashed">上传</a-button>
                         </div>
                     </div>
@@ -24,7 +17,7 @@
                                     <div class="muted" slot="title">名称</div>
                                 </a-list-item-meta>
                                 <div class="other-info muted">
-                                    <div class="info-item"  style="padding-right: 20px;"><span>大小</span></div>
+                                    <div class="info-item" style="padding-right: 22px;"><span>大小</span></div>
                                     <div class="info-item"><span>创建日期</span></div>
                                     <div class="info-item">
                                         <span>创建人</span>
@@ -36,32 +29,33 @@
                             </a-list-item>
                             <a-list-item class="list-item" :key="index" v-for="(item, index) in files">
                                 <a-list-item-meta>
-                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-if="item.extension === 'html'" style="">
+                                    <a-avatar slot="avatar" shape="square" v-if="item.extension === 'html'">
                                         <a-icon type="code" />
                                     </a-avatar>
-                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'pdf'">
+                                    <a-avatar slot="avatar" shape="square" v-else-if="item.extension === 'pdf'">
                                         <a-icon type="file-pdf"/>
                                     </a-avatar>
-                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'txt'">
+                                    <a-avatar slot="avatar" shape="square" v-else-if="item.extension === 'txt'">
                                         <a-icon type="file-text"/>
                                     </a-avatar>
-                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'doc' || item.extension === 'docx'">
+                                    <a-avatar slot="avatar" shape="square" v-else-if="item.extension === 'doc' || item.extension === 'docx'">
                                         <a-icon type="file-word"/>
                                     </a-avatar>
                                     <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'jpg'">
                                         <a-icon type="file-jpg"/>
                                     </a-avatar>
-                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'xls' || item.extension === 'xlsx'">
+                                    <a-avatar slot="avatar" shape="square" v-else-if="item.extension === 'xls' || item.extension === 'xlsx'">
                                         <a-icon type="file-excel"/>
                                     </a-avatar>
-                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'mp3'">
+                                    <a-avatar slot="avatar" shape="square" v-else-if="item.extension === 'mp3'">
                                         <a-icon type="customer-service"/>
                                     </a-avatar>
-                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else-if="item.extension === 'zip'">
+                                    <a-avatar slot="avatar" shape="square" v-else-if="item.extension === 'zip'">
                                         <a-icon type="folder-open"/>
                                     </a-avatar>
-                                    <a-avatar slot="avatar" shape="square" :src="item.fileUrl" v-else>
-                                        <a-icon type="file" />
+                                    <a-avatar slot="avatar" shape="square" v-else>
+                                        <a-icon type="folder-open" v-if="item.type === '0'"/>
+                                        <a-icon type="file" v-else/>
                                     </a-avatar>
                                     <div slot="title">
                                         <a-tooltip :mouseEnterDelay="0.3">
@@ -75,16 +69,19 @@
                                                     v-show="item.editing"
                                                     @pressEnter="onCellChange(item)"
                                                     @blur="onCellChange(item)"></a-input>
-                                            <!--   <a class="text-default" target="_blank" :href="item | showPreviewUrl"
-                                                  v-show="!item.editing">{{item.fullName}}</a>-->
-                                            <a class="text-default" v-show="!item.editing" @click="seeBox(item)">{{item.originalName}}</a>
+                                            <a v-show="!item.editing" @click="nextFile(item)" v-if="item.type === '0'">{{item.originalName}}</a>
+                                            <a class="text-default" v-show="!item.editing" @click="seeBox(item)" v-if="item.type === '1'">{{item.originalName}}</a>
                                         </a-tooltip>
                                     </div>
                                 </a-list-item-meta>
                                 <div class="other-info muted">
-                                    <div class="info-item" style="padding-right: 20px;">
+                                    <div class="info-item" style="padding-right: 20px;" v-if="item.type === '0'">
+                                            <span>文件夹</span>
+                                    </div>
+                                    <div class="info-item" style="padding-right: 20px;" v-if="item.type === '1'">
                                         <span>{{item.length}}</span>
                                     </div>
+                                    &nbsp;
                                     <div class="info-item">
                                         <a-tooltip :title="item.createTime">
                                             <span>{{ formatTime(item.createTime) }}</span>
@@ -94,7 +91,18 @@
                                         <span>{{item.createUser}}</span>
                                     </div>
                                 </div>
+
                                 <span slot="actions">
+                                    <a-tooltip title="删除">
+                                        <a class="muted"  @click="delFileById(item, index)"><a-icon type="delete"/></a>
+                                    </a-tooltip>
+                                </span>
+                                <span slot="actions" v-if="item.type === '1'">
+                                    <a-tooltip title="下载">
+                                        <a class="muted"  @click="downLoad(item, index)"><a-icon type="download"/></a>
+                                    </a-tooltip>
+                                </span>
+                                <span slot="actions" v-if="item.type === '0'" style="visibility: hidden">
                                     <a-tooltip title="下载">
                                         <a class="muted" target="_blank" :href="item.fileUrl"><a-icon type="download"/></a>
                                     </a-tooltip>
@@ -104,7 +112,9 @@
                                         <a-icon type="edit"/>
                                     </a-tooltip>
                                 </span>
-                                <a class="muted" slot="actions">
+
+
+                                <a class="muted" slot="actions"  v-if="item.type === '1'">
                                     <a-dropdown :trigger="['click']" placement="bottomCenter">
                                         <a-tooltip :mouseEnterDelay="0.5">
                                             <template slot="title">
@@ -132,6 +142,36 @@
                                         </a-menu>
                                     </a-dropdown>
                                 </a>
+
+                                <a class="muted" slot="actions"  v-if="item.type === '0'" style="visibility: hidden">
+                                    <a-dropdown :trigger="['click']" placement="bottomCenter">
+                                        <a-tooltip :mouseEnterDelay="0.5">
+                                            <template slot="title">
+                                                <span>更多操作</span>
+                                            </template>
+                                            <a class="action-item muted">
+                                                <a-icon type="down"/>
+                                            </a>
+                                        </a-tooltip>
+                                        <a-menu class="field-right-menu"
+                                                @click="opt($event,item)"
+                                                slot="overlay">
+                                            <a-menu-item key="copy" v-clipboard:copy="item.fileUrl" v-model="item.fileUrl">
+                                                <a-icon type="link"/>
+                                                <span>复制链接</span>
+                                            </a-menu-item>
+                                            <a-menu-item key="share">
+                                                <a-icon type="share-alt"/>
+                                                <span>分享给其他用户</span>
+                                            </a-menu-item>
+                                            <a-menu-item key="add">
+                                                <a-icon type="share-alt"/>
+                                                <span>分享到企业网盘</span>
+                                            </a-menu-item>
+                                        </a-menu>
+                                    </a-dropdown>
+                                </a>
+
                             </a-list-item>
                             <div v-if="showLoadingMore" slot="loadMore"
                                  :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
@@ -144,7 +184,7 @@
             </div>
         </wrapper-content>
         <box v-model="showInviteMember" v-if="showInviteMember" :seeUrl="seeUrl"></box>
-        <share v-model="showShare" v-if="showShare"></share>
+        <share v-model="showShare" v-if="showShare" :fileId="fileId"></share>
     </div>
 </template>
 
@@ -154,7 +194,7 @@
     import {relativelyTime} from "../../assets/js/dateTime";
     import pagination from "@/mixins/pagination";
     import {notice} from "../../assets/js/notice";
-    import {getFiles, fileRename} from "../../api/mock";
+    import {getFiles, fileRename, addDisk, delFileById} from "../../api/mock";
     import box from '../../components/file/box'
     import share from '../../components/file/share'
 
@@ -176,7 +216,9 @@
                 files: [],
                 showInviteMember: false,
                 showShare: false,
-                seeUrl: 'http://ppkn5nh6t.bkt.clouddn.com/upload/20190410/dbf66652effa4b309d98b00946043690.jpeg',
+                seeUrl: '',
+                fileId: '',
+                parentId: 0,
             }
         },
         computed: {
@@ -201,7 +243,6 @@
         },
         created() {
             this.getFiles();
-            this.pag
         },
         mounted() {
             setTimeout(() => {
@@ -209,6 +250,9 @@
             }, 500)
         },
         methods: {
+            downLoad(file) {
+                window.open("http://localhost:8888/api/fileDownload?fileId="+file.id);
+            },
             getFiles(reset = true) {
                 let app = this;
                 if (reset) {
@@ -216,8 +260,7 @@
                     this.pagination.pageSize = 50;
                     this.showLoadingMore = false;
                 }
-                app.requestData.projectCode = this.code;
-                app.requestData.deleted = 0;
+                app.requestData.parentId = this.parentId;
                 this.loading = true;
                 getFiles(app.requestData).then(res => {
                     this.loading = false;
@@ -255,17 +298,45 @@
                 this.showInviteMember = true;
                 this.seeUrl = file_url;
             },
+            nextFile(file){
+                notice({
+                    title: '下级文件',
+                }, 'notice', 'success');
+            },
+            addDisk(fileId) {
+                addDisk(fileId).then(res => {
+                    const result = checkResponse(res);
+                    if (!result) {
+                        return false;
+                    }
+                    notice({
+                        title: '添加成功',
+                    }, 'notice', 'success');
+                });
+            },
+            delFileById(file, index){
+                var app = this;
+                delFileById(file.id).then(res => {
+                    const result = checkResponse(res);
+                    if (!result) {
+                        return false;
+                    }
+                    app.files.splice(index, 1);
+                    notice({
+                        title: '删除成功',
+                    }, 'notice', 'success');
+                });
+            },
             opt(action, item) {
                 let app = this;
                 const actionKey = action.key;
                 switch (actionKey) {
                     case 'share':
+                        app.fileId = item.id;
                         this.showShare = true;
                         break;
                     case 'add':
-                        notice({
-                            title: '添加成功',
-                        }, 'notice', 'success');
+                       app.addDisk(item.id);
                         break;
                     case 'copy':
                         notice({
@@ -280,15 +351,20 @@
                 this.files.forEach((v) => {
                     v.editing = false;
                 });
-                const fullName = `${file.name}.${file.extension}`;
-                if (fullName != currentFile.originalName) {
-                    fileRename({fullName: fullName, fileId: currentFile.id}).then(res => {
+                let name = '';
+                if (file.type === '0'){
+                    name = file.name;
+                }else{
+                    name = `${file.name}.${file.extension}`;
+                }
+                if (name != currentFile.originalName) {
+                    fileRename({fileName: name, fileId: currentFile.id}).then(res => {
                         const result = checkResponse(res);
                         if (!result) {
                             return false;
                         }
                         currentFile.name = file.name;
-                        currentFile.originalName = fullName;
+                        currentFile.originalName = name;
                         notice({
                             title: '重命名成功',
                         }, 'notice', 'success');
@@ -325,9 +401,9 @@
         }
 
         .layout-content {
-            padding: 12px;
+            padding: 2px;
             width: 1100px;
-            margin: 12px auto auto;
+            margin: 5px auto auto;
             background: initial;
             display: flex;
             flex-direction: row;
@@ -335,7 +411,7 @@
 
             .content-item {
                 background: #fff;
-                padding: 6px 0 18px 0;
+                padding: 0px 0 18px 0;
                 border-radius: 4px;
 
                 .header {

@@ -1,5 +1,6 @@
 import $http from '@/assets/js/http'
 
+/**---------------登陆--------------**/
 /*登陆*/
 export function Login(data) {
     return $http.post('login', data);
@@ -11,6 +12,9 @@ export function getCaptcha(mobile) {
 }
 
 
+
+
+/**---------------菜单--------------**/
 /*获取菜单*/
 export function getMenu() {
     return $http.post('getMenu');
@@ -24,19 +28,7 @@ export function getNotice(data) {
 
 
 
-
-/*获取文件列表*/
-export function getFiles(data) {
-    return $http.post('/getFiles', data);
-}
-
-/*获取文件上传日志*/
-export function getFileLog(data) {
-    return $http.post('/getFileLog', data);
-}
-
-
-
+/**---------------首页--------------**/
 /*获取操作记录*/
 export function getOperateLog(data) {
     return $http.post('/getOperateLog', data);
@@ -49,19 +41,42 @@ export function getIndexData(data) {
 }
 
 
+
+/**---------------网盘--------------**/
+/*获取文件上传日志*/
+export function getFileLog(data) {
+    return $http.post('/getFileLog', data);
+}
+
+/*获取文件列表*/
+export function getFiles(data) {
+    return $http.post('/getFiles', data);
+}
+
+
 /*分享查询分享的用户*/
-export function findUser(data) {
-    return $http.post('/findUser', data);
+export function findToShareUser(userName) {
+    return $http.post('findToShareUser', {userName: userName});
 }
 
 /*分享给用户*/
-export function shareToUser(data) {
-    return $http.post('/fileRename', data);
+export function shareToUser(userId, fileId) {
+    return $http.post('/toShare', {userId: userId, fileId: fileId});
 }
 
 /*创建分享链接*/
 export function createShareUrl(data) {
-    return $http.post('/createShareUrl', data);
+    return $http.post('createLink', data);
+}
+
+/*文件加入网盘*/
+export function addDisk(fileId) {
+    return $http.post('addDisk', {fileId: fileId});
+}
+
+/*我的网盘删除文件*/
+export function delFileById(fileId) {
+    return $http.post('delFileById', {fileId: fileId});
 }
 
 

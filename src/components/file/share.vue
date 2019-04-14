@@ -26,10 +26,10 @@
                         :locale="{emptyText: (keyword && keyword.length > 1) ? '没有搜索到相关用户' : ''}">
                     <a-list-item slot="renderItem" slot-scope="item">
                     <span slot="actions">
-                        <a-button size="small" type="dashed" icon="user-add" @click="shareToUser(item.id)">分享</a-button>
+                        <a-button size="small" type="dashed" icon="user-add" @click="shareToUser(item.userId)">分享</a-button>
                      </span>
                         <a-list-item-meta :description="item.email">
-                            <span slot="title">{{item.username}} <i style="font-size: 5px; font-family: Noteworthy; color: grey;">{{item.dept}}</i></span>
+                            <span slot="title">{{item.username}} <i style="font-size: 5px; font-family: Noteworthy; color: grey;"></i></span>
                             <a-avatar slot="avatar" icon="user" :src="item.imgPath"/>
                         </a-list-item-meta>
                     </a-list-item>
@@ -43,7 +43,7 @@
                 :title="linkInfo.modalTitle"
                 :footer="null">
             <div class="header">
-                <p>链接有效日期：{{linkInfo.overTime}}</p>
+                <p>链接有效日期：1天</p>
                 <a-input-search
                         size="large"
                         v-model="linkInfo.link"
@@ -59,7 +59,7 @@
 <script>
     import _ from 'lodash'
     import moment from 'moment';
-    import {findUser, shareToUser, createShareUrl} from "../../api/mock";
+    import {findToShareUser, shareToUser, createShareUrl} from "../../api/mock";
     import {checkResponse} from "../../assets/js/utils";
     import {notice} from "../../assets/js/notice";
 
@@ -74,8 +74,8 @@
                     return false
                 }
             },
-            projectCode: {
-                type: [String, Number],
+            fileId: {
+                type: [String],
                 default() {
                     return ''
                 }
@@ -99,6 +99,7 @@
                 keyword: '',
                 searching: false,
                 list: [],
+                fileId: '',
             };
         },
         watch: {
@@ -107,12 +108,14 @@
             },
             keyword() {
                 this.search();
+            },
+            fileId(fileId){
+                this.fileId = fileId;
             }
         },
         methods: {
             shareToUser(userId) {
-                var fileId = '11';
-                shareToUser(userId, fileId).then((res) => {
+                shareToUser(userId, this.fileId).then((res) => {
                     const success = checkResponse(res);
                     if (success) {
                         notice({
@@ -127,7 +130,7 @@
                         const success = checkResponse(res);
                         if (success) {
                             this.linkInfo.modalStatus = true;
-                            this.linkInfo.link = window.location.href.split('#')[0] + '#/invite_from_link/' + res.data.url;
+                            this.linkInfo.link = window.location.href.split('#')[0] + '#/invite_from_link/' + res.data;
                             this.linkInfo.overTime = moment(res.data.code.over_time).format('YYYY年M月D日 HH:mm');
                         }
                     });
@@ -144,7 +147,7 @@
                         return false;
                     }
                     this.searching = true;
-                    findUser(this.keyword, this.projectCode).then(res => {
+                    findToShareUser(this.keyword).then(res => {
                         this.searching = false;
                         this.list = res.data.list;
                     });
