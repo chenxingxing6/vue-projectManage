@@ -251,7 +251,7 @@
         },
         methods: {
             downLoad(file) {
-                window.open("http://localhost:8888/api/fileDownload?fileId="+file.id);
+                window.open("http://193.112.27.123:8888/api/fileDownload?fileId="+file.id);
             },
             getFiles(reset = true) {
                 let app = this;

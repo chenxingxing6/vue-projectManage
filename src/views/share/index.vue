@@ -109,7 +109,7 @@
         methods: {
             seeDetail(item) {
                 this.showInviteMember = true;
-                this.seeUrl = "http://localhost:8012/disk/"+ item.fileName;
+                this.seeUrl = "http://193.112.27.123:8012/disk/"+ item.fileName;
             },
             getMembers({key} = {}) {
                 let app = this;
@@ -149,7 +149,7 @@
                 });
             },
             downLoad(file) {
-                window.open("http://localhost:8888/api/fileDownload?fileId="+file.fileId);
+                window.open("http://193.112.27.123:8888/api/fileDownload?fileId="+file.fileId);
             },
         }
     }

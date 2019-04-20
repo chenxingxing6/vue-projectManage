@@ -261,7 +261,7 @@
                 }
             },
             downLoad(file) {
-                window.location.href = "http://localhost:8888/api/fileDownload?fileId="+file.id;
+                window.location.href = "http://193.112.27.123:8888/api/fileDownload?fileId="+file.id;
             },
             copyUrl(url) {
                 notice({

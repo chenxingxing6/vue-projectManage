@@ -93,7 +93,7 @@ export function delByShareId(data) {
 }
 
 export function uploadFiles() {
-    return "http://localhost:9000/front/app/uploadFile";
+    return "http://193.112.27.123:9000/front/app/uploadFile";
 }
 
 export function getUserId(userId) {

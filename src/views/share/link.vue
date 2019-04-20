@@ -79,7 +79,7 @@
             },
             seeBox(file) {
                 this.showInviteMember = true;
-                this.seeUrl = "http://localhost:8012/disk/"+ file.fileName;
+                this.seeUrl = "http://193.112.27.123:8012/disk/"+ file.fileName;
             },
         }
     }

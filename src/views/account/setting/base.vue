@@ -86,7 +86,7 @@
                 loading: false,
                 form: this.$form.createForm(this),
                 uploadLoading: false,
-                uploadAction: 'http://localhost:9000/front/app/updateImg',
+                uploadAction: 'http://193.112.27.123:9000/front/app/updateImg',
             }
         },
         computed: {
