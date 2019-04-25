@@ -104,7 +104,7 @@
                     </a-layout>
                 </a-layout>
             </a-layout>
-            <Socket ref="socket" v-if="config.WS_URI"></Socket>
+          <!--  <Socket ref="socket" v-if="config.WS_URI"></Socket>-->
         </a-spin>
         <v-uploader></v-uploader>
     </div>

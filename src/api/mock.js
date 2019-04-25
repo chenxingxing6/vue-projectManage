@@ -13,6 +13,21 @@ export function getCaptcha(mobile) {
     return $http.post('getCaptcha', {mobile: mobile});
 }
 
+/*获取qq授页面*/
+export function getQqLoginUrl() {
+    return $http.post('qq/login');
+}
+
+/*获取qq登陆用户信息*/
+export function qqCallback() {
+    return $http.post('qq/callback');
+}
+
+/*获取微博授页面*/
+export function getSinaLoginUrl() {
+    return $http.post('sina/login');
+}
+
 
 
 

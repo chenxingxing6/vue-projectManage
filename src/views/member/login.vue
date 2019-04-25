@@ -93,31 +93,32 @@
 
             <div class="user-login-other">
                 <span>其他登录方式</span>
-                <a>
-                    <a-icon class="item-icon" type="alipay-circle"></a-icon>
+                <a v-on:click="qqLogin()">
+                    <a-icon class="item-icon" type="qq"></a-icon>
                 </a>
-                <a>
-                    <a-icon class="item-icon" type="taobao-circle"></a-icon>
-                </a>
-                <a>
+                <a v-on:click="sinaLogin()">
                     <a-icon class="item-icon" type="weibo-circle"></a-icon>
                 </a>
-                <router-link class="register" :to="{ name: 'register' }">注册账户</router-link>
+             <!--   <router-link class="register" :to="{ name: 'register' }">注册账户</router-link>-->
             </div>
         </a-form>
+          <Socket ref="socket" v-if="config.WS_URI"></Socket>
     </div>
 </template>
 
 <script>
     import {mapActions} from 'vuex'
-    import {getCaptcha, Login} from '@/api/mock'
+    import {getCaptcha, Login, getQqLoginUrl, qqCallback, getSinaLoginUrl} from '@/api/mock'
     import {info} from '@/api/system';
-    import config from "@/config/config";
     import {checkResponse, createRoute, timeFix} from '@/assets/js/utils'
     import {getStore, setStore} from '@/assets/js/storage';
+    import Socket from '../../components/websocket/socket';
+    import config from "../../config/config";
 
     export default {
-        components: {},
+        components: {
+            Socket
+        },
         data() {
             return {
                 customActiveKey: 'tab1',
@@ -137,7 +138,8 @@
                     captcha: '',
                     mobile: '',
                     rememberMe: true
-                }
+                },
+                config: config
             }
         },
         computed: {
@@ -155,6 +157,22 @@
                     this.loginType = 1
                 }
                 callback()
+            },
+            qqLogin(){
+                getQqLoginUrl().then(res => {
+                    if (checkResponse(res, true)) {
+                        window.location.href = res.url;
+                    }
+                }).catch(res => {
+                });
+            },
+            sinaLogin(){
+                getSinaLoginUrl().then(res => {
+                    if (checkResponse(res, true)) {
+                        window.location.href = res.url;
+                    }
+                }).catch(res => {
+                });
             },
             handleTabClick(key) {
                 this.customActiveKey = key
