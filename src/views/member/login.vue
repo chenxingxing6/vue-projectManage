@@ -103,6 +103,22 @@
             </div>
         </a-form>
           <Socket ref="socket" v-if="config.WS_URI"></Socket>
+        <a-drawer
+                title="QQ登录"
+                :width="720"
+                @close="onClose"
+                :visible="visible"
+                :wrapStyle="{height: 'calc(100% - 108px)',overflow: 'auto',paddingBottom: '108px'}"
+        >
+            <div>
+                <iframe
+                        :src="currentSrc"
+                        frameborder="0"
+                        scrolling=""
+                        style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 55px;left:0; scrolling=auto">
+                </iframe>
+            </div>
+        </a-drawer>
     </div>
 </template>
 
@@ -139,7 +155,9 @@
                     mobile: '',
                     rememberMe: true
                 },
-                config: config
+                config: config,
+                visible: false,
+                currentSrc: "http://www.baidu.com/",
             }
         },
         computed: {
@@ -161,7 +179,8 @@
             qqLogin(){
                 getQqLoginUrl().then(res => {
                     if (checkResponse(res, true)) {
-                        window.location.href = res.url;
+                        this.currentSrc = res.url;
+                        this.visible = true;
                     }
                 }).catch(res => {
                 });
@@ -313,7 +332,10 @@
                     duration: 4
                 });
                 this.loginBtn = false
-            }
+            },
+            onClose() {
+                this.visible = false
+            },
         }
     }
 </script>

@@ -5,7 +5,7 @@
 
 <script>
     import Vue from 'vue'
-    import {getStore, setStore} from '@/assets/js/storage'
+    import {getStore, setStore} from '@/assets/js/storage';
     import config from "../../config/config";
     import {notice} from "../../assets/js/notice";
 
@@ -14,7 +14,8 @@
         data() {
             return {
                 websocket: null,
-                loginData: null
+                loginData: null,
+                member: null
             }
         },
         methods: {
@@ -31,24 +32,23 @@
                 //获得消息事件
                 this.websocket.onmessage = function(res) {
                     this.loginData = JSON.parse(res.data);
-                    const obj = {
-                        userInfo: JSON.parse(res.data),
-                        tokenList: 7033929,
-                    };
-                    console.log(obj.userInfo.token)
-                    //app.$router.push(config.HOME_PAGE );
-                    //notice({title: res.token}, 'notice', 'success');
-                    //轮询，处理登陆
-                /*    setStore("token", res.token);
-                    const obj = {
-                        userInfo: res.data.member,
-                        tokenList: 7033929,
-                    };
-                    app.$store.dispatch('SET_LOGGED', obj);
-                    app.$store.dispatch('GET_MENU').then(() => {
-                        app.loginBtn = false;
-                        //app.loginSuccess(res);
-                    });*/
+                    if (this.loginData.code === 500){
+                        notice({title: this.loginData.msg}, 'notice', 'error');
+                    }
+                    if (this.loginData.msg === 'login'){
+                        this.member = this.loginData.data.member;
+                        const obj = {
+                            userInfo: this.member,
+                            tokenList: 7033929,
+                        };
+                        console.log(obj)
+                        setStore("token", this.loginData.token);
+                        app.$store.dispatch('SET_LOGGED', obj);
+                        app.$store.dispatch('GET_MENU').then(() => {
+                            app.loginBtn = false;
+                            app.$router.push(config.HOME_PAGE );
+                        });
+                    }
                 };
                 //关闭事件
                 this.websocket.onclose = function() {
