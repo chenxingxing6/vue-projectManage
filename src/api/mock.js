@@ -18,6 +18,12 @@ export function getQqLoginUrl() {
     return $http.post('qq/login');
 }
 
+/*获取qq关联url*/
+export function getQqConnUrl() {
+    return $http.post('qq/conn');
+}
+
+
 /*获取qq登陆用户信息*/
 export function qqCallback() {
     return $http.post('qq/callback');
@@ -28,7 +34,10 @@ export function getSinaLoginUrl() {
     return $http.post('sina/login');
 }
 
-
+/*忘記密碼*/
+export function forget(data) {
+    return $http.post('forget', data);
+}
 
 
 /**---------------菜单--------------**/

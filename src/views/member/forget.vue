@@ -51,7 +51,7 @@
 
 <script>
     import md5 from 'md5'
-    import {forget} from '@/api/user'
+    import {forget} from '@/api/mock'
     import {getCaptcha} from '@/api/mock'
     import {checkResponse} from "../../assets/js/utils";
     import {notice} from "../../assets/js/notice";
@@ -108,8 +108,8 @@
                             if (!checkResponse(res)) {
                                 return false;
                             }
-                            notice({title: '提示', msg: '注册成功，请登陆'}, 'notification', 'success');
-                            this.$router.push({name: 'login'})
+                            notice({title: '提示', msg: res.msg}, 'notification', 'success');
+                            //this.$router.push({name: 'login'})
                         });
                     }
                 })

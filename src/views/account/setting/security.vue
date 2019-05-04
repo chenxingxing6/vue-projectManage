@@ -48,16 +48,16 @@
                                         <div class="ant-list-item">
                                             <div class="ant-list-item-meta">
                                                 <div class="ant-list-item-meta-content">
-                                                    <h4 class="ant-list-item-meta-title"><a>邮箱帐号</a></h4>
+                                                    <h4 class="ant-list-item-meta-title"><a>QQ扫码登录关联</a></h4>
                                                     <div class="ant-list-item-meta-description">
                                                         <span>
-                                                            <span class="security-list-description">已绑定邮箱 : {{userInfo.email}}</span>
+                                                            <span class="security-list-description">是否关联 : 是</span>
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <ul class="ant-list-item-action">
-                                                <li @click="editMail"><a>修改</a></li>
+                                                <li @click="editQQ()"><a>关联</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -218,6 +218,22 @@
                 </a-form-item>
             </a-form>
         </a-modal>
+        <a-drawer
+                title="QQ登录"
+                :width="720"
+                @close="onClose"
+                :visible="visible"
+                :wrapStyle="{height: 'calc(100% - 108px)',overflow: 'auto',paddingBottom: '108px'}"
+        >
+            <div>
+                <iframe
+                        :src="currentSrc"
+                        frameborder="0"
+                        scrolling=""
+                        style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 55px;left:0; scrolling=auto">
+                </iframe>
+            </div>
+        </a-drawer>
     </div>
 </template>
 
@@ -226,8 +242,7 @@
     import {mapState} from 'vuex'
     import AccountSetting from "@/components/layout/account/setting"
     import {checkResponse} from "../../../assets/js/utils";
-    import {_bindMail, _bindMobile, editPassword, getCaptcha} from "../../../api/mock";
-
+    import {_bindMail, _bindMobile, editPassword, getQqConnUrl} from "../../../api/mock";
     export default {
         name: "settingSecurity",
         components: {
@@ -268,6 +283,8 @@
                         smsSendBtn: false
                     },
                 },
+                visible: false,
+                currentSrc: "http://www.baidu.com/"
             }
         },
         computed: {
@@ -284,6 +301,19 @@
             },
             editMail(){
                 this.mailInfo.modalStatus = true;
+            },
+            editQQ(){
+                getQqConnUrl().then(res => {
+                    debugger
+                    if (checkResponse(res, true)) {
+                        this.currentSrc = res.url;
+                        this.visible = true;
+                    }
+                }).catch(res => {
+                });
+            },
+            onClose() {
+                this.visible = false
             },
             handlePasswordSubmit() {
                 let app = this;
