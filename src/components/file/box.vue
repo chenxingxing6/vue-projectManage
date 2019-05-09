@@ -121,7 +121,7 @@
 
             .task-detail-spin {
                 width: 50%;
-                height: 80%;
+                height: 60%;
             }
 
             .task-header {

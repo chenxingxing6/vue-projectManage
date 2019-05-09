@@ -6,7 +6,7 @@
                     <div class="header">
                         <span class="title">我的文件</span>
                         <div class="header-actions">
-                            <a-button icon="folder-add" type="dashed">创建文件夹</a-button>&nbsp;&nbsp;&nbsp;
+                          <!--  <a-button icon="folder-add" type="dashed">创建文件夹</a-button>&nbsp;&nbsp;&nbsp;-->
                             <a-button id="upload-file" icon="up-circle" type="dashed">上传</a-button>
                         </div>
                     </div>
