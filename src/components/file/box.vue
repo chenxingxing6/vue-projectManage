@@ -29,7 +29,7 @@
            </div>
            <div class="task-wrap">
                <div class="task-content">
-                   <iframe :src="getUrl(seeUrl)" height="700px" width="100%"></iframe>
+                   <iframe :src="getUrl(seeUrl)" height="500px" width="100%"></iframe>
                </div>
            </div>
        </a-spin>
@@ -117,17 +117,17 @@
             min-height: 1px;
             min-width: 1px;
             margin: 100px auto;
-            margin-top: 75px;
+            margin-top: 70px;
 
             .task-detail-spin {
                 width: 50%;
-                height: 60%;
+                height: 20%;
             }
 
             .task-header {
                 background: white;
-                padding: 20px 0;
-               // border: 1px solid #e5e5e5;
+                padding: 10px 0;
+                border: 1px solid #e5e5e5;
                 background: whitesmoke;
                 display: flex;
                 vertical-align: middle;
